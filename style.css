@@ -32,7 +32,7 @@
 
 .danh-sach-san-pham {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
     gap: 10px;
     /* Khoảng cách giữa các sản phẩm */
 }
@@ -78,6 +78,10 @@
 
 .tim-kiem input {
     width: 300px;
+    height: 40px;
+    border: 1px solid white;
+    padding-left: 20px;
+    border-radius: 20px;
 }
 
 
@@ -92,4 +96,12 @@
 .thanh-nav button{
     background-color: #e50000;
     cursor: pointer;
+    border: none;
+}
+
+
+
+.nhom-nut-mua{
+    display: flex;
+    gap:10px;
 }
