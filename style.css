@@ -1,0 +1,95 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+.thanh-nav {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background-color: #e50000;
+    color: white;
+    padding: 15px 30px;
+}
+
+.logo {
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.noi-dung {
+    padding: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.tieu-de-phan {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.danh-sach-san-pham {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(50px, 1fr));
+    gap: 10px;
+    /* Khoảng cách giữa các sản phẩm */
+}
+
+
+.the-san-pham {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+    transition: 0.3s;
+    /* Them mau sau 0.3s => giup muot hon */
+
+}
+
+.the-san-pham:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transform: translateY(-5px);
+}
+
+.the-san-pham img {
+    width: 100%;
+    height: auto;
+}
+
+.gia-tien {
+    color: #e50000;
+    font-weight: bold;
+    font-size: 18px;
+    margin: 10px 0;
+}
+
+.nut-mua,
+.nut-them-vao-gio {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+    /* Nút mua trải dài hết chiều ngang */
+}
+
+.tim-kiem input {
+    width: 300px;
+}
+
+
+.nut-bam-header {
+    border: None;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.thanh-nav button{
+    background-color: #e50000;
+    cursor: pointer;
+}
