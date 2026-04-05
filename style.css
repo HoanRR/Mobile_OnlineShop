@@ -169,3 +169,9 @@ html{
     align-items: center;
     gap:5px;
 }
+
+
+#button-dang-ky:hover , #button-dang-nhap:hover{
+    cursor: pointer;
+    background-color: #e63600;
+}
