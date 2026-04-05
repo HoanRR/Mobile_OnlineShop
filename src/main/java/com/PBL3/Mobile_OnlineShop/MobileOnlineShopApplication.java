@@ -1,0 +1,13 @@
+package com.example.Mobile_OnlineShop;
+
+import org.springframework.boot.SpringApplication;
+import org.springframework.boot.autoconfigure.SpringBootApplication;
+
+@SpringBootApplication
+public class MobileOnlineShopApplication {
+
+	public static void main(String[] args) {
+		SpringApplication.run(MobileOnlineShopApplication.class, args);
+	}
+
+}

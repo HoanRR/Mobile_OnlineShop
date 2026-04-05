@@ -6,3 +6,16 @@ build/
 .vscode/
 .DS_Store
 Thumbs.db
+target/
+!.mvn/wrapper/maven-wrapper.jar
+!**/src/main/**/target/
+!**/src/test/**/target/
+
+# Các file biên dịch của Java
+*.class
+
+# Cấu hình riêng của môi trường IntelliJ IDEA
+.idea/
+*.iws
+*.iml
+*.ipr
