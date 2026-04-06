@@ -1,3 +1,4 @@
+/* --- PHẦN CHUNG --- */
 * {
     margin: 0;
     padding: 0;
@@ -5,6 +6,11 @@
     font-family: Arial, sans-serif;
 }
 
+html {
+    background-color: #F5F5F7;
+}
+
+/* --- HEADER (Giữ nguyên phong cách của bạn) --- */
 .thanh-nav {
     display: flex;
     justify-content: space-between;
@@ -19,24 +25,155 @@
     font-weight: bold;
 }
 
+.tim-kiem input {
+    width: 300px;
+    height: 40px;
+    border: 1px solid white;
+    padding-left: 20px;
+    border-radius: 20px;
+    outline: none;
+}
+
+.nut-bam-header {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.nut-bam-header button, .btn-header {
+    background-color: transparent;
+    border: none;
+    color: white;
+    text-decoration: none;
+    text-align: center;
+    cursor: pointer;
+}
+
+.nut-bam-header img {
+    width: 25px;
+    height: 25px;
+    display: block;
+    margin: 0 auto 5px;
+}
+
+/* --- KHU VỰC ĐĂNG NHẬP & ĐĂNG KÝ (Sửa lại cho chuẩn) --- */
 .noi-dung {
     padding: 30px;
     max-width: 1200px;
     margin: 0 auto;
 }
 
-.tieu-de-phan {
-    text-align: center;
-    margin-bottom: 30px;
+/* Đây là khung trắng bao quanh form */
+.login-container, #khu-vuc-dang-nhap {
+    max-width: 500px; /* Bóp nhỏ lại cho cân đối */
+    background-color: white;
+    border-radius: 20px;
+    margin: 5vh auto;
+    padding: 40px;
+    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
 }
 
+.login-container h2 {
+    font-size: 32px;
+    color : #FF3D00;
+    text-align: center;
+    padding-bottom: 10px;
+}
+
+.login-container h3 {
+    text-align:center ;
+    font-size: 15px;
+    padding-bottom: 10px;
+}
+
+.login-container p {
+    text-align: center;
+    font-size: 13px;
+    margin-bottom: 20px;
+}
+
+/* Định dạng các ô Input và Nút bấm */
+.login-form input[type="text"], 
+.login-form input[type="password"],
+.btn-login {
+    width: 100%;
+    border: 2px solid rgba(217, 99, 25, 0.3) ;
+    border-radius: 30px;
+    padding: 12px 20px;
+    margin-bottom: 15px;
+    outline: none;
+}
+
+.btn-login {
+    background-color: #FF3D00 ;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    border: none;
+    margin-top: 10px;
+}
+
+/* Phần chọn vai trò */
+.role-selection {
+    margin-bottom: 20px;
+    padding: 10px;
+    background: #fff9f6;
+    border-radius: 10px;
+}
+
+.radio-group {
+    display: flex;
+    justify-content: space-around;
+    margin-top: 10px;
+}
+
+/* --- PHẦN ĐĂNG NHẬP GOOGLE/FB (Mới thêm) --- */
+.divider {
+    text-align: center;
+    margin: 20px 0;
+    border-top: 1px solid #eee;
+    position: relative;
+}
+
+.divider span {
+    position: absolute;
+    top: -10px;
+    background: white;
+    padding: 0 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    font-size: 12px;
+    color: #888;
+}
+
+.social-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.btn-google, .btn-facebook {
+    flex: 1;
+    border: none;
+    border-radius: 25px;
+    padding: 10px;
+    color: white;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-google { background-color: #df4b3b; }
+.btn-facebook { background-color: #3b5998; }
+
+/* --- TRANG CHỦ & SẢN PHẨM (Giữ nguyên của bạn) --- */
 .danh-sach-san-pham {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 10px;
-    /* Khoảng cách giữa các sản phẩm */
+    gap: 15px;
 }
-
 
 .the-san-pham {
     border: 1px solid #ddd;
@@ -44,128 +181,10 @@
     padding: 10px;
     text-align: center;
     transition: 0.3s;
-    /* Them mau sau 0.3s => giup muot hon */
-
+    background: white;
 }
 
 .the-san-pham:hover {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
     transform: translateY(-5px);
-}
-
-.the-san-pham img {
-    width: 100%;
-    height: auto;
-}
-
-.gia-tien {
-    color: #e50000;
-    font-weight: bold;
-    font-size: 18px;
-    margin: 10px 0;
-}
-
-.nut-mua,
-.nut-them-vao-gio {
-    background-color: #28a745;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    /* Nút mua trải dài hết chiều ngang */
-}
-
-.tim-kiem input {
-    width: 300px;
-    height: 40px;
-    border: 1px solid white;
-    padding-left: 20px;
-    border-radius: 20px;
-}
-
-
-.nut-bam-header {
-    border: None;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 20px;
-}
-
-.thanh-nav button {
-    background-color: #e50000;
-    cursor: pointer;
-    border: none;
-}
-
-
-
-.nhom-nut-mua {
-    display: flex;
-    gap: 10px;
-}
-
-#khu-vuc-trang-chu {
-    display: grid;
-}
-
-#khu-vuc-dang-nhap h2 {
-    font-size: 40px;
-    color : #FF3D00;
-    text-align: center;
-    padding-bottom: 7px;
-}
-#khu-vuc-dang-nhap h3{
-    text-align:center ;
-    font-size: 15px;
-    padding-bottom: 7px;
-
-}
-
-#khu-vuc-dang-nhap p{
-    text-align: center;
-    font-size: 12px;
-    padding-bottom: 10px;
-
-}
-
-#khu-vuc-dang-nhap{
-    max-width: 800px;
-    background-color: white;
-    border : 1x solid white;
-    border-radius: 20px;
-    margin: 15vh auto;
-    padding: 50px;
-
-}
-
-#khu-vuc-dang-nhap input, button{
-    max-width: 650px;
-    width: 100%;
-    border: 2px solid rgba(217, 99, 25, 0.71) ;
-    border-radius: 30px;
-    padding: 10px 20px;
-    margin-top: 5px;
-    margin-bottom: 10px;
-}
-
-#khu-vuc-dang-nhap button{
-    background-color: #FF3D00 ;
-    color: white;
-}
-
-html{
-    background-color: #F5F5F7;
-}
-
-.radio-group{
-    display: flex;
-    gap : 20px;
-    align-items: center;
-}
-.radio-group label{
-    display: flex;
-    align-items: center;
-    gap:5px;
 }

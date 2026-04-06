@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Thêm Sản Phẩm Mới - Admin</title>
+    <link rel="stylesheet" href="../../static/admin/css/admin-style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .form-container { background-color: #222; padding: 30px; border-radius: 15px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); margin-top: 20px; }
+        .form-title { color: #e50000; margin-bottom: 20px; font-size: 24px; border-bottom: 1px solid #444; padding-bottom: 10px; display: flex; justify-content: space-between; align-items: center;}
+        .form-row { display: flex; gap: 20px; margin-bottom: 20px; }
+        .form-col { flex: 1; }
+        .form-group label { display: block; color: #ccc; margin-bottom: 8px; font-weight: bold;}
+        .form-group input, .form-group select { width: 100%; padding: 12px; background-color: #333; color: white; border: 1px solid #444; border-radius: 8px; outline: none; }
+        .form-group input:focus, .form-group select:focus { border-color: #e50000; }
+        .img-upload-box { border: 2px dashed #555; border-radius: 10px; padding: 40px; text-align: center; color: #888; cursor: pointer; transition: 0.3s; height: 100%; display: flex; flex-direction: column; justify-content: center; align-items: center;}
+        .img-upload-box:hover { border-color: #e50000; color: #e50000; background-color: #2a2a2a;}
+        .img-upload-box i { font-size: 40px; margin-bottom: 10px; }
+        .btn-save { background-color: #e50000; color: white; border: none; padding: 15px 30px; border-radius: 8px; font-size: 16px; font-weight: bold; cursor: pointer; margin-top: 20px; float: right; transition: 0.3s;}
+        .btn-save:hover { background-color: #cc0000; }
+        
+        /* CSS cho bảng Biến thể */
+        .variant-table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        .variant-table th { background-color: #333; color: #ccc; padding: 12px; text-align: left; font-size: 14px; border-bottom: 2px solid #e50000; }
+        .variant-table td { padding: 10px; border-bottom: 1px solid #444; }
+        .variant-table input { width: 100%; padding: 8px; background-color: #222; border: 1px solid #555; color: white; border-radius: 5px; }
+        .btn-add-variant { background-color: #333; color: white; border: 1px solid #555; padding: 8px 15px; border-radius: 5px; cursor: pointer; transition: 0.3s; }
+        .btn-add-variant:hover { background-color: #444; border-color: #e50000; color: #e50000; }
+        .btn-remove-row { color: #888; background: none; border: none; font-size: 18px; cursor: pointer; transition: 0.3s; }
+        .btn-remove-row:hover { color: #e50000; }
+        .clearfix::after { content: ""; clear: both; display: table; }
+    </style>
+</head>
+<body>
+    <div style="padding: 20px; max-width: 1000px; margin: 0 auto;">
+        <a href="products.html" style="color: #aaa; text-decoration: none;"><i class="fa-solid fa-arrow-left"></i> Quay lại danh sách</a>
+        
+        <form action="#" method="POST" enctype="multipart/form-data">
+            <div class="form-container">
+                <h2 class="form-title">Thông tin chung</h2>
+                <div class="form-row">
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label>Tên sản phẩm</label>
+                            <input type="text" placeholder="VD: iPhone 15 Pro Max" required>
+                        </div>
+                        <div class="form-group" style="margin-top: 20px;">
+                            <label>Hãng (Brand)</label>
+                            <select required>
+                                <option value="">-- Chọn hãng --</option>
+                                <option value="apple">Apple</option>
+                                <option value="samsung">Samsung</option>
+                                <option value="xiaomi">Xiaomi</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group" style="height: 100%;">
+                            <label>Ảnh đại diện sản phẩm</label>
+                            <div class="img-upload-box" onclick="document.getElementById('file-upload').click();">
+                                <i class="fa-solid fa-cloud-arrow-up"></i>
+                                <p>Bấm vào đây để chọn ảnh</p>
+                                <input type="file" id="file-upload" accept="image/*" style="display: none;">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label>Chip xử lý</label>
+                            <input type="text" placeholder="VD: Apple A17 Pro">
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label>Dung lượng Pin</label>
+                            <input type="text" placeholder="VD: 4422 mAh">
+                        </div>
+                    </div>
+                    <div class="form-col">
+                        <div class="form-group">
+                            <label>Màn hình</label>
+                            <input type="text" placeholder="VD: 6.7 inch OLED">
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-container clearfix">
+                <div class="form-title">
+                    <span>Các phiên bản cấu hình</span>
+                    <button type="button" class="btn-add-variant" onclick="addVariantRow()"><i class="fa-solid fa-plus"></i> Thêm phiên bản</button>
+                </div>
+                
+                <table class="variant-table" id="variantTable">
+                    <thead>
+                        <tr>
+                            <th>RAM</th>
+                            <th>Bộ nhớ (ROM)</th>
+                            <th>Màu sắc</th>
+                            <th>Giá bán (VNĐ)</th>
+                            <th style="width: 50px; text-align: center;">Xóa</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><input type="text" placeholder="VD: 8GB" required></td>
+                            <td><input type="text" placeholder="VD: 256GB" required></td>
+                            <td><input type="text" placeholder="VD: Titan Đen" required></td>
+                            <td><input type="number" placeholder="VD: 29990000" required></td>
+                            <td style="text-align: center;">
+                                <button type="button" class="btn-remove-row" style="visibility: hidden;"><i class="fa-solid fa-trash"></i></button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+
+                <button type="submit" class="btn-save"><i class="fa-solid fa-floppy-disk"></i> Lưu Sản Phẩm</button>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        function addVariantRow() {
+            const tableBody = document.querySelector("#variantTable tbody");
+            const newRow = document.createElement("tr");
+            newRow.innerHTML = `
+                <td><input type="text" placeholder="VD: 8GB" required></td>
+                <td><input type="text" placeholder="VD: 512GB" required></td>
+                <td><input type="text" placeholder="VD: Titan Tự nhiên" required></td>
+                <td><input type="number" placeholder="Nhập giá bán" required></td>
+                <td style="text-align: center;">
+                    <button type="button" class="btn-remove-row" onclick="this.closest('tr').remove()"><i class="fa-solid fa-trash"></i></button>
+                </td>
+            `;
+            tableBody.appendChild(newRow);
+        }
+    </script>
+</body>
+</html>

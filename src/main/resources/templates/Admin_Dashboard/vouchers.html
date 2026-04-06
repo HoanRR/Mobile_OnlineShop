@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Mã giảm giá - HT Mobile Admin</title>
+    <link rel="stylesheet" href="../../static/admin/css/admin-style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* CSS cho nút trạng thái của mã */
+        .badge { padding: 5px 10px; border-radius: 20px; font-size: 12px; font-weight: bold; }
+        .badge-active { background-color: #4caf50; color: #fff; } /* Đang hoạt động */
+        .badge-expired { background-color: #f44336; color: #fff; } /* Đã hết hạn */
+
+        /* Bố cục form trong Modal */
+        .modal-form-row { display: flex; gap: 15px; margin-bottom: 15px; }
+        .modal-form-col { flex: 1; }
+        .modal-form-group label { display: block; color: #ccc; margin-bottom: 5px; font-size: 14px; font-weight: bold; }
+        .modal-form-group input, .modal-form-group select {
+            width: 100%; padding: 10px; background-color: #333; color: white;
+            border: 1px solid #444; border-radius: 5px; outline: none;
+        }
+        .modal-form-group input:focus, .modal-form-group select:focus { border-color: #e50000; }
+
+        /* --- CSS CHO CỬA SỔ NỔI (MODAL) CHUẨN DARK MODE --- */
+        .modal-overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-color: rgba(0,0,0,0.7); display: none; 
+            justify-content: center; align-items: center; z-index: 1000;
+        }
+        .modal-content {
+            background-color: #222; padding: 25px; border-radius: 12px;
+            width: 500px; box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            border: 1px solid #444;
+        }
+        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #444; padding-bottom: 10px; margin-bottom: 20px; }
+        .modal-header h3 { color: #e50000; margin: 0; }
+        .close-modal { color: #aaa; font-size: 24px; cursor: pointer; background: none; border: none; }
+        .close-modal:hover { color: white; }
+    </style>
+</head>
+<body>
+    <div class="admin-wrapper">
+        <nav class="admin-sidebar">
+            <div class="admin-logo">HT Mobile Admin</div>
+            <ul>
+                <li><a href="dashboard.html"><i class="fa-solid fa-chart-line"></i> Tổng quan</a></li>
+                <li><a href="products.html"><i class="fa-solid fa-mobile-screen"></i> Quản lý Sản phẩm</a></li>
+                <li><a href="orders.html"><i class="fa-solid fa-cart-shopping"></i> Quản lý Đơn hàng</a></li>
+                <li class="active"><a href="vouchers.html"><i class="fa-solid fa-ticket"></i> Mã giảm giá</a></li>
+                <li><a href="users.html"><i class="fa-solid fa-users"></i> Quản lý Người dùng</a></li>
+                <li style="margin-top: 30px;"><a href="#"><i class="fa-solid fa-right-from-bracket"></i> Đăng xuất</a></li>
+            </ul>
+        </nav>
+
+        <main class="admin-content">
+            <header class="content-header">
+                <h2>Quản lý Mã giảm giá</h2>
+                <button class="btn-add" onclick="openVoucherModal()"><i class="fa-solid fa-plus"></i> Tạo mã giảm giá</button>
+            </header>
+
+            <div class="table-container">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>Mã Code</th>
+                            <th>Mức giảm</th>
+                            <th>Đơn tối thiểu</th>
+                            <th>Số lượng</th>
+                            <th>Hạn sử dụng</th>
+                            <th>Trạng thái</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong style="color: #e50000;">GIAM200K</strong></td>
+                            <td>200.000 ₫</td>
+                            <td>Từ 5.000.000 ₫</td>
+                            <td>50/100</td>
+                            <td>30/04/2026</td>
+                            <td><span class="badge badge-active">Đang hoạt động</span></td>
+                            <td>
+                                <div class="action-btns">
+                                    <button class="btn-edit">Gia hạn</button>
+                                    <button class="btn-delete">Xóa</button>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td><strong style="color: #e50000;">FREESHIP</strong></td>
+                            <td>30.000 ₫</td>
+                            <td>Mọi đơn hàng</td>
+                            <td>0/500</td>
+                            <td>01/04/2026</td>
+                            <td><span class="badge badge-expired">Đã hết hạn</span></td>
+                            <td>
+                                <div class="action-btns">
+                                    <button class="btn-edit">Gia hạn</button>
+                                    <button class="btn-delete">Xóa</button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+
+    <div class="modal-overlay" id="voucherModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3>Thêm Mã Giảm Giá Mới</h3>
+                <button class="close-modal" onclick="closeModal()">&times;</button>
+            </div>
+            
+            <form action="#" method="POST">
+                <div class="modal-form-group" style="margin-bottom: 15px;">
+                    <label>Mã Code (Nhập in hoa không dấu)</label>
+                    <input type="text" placeholder="VD: SIEUSALE, GIAM50K..." required>
+                </div>
+
+                <div class="modal-form-row">
+                    <div class="modal-form-col">
+                        <div class="modal-form-group">
+                            <label>Loại giảm giá</label>
+                            <select required>
+                                <option value="tien">Số tiền cố định (VNĐ)</option>
+                                <option value="phantram">Phần trăm (%)</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="modal-form-col">
+                        <div class="modal-form-group">
+                            <label>Mức giảm</label>
+                            <input type="number" placeholder="VD: 50000" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-form-row">
+                    <div class="modal-form-col">
+                        <div class="modal-form-group">
+                            <label>Số lượng mã</label>
+                            <input type="number" placeholder="VD: 100" required>
+                        </div>
+                    </div>
+                    <div class="modal-form-col">
+                        <div class="modal-form-group">
+                            <label>Đơn tối thiểu (VNĐ)</label>
+                            <input type="number" placeholder="VD: 1000000" required>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="modal-form-group" style="margin-bottom: 25px;">
+                    <label>Ngày hết hạn</label>
+                    <input type="date" required>
+                </div>
+                
+                <div style="text-align: right;">
+                    <button type="button" onclick="closeModal()" style="padding: 10px 15px; background: none; color: #aaa; border: none; cursor: pointer;">Hủy bỏ</button>
+                    <button type="submit" style="padding: 10px 20px; background-color: #e50000; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">Lưu Voucher</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        function openVoucherModal() {
+            document.getElementById('voucherModal').style.display = 'flex';
+        }
+
+        function closeModal() {
+            document.getElementById('voucherModal').style.display = 'none';
+        }
+    </script>
+</body>
+</html>
