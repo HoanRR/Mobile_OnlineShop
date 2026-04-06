@@ -16,12 +16,12 @@ const danhSachDienThoai = [
         ten: "Samsung Galaxy S24 Ultra",
         gia: "31.990.000₫",
         hinh: "https://tse1.mm.bing.net/th/id/OIP.FpxLz2z3K0uTLDDu0ZNBMgHaHc?rs=1&pid=ImgDetMain&o=7&rm=3"
-    },{
+    }, {
         id: 2,
         ten: "Samsung Galaxy S24 Ultra",
         gia: "31.990.000₫",
         hinh: "https://tse1.mm.bing.net/th/id/OIP.FpxLz2z3K0uTLDDu0ZNBMgHaHc?rs=1&pid=ImgDetMain&o=7&rm=3"
-    },{
+    }, {
         id: 2,
         ten: "Samsung Galaxy S24 Ultra",
         gia: "31.990.000₫",
@@ -31,12 +31,16 @@ const danhSachDienThoai = [
 
 const khoSanPham = document.getElementById("danh-sach-sp");
 
-if (khoSanPham){
-    danhSachDienThoai.forEach(function(item){
-    const htmlCard = `
+if (khoSanPham) {
+    danhSachDienThoai.forEach(function (item) {
+        const htmlCard = `
     <div class="the-san-pham">
-    <img src="${item.hinh}" alt="${item.ten}">
-    <h3>${item.ten}</h3>
+    <a href="product-detail.html" class="product-link"> 
+        <img src="${item.hinh}" alt="${item.ten}">
+        <h3>${item.ten}</h3>
+    </a>
+
+    
     <p class="gia-tien">${item.gia}</p>
         <div class="nhom-nut-mua">
             <button class="nut-them-vao-gio">Thêm vào giỏ</button>
@@ -45,31 +49,31 @@ if (khoSanPham){
     </div>
     `
 
-    khoSanPham.insertAdjacentHTML("beforeend", htmlCard);
-});
+        khoSanPham.insertAdjacentHTML("beforeend", htmlCard);
+    });
 }
 
 
-document.addEventListener("DOMContentLoaded", function(){
+document.addEventListener("DOMContentLoaded", function () {
     const headerElement = document.getElementById("header-placeholder");
-    
-    if (headerElement){
+
+    if (headerElement) {
         fetch("header.html")
-        .then(function(response){
-                
-            if (!response.ok){
-                throw new Error("Khong tim thay Header.html");
-            }
-            return response.text();
+            .then(function (response) {
+
+                if (!response.ok) {
+                    throw new Error("Khong tim thay Header.html");
+                }
+                return response.text();
 
             })
-        .then(function(data){
-            headerElement.innerHTML = data;
-        })
-        .catch(function(error){
-            console.error("Loi khi tim header");
-            headerElement.innerHTML = "<p>Lỗi tải thanh header</p>";
-        });
-        
+            .then(function (data) {
+                headerElement.innerHTML = data;
+            })
+            .catch(function (error) {
+                console.error("Loi khi tim header");
+                headerElement.innerHTML = "<p>Lỗi tải thanh header</p>";
+            });
+
     }
 });
