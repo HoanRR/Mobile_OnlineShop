@@ -1,3 +1,6 @@
+/* ========================================
+   1. RESET & BASE STYLES
+   ======================================== */
 * {
     margin: 0;
     padding: 0;
@@ -5,6 +8,18 @@
     font-family: Arial, sans-serif;
 }
 
+html {
+    background-color: #F5F5F7;
+}
+
+a {
+    text-decoration: none;
+}
+
+
+/* ========================================
+   2. NAVIGATION BAR
+   ======================================== */
 .thanh-nav {
     display: flex;
     justify-content: space-between;
@@ -19,63 +34,6 @@
     font-weight: bold;
 }
 
-.noi-dung {
-    padding: 30px;
-    max-width: 1200px;
-    margin: 0 auto;
-}
-
-.tieu-de-phan {
-    text-align: center;
-    margin-bottom: 30px;
-}
-
-.danh-sach-san-pham {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-    gap: 10px;
-    /* Khoảng cách giữa các sản phẩm */
-}
-
-
-.the-san-pham {
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 10px;
-    text-align: center;
-    transition: 0.3s;
-    /* Them mau sau 0.3s => giup muot hon */
-
-}
-
-.the-san-pham:hover {
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    transform: translateY(-5px);
-}
-
-.the-san-pham img {
-    width: 100%;
-    height: auto;
-}
-
-.gia-tien {
-    color: #e50000;
-    font-weight: bold;
-    font-size: 18px;
-    margin: 10px 0;
-}
-
-.nut-mua,
-.nut-them-vao-gio {
-    background-color: #28a745;
-    color: white;
-    border: none;
-    padding: 10px 20px;
-    border-radius: 5px;
-    cursor: pointer;
-    /* Nút mua trải dài hết chiều ngang */
-}
-
 .tim-kiem input {
     width: 300px;
     height: 40px;
@@ -84,9 +42,8 @@
     border-radius: 20px;
 }
 
-
 .nut-bam-header {
-    border: None;
+    border: none;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -100,113 +57,50 @@
 }
 
 
+/* ========================================
+   3. LAYOUT CONTAINERS
+   ======================================== */
+.noi-dung {
+    padding: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
 
-.nhom-nut-mua {
-    display: flex;
-    gap: 10px;
+.tieu-de-phan {
+    text-align: center;
+    margin-bottom: 30px;
 }
 
 #khu-vuc-trang-chu {
     display: grid;
 }
 
-#khu-vuc-dang-nhap h2 {
-    font-size: 40px;
-    color: #FF3D00;
-    text-align: center;
-    padding-bottom: 7px;
-}
 
-#khu-vuc-dang-nhap h3 {
-    text-align: center;
-    font-size: 15px;
-    padding-bottom: 7px;
-
-}
-
-#khu-vuc-dang-nhap p {
-    text-align: center;
-    font-size: 12px;
-    padding-bottom: 10px;
-
-}
-
-#khu-vuc-dang-nhap {
-    max-width: 800px;
-    background-color: white;
-    border: 1x solid white;
-    border-radius: 20px;
-    margin: 15vh auto;
-    padding: 50px;
-
-}
-
-#khu-vuc-dang-nhap input, button {
-    max-width: 650px;
-    width: 100%;
-    border: 2px solid rgba(217, 99, 25, 0.71);
-    border-radius: 30px;
-    padding: 10px 20px;
-    margin-top: 5px;
-    margin-bottom: 10px;
-}
-
-#khu-vuc-dang-nhap button {
-    background-color: #FF3D00;
-    color: white;
-}
-
-html {
-    background-color: #F5F5F7;
-}
-
-.radio-group {
-    display: flex;
-    gap: 20px;
-    align-items: center;
-}
-
-.radio-group label {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-}
-
-
-#button-dang-ky:hover,
-#button-dang-nhap:hover {
-    cursor: pointer;
-    background-color: #e63600;
-}
-
+/* ========================================
+   4. SLIDER COMPONENT
+   ======================================== */
 .slider-wrapper {
     position: relative;
     width: 100%;
     max-width: 800px;
     margin-bottom: 20px;
     border-radius: 12px;
-}
-
-.slider-wrapper {
     overflow: hidden;
-    border-radius: 12px;
 }
 
 .slider-track {
     display: flex;
     width: 100%;
-
 }
 
 .slider-track img {
     width: 100%;
     flex-shrink: 0;
-    /*Giữ nguyên kích thước không bị bóp nhỏ khi thiếu (khi dùng flex*/
     object-fit: cover;
-    /*giu day khung*/
     display: block;
 }
 
+/* Slider Navigation Buttons */
 .btn-slider {
     position: absolute;
     top: 50%;
@@ -237,6 +131,7 @@ html {
     right: 10px;
 }
 
+/* Slider Dots */
 .slider-dots {
     position: absolute;
     bottom: 15px;
@@ -258,9 +153,10 @@ html {
     background: white;
 }
 
+/* Slide Content */
 .slide {
-    min-width: 100%; 
-    box-sizing: border-box; /*width gom ca padding va border*/
+    min-width: 100%;
+    box-sizing: border-box;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -274,7 +170,7 @@ html {
 }
 
 .slide-content {
-    flex: 1; 
+    flex: 1;
 }
 
 .slide-content .badge {
@@ -300,7 +196,7 @@ html {
 
 .slide-content .old-price {
     font-size: 16px;
-    opacity: 0.8; /* Làm mờ giá cũ */
+    opacity: 0.8;
     margin-bottom: 5px;
 }
 
@@ -309,6 +205,176 @@ html {
     color: #ffe600;
     font-weight: bold;
     margin-bottom: 25px;
+}
+
+.slide-image {
+    flex: 1;
+    text-align: right;
+}
+
+.slide-image img {
+    max-width: 300px;
+    height: auto;
+    filter: drop-shadow(0px 10px 15px rgba(0, 0, 0, 0.3));
+}
+
+
+/* ========================================
+   5. PRODUCT LISTING
+   ======================================== */
+.danh-sach-san-pham {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 10px;
+}
+
+.the-san-pham {
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 10px;
+    text-align: center;
+    transition: 0.3s;
+}
+
+.the-san-pham:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    transform: translateY(-5px);
+}
+
+.the-san-pham img {
+    width: 100%;
+    height: auto;
+}
+
+.gia-tien {
+    color: #e50000;
+    font-weight: bold;
+    font-size: 18px;
+    margin: 10px 0;
+}
+
+
+/* ========================================
+   6. PRODUCT DETAIL PAGE
+   ======================================== */
+.wrapper-product-detail {
+    display: flex;
+    margin: 100px 400px;
+    padding: 10px;
+}
+
+.image-product-detail {
+    border-radius: 50px;
+}
+
+.button-dung-luong {
+    display: flex;
+    gap: 5px;
+}
+
+.button-dung-luong button {
+    border-radius: 5px;
+    background-color: white;
+    max-width: 60px;
+    border: 1px solid white;
+    padding: 5px 0px;
+    font-size: 10px;
+}
+
+.button-dung-luong button:hover {
+    border: 5px solid #ff5e00;
+    background-color: #ac5c31ce;
+    opacity: 0.5;
+}
+
+#available {
+    color: #28a745;
+    font-size: 10px;
+}
+
+
+/* ========================================
+   7. LOGIN/REGISTER PAGE
+   ======================================== */
+#khu-vuc-dang-nhap {
+    max-width: 800px;
+    background-color: white;
+    border: 1px solid white;
+    border-radius: 20px;
+    margin: 15vh auto;
+    padding: 50px;
+}
+
+#khu-vuc-dang-nhap h2 {
+    font-size: 40px;
+    color: #FF3D00;
+    text-align: center;
+    padding-bottom: 7px;
+}
+
+#khu-vuc-dang-nhap h3 {
+    text-align: center;
+    font-size: 15px;
+    padding-bottom: 7px;
+}
+
+#khu-vuc-dang-nhap p {
+    text-align: center;
+    font-size: 12px;
+    padding-bottom: 10px;
+}
+
+#khu-vuc-dang-nhap input,
+#khu-vuc-dang-nhap button {
+    max-width: 650px;
+    width: 100%;
+    border: 2px solid rgba(217, 99, 25, 0.71);
+    border-radius: 30px;
+    padding: 10px 20px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
+
+#khu-vuc-dang-nhap button {
+    background-color: #FF3D00;
+    color: white;
+}
+
+#button-dang-ky:hover,
+#button-dang-nhap:hover {
+    cursor: pointer;
+    background-color: #e63600;
+}
+
+.radio-group {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.radio-group label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+
+/* ========================================
+   8. BUTTONS & INTERACTIVE ELEMENTS
+   ======================================== */
+.nut-mua,
+.nut-them-vao-gio {
+    background-color: #28a745;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.nhom-nut-mua {
+    display: flex;
+    gap: 10px;
 }
 
 .btn-buy {
@@ -324,51 +390,10 @@ html {
 }
 
 .btn-buy:hover {
-    transform: scale(1.05); 
+    transform: scale(1.05);
 }
 
-.slide-image {
-    flex: 1; 
-    text-align: right; 
-}
 
-.slide-image img {
-    max-width: 300px;
-    height: auto;
-    filter: drop-shadow(0px 10px 15px rgba(0,0,0,0.3)); 
-}
-
-a{
-    text-decoration: none;
-}
-
-.wrapper-product-detail{
-    display: flex;
-    margin: 100px 400px;
-    padding: 10px;
-}
-
-.image-product-detail{
-    border-radius: 50px;
-}
-
-.button-dung-luong{
-    display: flex;
-    gap:5px;
-}
-.button-dung-luong button{
-    border-radius: 5px;
-    background-color: white;
-    max-width: 60px;
-    border: 1px solid white;
-    padding : 5px 0px;
-    font-size: 10px;
-
-}
-
-.button-dung-luong button:hover{
-    border: 5px solid#ff5e00;
-    background-color:#ac5c31ce
- ;
-    opacity: 0.5;
-}
+/* ========================================
+   9. RESPONSIVE ADJUSTMENTS
+   ======================================== */
