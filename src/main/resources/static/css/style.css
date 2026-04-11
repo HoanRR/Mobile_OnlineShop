@@ -282,9 +282,8 @@ a {
 }
 
 .button-dung-luong button:hover {
-    border: 5px solid #ff5e00;
-    background-color: #ac5c31ce;
-    opacity: 0.5;
+    border: 3px solid #FF5A1F;
+    background-color: #FF8C5A;
 }
 
 #available {
@@ -292,7 +291,100 @@ a {
     font-size: 10px;
 }
 
+.inform-product-detail{
+    margin-left: 20px;
+}
 
+.inform-product-detail *{
+    margin-top: 5px;
+}
+
+.inform-product-detail #label-detail{
+    background-color:#FFF3EE ;
+    color : #FF5A1F;
+    padding: 5px;
+    font-size: 12px;
+    border-radius: 10px;
+}
+
+.inform-product-detail h2{
+    font-size: 36px;
+    font-weight: 900;
+    line-height: 1.15;
+    color: #111827;
+}
+
+.price-product-detail h2{
+    font-family: 'Barlow Condensed', sans-serif;
+    font-size: 36px;
+    font-weight: 900;
+    color:#FF5A1F;
+
+}
+.price-product-detail{
+    background: #FFF3EE;
+    border-radius: 14px;
+    padding: 16px 20px;
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap : 7px;
+}
+
+.price-product-detail #old-price{
+    text-decoration: line-through;
+}
+
+.price-product-detail #percent{
+    background: #FF5A1F;
+    color: white;
+    font-size: 12px;
+    font-weight: 800;
+    padding: 3px 10px;
+    border-radius: 50px;
+    margin-left: 10px;
+}
+
+.config-label{
+    font-weight: 700;
+    font-size: 13.5px;
+    margin: 8px 8px;
+    color: #6b7280;
+}
+
+.btn-mua-ngay {
+    background: linear-gradient(135deg, #FF5A1F, #D94200);
+    color: white;
+    border: none;
+    border-radius: 14px;
+    padding: 16px;
+    font-weight: 800;
+    font-size: 16px;
+    transition: all 0.22s ease;
+    cursor: pointer;
+}
+
+.detail-action{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.btn-them-gio-hang{
+    background: white;
+    color: #FF5A1F;
+    border: 2px solid #FF5A1F;
+    border-radius: 14px;
+    padding: 14px;
+    font-weight: 800;
+    font-size: 16px;
+    transition: all 0.22s ease;
+    cursor: pointer;
+}
+
+.btn-them-gio-hang:hover{
+    background-color: #FFF3EE;
+}
 /* ========================================
    7. LOGIN/REGISTER PAGE
    ======================================== */
