@@ -1,4 +1,4 @@
-package com.example.Mobile_OnlineShop;
+package com.PBL3.Mobile_OnlineShop;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

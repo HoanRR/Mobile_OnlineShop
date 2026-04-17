@@ -1,0 +1,70 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+html {
+    background-color: #F5F5F7;
+}
+
+a {
+    text-decoration: none;
+}
+
+.noi-dung {
+    padding: 30px;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.tieu-de-phan {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.btn-mua-ngay, 
+.nut-mua,
+#button-dang-nhap {
+    background: #D70018 !important;
+    color: white !important;
+    border: none;
+    border-radius: 8px;
+    padding: 12px 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.btn-mua-ngay:hover, 
+.nut-mua:hover {
+    background: #B50014 !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(215, 0, 24, 0.2);
+}
+
+.btn-them-gio-hang, 
+.nut-them-vao-gio,
+.btn-xem-them,
+.btn-xem-cau-hinh {
+    background: white !important;
+    color: #D70018 !important;
+    border: 1px solid #D70018 !important;
+    border-radius: 8px;
+    padding: 12px 20px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.btn-them-gio-hang:hover, 
+.nut-them-vao-gio:hover {
+    background: #FFF5F5 !important; 
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+}
