@@ -1,0 +1,62 @@
+
+#khu-vuc-dang-nhap {
+    max-width: 800px;
+    background-color: white;
+    border: 1px solid white;
+    border-radius: 20px;
+    margin: 15vh auto;
+    padding: 50px;
+}
+
+#khu-vuc-dang-nhap h2 {
+    font-size: 40px;
+    color: #FF3D00;
+    text-align: center;
+    padding-bottom: 7px;
+}
+
+#khu-vuc-dang-nhap h3 {
+    text-align: center;
+    font-size: 15px;
+    padding-bottom: 7px;
+}
+
+#khu-vuc-dang-nhap p {
+    text-align: center;
+    font-size: 12px;
+    padding-bottom: 10px;
+}
+
+#khu-vuc-dang-nhap input,
+#khu-vuc-dang-nhap button {
+    max-width: 650px;
+    width: 100%;
+    border: 2px solid rgba(217, 99, 25, 0.71);
+    border-radius: 30px;
+    padding: 10px 20px;
+    margin-top: 5px;
+    margin-bottom: 10px;
+}
+
+#khu-vuc-dang-nhap button {
+    background-color: #FF3D00;
+    color: white;
+}
+
+#button-dang-ky:hover,
+#button-dang-nhap:hover {
+    cursor: pointer;
+    background-color: #e63600;
+}
+
+.radio-group {
+    display: flex;
+    gap: 20px;
+    align-items: center;
+}
+
+.radio-group label {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}

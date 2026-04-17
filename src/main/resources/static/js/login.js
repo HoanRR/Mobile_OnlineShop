@@ -32,8 +32,8 @@ const nutDangNhap = document.getElementById("button-dang-nhap");
 nutDangNhap.addEventListener("click", xuLyDangNhap);
 
 const nutPassWord = document.getElementById("password");
-nutPassWord.addEventListener("keydown" , function(envent){
-    if (envent.key == "Enter"){
+nutPassWord.addEventListener("keypress" , function(event){
+    if (event.key == "Enter"){
         nutDangNhap.click();
     }
 })
