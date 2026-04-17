@@ -10,7 +10,9 @@ const danhSachDienThoai = [
         thongSo: {
             Chip : "A17Pro", Ram : "8GB", boNho : "256GB", manHinh : "Super Retina XDR", camera : "48MP + 12MP + 12MP",
             pin : "4.422 mAh", sac : "27W", heDieuHanh : "iOS 17", NamG : true
-        }
+        },
+        moTa: "Xiaomi Redmi Note 15 5G là sản phẩm điện thoại thuộc phân khúc tầm trung của Xiaomi, tập trung vào cấu hình cân bằng và công nghệ hiển thị hiện đại. Thiết bị sở hữu màn hình AMOLED 6.77 inch độ phân giải Full HD+ với tần số quét 120Hz, mang lại độ mượt cao. Bên trong là vi xử lý Snapdragon 6 Gen 3, RAM 6GB và bộ nhớ trong 128GB đáp ứng tốt nhu cầu đa nhiệm. Cụm camera chính 108MP kết hợp pin dung lượng khoảng 5520mAh hỗ trợ sạc nhanh 45W, tối ưu cho sử dụng dài ngày."
+        
     },
     {
         id: 2,
@@ -21,7 +23,8 @@ const danhSachDienThoai = [
         thongSo: {
             Chip : "A17Pro", Ram : "8GB", boNho : "256GB", manHinh : "Super Retina XDR", camera : "48MP + 12MP + 12MP",
             pin : "4.422 mAh", sac : "27W", heDieuHanh : "iOS 17", NamG : true
-        }
+        },
+        moTa: "Xiaomi Redmi Note 15 5G là sản phẩm điện thoại thuộc phân khúc tầm trung của Xiaomi, tập trung vào cấu hình cân bằng và công nghệ hiển thị hiện đại. Thiết bị sở hữu màn hình AMOLED 6.77 inch độ phân giải Full HD+ với tần số quét 120Hz, mang lại độ mượt cao. Bên trong là vi xử lý Snapdragon 6 Gen 3, RAM 6GB và bộ nhớ trong 128GB đáp ứng tốt nhu cầu đa nhiệm. Cụm camera chính 108MP kết hợp pin dung lượng khoảng 5520mAh hỗ trợ sạc nhanh 45W, tối ưu cho sử dụng dài ngày."
     }
 ];
 
@@ -37,12 +40,13 @@ if (khoSanPham) {
         <h3>${item.ten}</h3>
     </a>
 
-    
-    <p class="gia-tien">${item.giaHienTai}</p>
+    <div class="gia-tien">
+    <p class="gia-hien-tai">${item.giaHienTai}</p><p class="gia-cu">${item.giaCu}</p>
+    </div>
         <div class="nhom-nut-mua">
             <button class="nut-them-vao-gio">Thêm vào giỏ</button>
             <button class="nut-mua">Mua hàng</button>
-            </div>
+            </zdiv>
     </div>
     `
 
@@ -108,7 +112,51 @@ document.addEventListener("DOMContentLoaded", function () {
             `
             thongSo.innerHTML = htmlCard;
         }
+
+        let danhGiaChiTiet = document.querySelector(".noi-dung-mo-ta");
+        if (danhGiaChiTiet && sanPham){
+            const htmlCard = `
+                <p>${sanPham.moTa}</p>
+            `
+            danhGiaChiTiet.innerHTML = htmlCard;
+        }
     }
 });
 
 
+// ========================= Dang nhap ===============================//
+
+const danhSachUser = [
+    { username: "admin", password: "admin" },
+    { username: "khachhang1", password: "123" }
+];
+
+function xuLyDangKy(){
+
+}
+
+function xuLyDangNhap(){
+    const user = document.getElementById("username");
+    const password = document.getElementById("password");
+    if (!user || !password){
+        alert("Vui lòng nhập đầy đủ đủ thông tin");
+        return;
+    }
+
+    
+
+    const userHopLe = danhSachUser.find(u => u.username == user && u.password == password);
+    
+    if (userHopLe){
+        alert("Đăng nhập thành công!");
+        localStorage.setItem("currentUser", JSON.stringify(userHopLe));
+        window.location.href = "index.html";
+    }   else {
+        alert("Sai tên đăng nhập hoặc mật khẩu!");
+    }
+}
+
+const nutDangNhap = document.getElementById("button-dang-nhap");
+if (nutDangNhap){
+    nutDangNhap.addEventListener("click", xuLyDangNhap);
+}
