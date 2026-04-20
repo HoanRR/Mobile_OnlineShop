@@ -16,6 +16,8 @@ import com.PBL3.Mobile_OnlineShop.enums.Role;
 @AllArgsConstructor
 public class User {
 
+    public static final String Role = null;
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long userId;
@@ -29,6 +31,10 @@ public class User {
     @Email(message = "Email không đúng định dạng")
     @Column(length = 255, nullable = false, unique = true)
     private String email;
+
+    @NotBlank(message = "Tên không được để trống")
+    @Column(length = 100, nullable = false)
+    private String fullName;
 
     @NotBlank(message = "Số điện thoại không được để trống")
     @Pattern(regexp = "^(0|\\+84)[0-9]{9}$", message = "Số điện thoại không hợp lệ")

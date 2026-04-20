@@ -9,5 +9,4 @@ public class SignInController {
     public String getSignInpage() {
         return "login.html";
     }
-
 }
