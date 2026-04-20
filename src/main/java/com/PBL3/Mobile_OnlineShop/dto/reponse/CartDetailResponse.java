@@ -1,4 +1,4 @@
-package com.PBL3.Mobile_OnlineShop.dto.response;
+package com.PBL3.Mobile_OnlineShop.dto.reponse;
 
 import lombok.Data;
 

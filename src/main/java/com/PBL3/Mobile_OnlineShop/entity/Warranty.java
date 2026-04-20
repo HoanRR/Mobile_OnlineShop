@@ -14,7 +14,7 @@ public class Warranty {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long warrantyId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "device_id")
     private Device device;
 

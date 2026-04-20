@@ -9,8 +9,10 @@ import java.util.List;
 import jakarta.validation.constraints.Pattern;
 
 @Entity
-@Table(name = "`order`") // Tránh conflict với keyword ORDER trong SQL
-@Data
+@Table(name = "'order'")    // Tránh conflict với keyword ORDER trong SQL
+@Getter
+@Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Order {
@@ -18,7 +20,7 @@ public class Order {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long orderId;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
 

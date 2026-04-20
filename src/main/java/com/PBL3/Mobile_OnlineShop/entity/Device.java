@@ -20,7 +20,7 @@ public class Device {
     @Column(length = 50, nullable = false, unique = true)
     private String imei;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "product_variant_id")
     private ProductVariant productVariant;
 
