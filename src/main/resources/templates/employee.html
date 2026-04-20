@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Trang nhân viên</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: Arial;
+            display: flex;
+            background: #f4f4f4;
+        }
+
+        .sidebar {
+            width: 220px;
+            background: #2c3e50;
+            color: white;
+            height: 100vh;
+            padding: 20px;
+        }
+
+        .sidebar h2 {
+            text-align: center;
+        }
+
+        .sidebar ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .sidebar li {
+            padding: 10px;
+            margin: 10px 0;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .sidebar li:hover {
+            background: #34495e;
+        }
+
+        .main {
+            flex: 1;
+            padding: 20px;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            background: white;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        table {
+            width: 100%;
+            background: white;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 10px;
+            border-bottom: 1px solid #ddd;
+            text-align: left;
+        }
+
+        .btn {
+            padding: 6px 10px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .btn-success {
+            background: #28a745;
+            color: white;
+        }
+
+        .btn-warning {
+            background: #ffc107;
+        }
+
+        .btn-danger {
+            background: #dc3545;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="sidebar">
+        <h2>EMPLOYEE</h2>
+        <ul>
+            <li>Dashboard</li>
+            <li>Đơn hàng</li>
+            <li>Khách hàng</li>
+            <li>Báo cáo</li>
+        </ul>
+    </div>
+
+    <div class="main">
+        <div class="header">
+            <h1>Quản lý đơn hàng</h1>
+            <div>Xin chào, Nhân viên</div>
+        </div>
+
+        <div class="card">
+            <h3>Thống kê nhanh</h3>
+            <p>Đơn chờ xử lý: 15</p>
+            <p>Đơn đang giao: 8</p>
+        </div>
+
+        <h2>Danh sách đơn hàng</h2>
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>Khách hàng</th>
+                <th>Sản phẩm</th>
+                <th>Trạng thái</th>
+                <th>Hành động</th>
+            </tr>
+
+            <tr>
+                <td>1</td>
+                <td>Nguyễn Văn A</td>
+                <td>iPhone 15</td>
+                <td>Chờ xử lý</td>
+                <td>
+                    <button class="btn btn-success">Duyệt</button>
+                    <button class="btn btn-warning">Đang giao</button>
+                    <button class="btn btn-danger">Hủy</button>
+                </td>
+            </tr>
+
+            <tr>
+                <td>2</td>
+                <td>Trần Thị B</td>
+                <td>Samsung S24</td>
+                <td>Đang giao</td>
+                <td>
+                    <button class="btn btn-success">Hoàn thành</button>
+                </td>
+            </tr>
+
+        </table>
+    </div>
+
+</body>
+
+</html>
