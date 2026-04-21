@@ -19,5 +19,6 @@ target/
 *.iws
 *.iml
 *.ipr
-
+.postman/
+postman/
 src/main/resources/application.properties
