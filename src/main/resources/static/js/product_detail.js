@@ -70,4 +70,29 @@ const danhSachDienThoai = [
             `
             danhGiaChiTiet.innerHTML = htmlCard;
         }
+
+        const nutThemVaoGio = document.querySelector('.btn-them-gio-hang');
+        if (nutThemVaoGio && sanPham) {
+            nutThemVaoGio.addEventListener('click', function() {
+                let gioHang = JSON.parse(localStorage.getItem('cart')) || [];
+                
+                const sanPhamDaCo = gioHang.find(item => item.id === sanPham.id);
+
+                if (sanPhamDaCo) {
+                    sanPhamDaCo.quantity += 1;
+                } else {
+                    gioHang.push({
+                        id: sanPham.id,
+                        ten: sanPham.ten,
+                        giaHienTai: sanPham.giaHienTai,
+                        anh: sanPham.anh,
+                        quantity: 1
+                    });
+                }
+
+                localStorage.setItem('cart', JSON.stringify(gioHang));
+                alert(`Đã thêm ${sanPham.ten} vào giỏ hàng!`);
+            });
+        }
     }
+

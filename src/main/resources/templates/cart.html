@@ -14,10 +14,17 @@
     <main class="noi-dung">
         <div class="cart-container">
             <h2 class="tieu-de-phan">Giỏ hàng của bạn</h2>
-            
+
             <div class="cart-wrapper">
-                <div class="cart-items" id="cart-items-list">
+                <div class="cart-left-section">
+                    <div class="cart-header">
+                        <input type="checkbox" id="select-all" onchange="toggleSelectAll()">
+                        <label for="select-all">Chọn tất cả</label>
                     </div>
+
+                    <div class="cart-items" id="cart-items-list">
+                    </div>
+                </div>
 
                 <div class="cart-summary">
                     <h3>Tóm tắt đơn hàng</h3>

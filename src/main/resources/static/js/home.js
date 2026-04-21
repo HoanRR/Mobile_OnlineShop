@@ -43,7 +43,7 @@ if (khoSanPham) {
     <p class="gia-hien-tai">${item.giaHienTai}</p><p class="gia-cu">${item.giaCu}</p>
     </div>
         <div class="nhom-nut-mua">
-            <button class="nut-them-vao-gio">Thêm vào giỏ</button>
+            <button class="nut-them-vao-gio" onclick="themVaoGioHang(${item.id})">Thêm vào giỏ</button>
             <button class="nut-mua">Mua hàng</button>
             </div>
     </div>
@@ -57,3 +57,34 @@ else{
 }
 
 
+
+function themVaoGioHang(idSanPham) {
+    let gioHang = JSON.parse(localStorage.getItem('cart')) || [];
+
+    const sanPham = danhSachDienThoai.find(sp => sp.id === idSanPham);
+    
+    if (!sanPham) {
+        alert("Có lỗi xảy ra, không tìm thấy sản phẩm!");
+        return;
+    }
+
+    const sanPhamDaCo = gioHang.find(item => item.id === idSanPham);
+
+    if (sanPhamDaCo) {
+        sanPhamDaCo.quantity += 1;
+    } else {
+        gioHang.push({
+            id: sanPham.id,
+            ten: sanPham.ten,
+            giaHienTai: sanPham.giaHienTai,
+            anh: sanPham.anh,
+            quantity: 1
+        });
+    }
+    
+
+    localStorage.setItem('cart', JSON.stringify(gioHang));
+
+    alert(`Đã thêm ${sanPham.ten} vào giỏ hàng!`);
+
+}
