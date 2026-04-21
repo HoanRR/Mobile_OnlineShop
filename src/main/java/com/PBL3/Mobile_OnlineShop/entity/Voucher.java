@@ -10,7 +10,9 @@ import java.util.List;
 
 @Entity
 @Table(name = "voucher")
-@Data
+@Getter
+@Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Voucher {

@@ -7,7 +7,9 @@ import java.util.List;
 
 @Entity
 @Table(name = "product")
-@Data
+@Getter
+@Setter
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Product {
