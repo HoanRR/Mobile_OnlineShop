@@ -5,52 +5,45 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cửa hàng Điện thoại HT</title>
-    <link rel="stylesheet" href="/css/style.css">
+    <link rel="stylesheet" href="../static/css/base.css">
+    <link rel="stylesheet" href="../static/css/header.css">
+    <link rel="stylesheet" href="../static/css/home.css">
+
+
 </head>
 
 <body>
 
-    <header class="thanh-nav">
-    <div class="logo">HT Mobile</div>
+    
+    <div id="header-placeholder"></div>
 
-    <div class="tim-kiem">
-        <input type="text" placeholder="Bạn cần tìm điện thoại gì?">
-    </div>
-    
-    <div class="nut-bam-header">
-        <div class="tra-cuu-don-hang">
-            <button>
-                <img src="../static/img/clipboard.png" alt="Tra cứu">
-                <h3>Tra cứu đơn hàng</h3>
-            </button>
-        </div>
-        <div class="Dang-nhap">
-            <a href="login.html" class="btn-header">
-                <img src="../static/img/user-interface.png" alt="Đăng nhập">
-                <h3>Đăng nhập</h3>
-            </a>
-        </div>
-        <div class="gio-hang">
-            <button>
-                <img src="../static/img/gio_hang.png" alt="Giỏ hàng">
-                <h3>Giỏ hàng</h3>
-            </button>
-        </div>
-    </div>
-</header>
-    
     <main id="khu-vuc-trang-chu" class="noi-dung">
 
         <div class="slider-wrapper">
             <div class="slider-container">
-                <img src="https://cdn.nguyenkimmall.com/images/product/829/dien-thoai-iphone-14-pro-max-128gb-bac-1.jpg" alt="Iphone 14 Pro Max 128GB">
-                <img src="https://cdn.nguyenkimmall.com/images/detailed/786/10051320-dien-thoai-samsung-s22-8gb-128gb-xanh-la-5.jpg" alt="Samsung S22 8GB/128GB">
-                <img src="https://tse1.mm.bing.net/th/id/OIP.59f-AWaB2Ps3AGRjuZIDuQHaHa?rs=1&pid=ImgDetMain&o=7&rm=3" alt="Iphone 11 64GB">
-
+                <div class="slider-track">
+                    <div class="slide slide-orange">
+                        <div class="slide-content">
+                            <span class="badge">MỚI VỀ HÔM NÀY</span>
+                            <h2>Xiaomi 14<br>Ultra</h2>
+                            <p class="specs">Leica · Snapdragon 8 Gen 3 · 5000mAh</p>
+                            <p class="old-price">Giá cũ: <del>25.990.000đ</del></p>
+                            <p class="new-price">22.990.000đ</p>
+                            <a href="#" class="btn-buy">Mua ngay →</a>
+                        </div>
+                    </div>
+                    <div class="slide-image">
+                        <img src="https://tse3.mm.bing.net/th/id/OIP.v2gZ9YqRjr841Ch31Q18GAHaHa?rs=1&pid=ImgDetMain&o=7&rm=3"
+                        alt="Iphone 14 Pro Max 128GB">
+                        <img src="https://tse3.mm.bing.net/th/id/OIP.v2gZ9YqRjr841Ch31Q18GAHaHa?rs=1&pid=ImgDetMain&o=7&rm=3"
+                        alt="Samsung S22 8GB/128GB">
+                        <img src="https://tse3.mm.bing.net/th/id/OIP.v2gZ9YqRjr841Ch31Q18GAHaHa?rs=1&pid=ImgDetMain&o=7&rm=3" alt="Iphone 11 64GB">
+                    </div>
+                </div>
             </div>
 
-            <button class="btn-silder" id="btn-prv">❮</button>
-            <button class="btn-silder" id="btn-prv">❯</button>
+            <button class="btn-slider btn-prev" id="btn-prv">❮</button>
+            <button class="btn-slider btn-next" id="btn-next">❯</button>
 
             <div class="slider-dots" id="slider-dots">
                 <span class="dot active"></span>
@@ -67,8 +60,8 @@
         </div>
     </main>
 
-    
-    <script src="script.js"></script>
+    <script src="../static/js/common.js"></script>
+    <script src="../static/js/home.js"></script>
 </body>
 
 </html>
