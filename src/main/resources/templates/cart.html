@@ -1,11 +1,42 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Giỏ hàng - Cửa hàng HT</title>
+    <link rel="stylesheet" href="../static/css/base.css">
+    <link rel="stylesheet" href="../static/css/header.css">
+    <link rel="stylesheet" href="../static/css/cart.css">
 </head>
 <body>
-    
+    <div id="header-placeholder"></div>
+
+    <main class="noi-dung">
+        <div class="cart-container">
+            <h2 class="tieu-de-phan">Giỏ hàng của bạn</h2>
+            
+            <div class="cart-wrapper">
+                <div class="cart-items" id="cart-items-list">
+                    </div>
+
+                <div class="cart-summary">
+                    <h3>Tóm tắt đơn hàng</h3>
+                    <div class="summary-line">
+                        <span>Tạm tính:</span>
+                        <span id="temp-total">0đ</span>
+                    </div>
+                    <div class="summary-line total-line">
+                        <span>Tổng tiền:</span>
+                        <span id="final-total">0đ</span>
+                    </div>
+                    <button class="btn-mua-ngay" id="btn-checkout">Tiến hành thanh toán</button>
+                    <a href="index.html" class="btn-continue">Tiếp tục mua sắm</a>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../static/js/common.js"></script>
+    <script src="../static/js/cart.js"></script>
 </body>
 </html>
