@@ -1,11 +1,11 @@
 package com.PBL3.Mobile_OnlineShop.controller;
 
 import com.PBL3.Mobile_OnlineShop.Service.AuthService;
-import com.PBL3.Mobile_OnlineShop.dto.reponse.IntrospectResponse;
-import com.PBL3.Mobile_OnlineShop.dto.reponse.LoginResponse;
-import com.PBL3.Mobile_OnlineShop.dto.reponse.MessageResponse;
-import com.PBL3.Mobile_OnlineShop.dto.reponse.RefreshTokenResponse;
-import com.PBL3.Mobile_OnlineShop.dto.reponse.RegisterReponse;
+import com.PBL3.Mobile_OnlineShop.dto.response.IntrospectResponse;
+import com.PBL3.Mobile_OnlineShop.dto.response.LoginResponse;
+import com.PBL3.Mobile_OnlineShop.dto.response.MessageResponse;
+import com.PBL3.Mobile_OnlineShop.dto.response.RefreshTokenResponse;
+import com.PBL3.Mobile_OnlineShop.dto.response.RegisterReponse;
 import com.PBL3.Mobile_OnlineShop.dto.request.IntrospectRequest;
 import com.PBL3.Mobile_OnlineShop.dto.request.LoginRequest;
 import com.PBL3.Mobile_OnlineShop.dto.request.LogoutRequest;
