@@ -16,6 +16,8 @@ public class LoginResponse {
 
     UserInfo user;
 
+    String refreshToken;
+
     @Data
     @Builder
     @AllArgsConstructor

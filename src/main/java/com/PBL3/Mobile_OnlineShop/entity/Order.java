@@ -9,7 +9,7 @@ import java.util.List;
 import jakarta.validation.constraints.Pattern;
 
 @Entity
-@Table(name = "'order'")    // Tránh conflict với keyword ORDER trong SQL
+@Table(name = "order")    // Tránh conflict với keyword ORDER trong SQL
 @Getter
 @Setter
 @Builder

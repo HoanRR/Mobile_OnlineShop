@@ -14,6 +14,7 @@ import lombok.experimental.NonFinal;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
+import java.text.ChoiceFormat;
 import java.text.ParseException;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -39,7 +40,7 @@ public class JwtTokenProvider {
                     .issuer("phoneshop.vn")
                     .issueTime(new Date())
                     .expirationTime(Date.from(
-                            Instant.now().plus(ACCESS_TOKEN_EXPIRY_HOURS, ChronoUnit.HOURS)))
+                            Instant.now().plus(ACCESS_TOKEN_EXPIRY_HOURS, ChronoUnit.MINUTES)))
                     .jwtID(UUID.randomUUID().toString())
                     .claim("scope", user.getRoles().name())
                     .claim("userId", user.getUserId())
@@ -69,9 +70,8 @@ public class JwtTokenProvider {
         var verified = signedJWT.verify(verifier);
         if (!verified)
             throw new AppException(ErrorCode.UNAUTHENTICATED);
-
-        // Kiểm tra hết hạn - bỏ qua nếu là refresh
         Date expiryTime = signedJWT.getJWTClaimsSet().getExpirationTime();
+        // Kiểm tra hết hạn - bỏ qua nếu là refresh
         if (!isRefresh && expiryTime.before(new Date()))
             throw new AppException(ErrorCode.UNAUTHENTICATED);
 

@@ -11,7 +11,7 @@ import com.PBL3.Mobile_OnlineShop.enums.Role;
 import lombok.experimental.FieldDefaults;
 
 @Entity
-@Table(name = "'user'")
+@Table(name = "user")
 @Getter
 @Setter
 @Builder

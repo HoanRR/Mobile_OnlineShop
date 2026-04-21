@@ -34,7 +34,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) {
+    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) throws ParseException, JOSEException {
         LoginResponse response = authService.login(request);
         return ResponseEntity.ok(response);
     }
