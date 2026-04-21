@@ -1,0 +1,12 @@
+$kind: http-request
+name: api/auth/logout
+url: http://localhost:8080/api/auth/logout
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \    \"token\" : \"eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJIb2FuZGF5MTIzIiwic2NvcGUiOiJDVVNUT01FUiIsImlzcyI6InBob25lc2hvcC52biIsImV4cCI6MTc3NjcxMTkyOSwiaWF0IjoxNzc2NzA4MzI5LCJ1c2VySWQiOjEsImp0aSI6IjVkNTAxNTBhLTJmZjYtNDA1Yi04ZTE5LWJkOTE2NjkzNzE1ZCJ9.QK0dhmBTxb_b9NzAI-ULKtXkshgozzRapvCkZNOEQExijW07xMIpACSewT1v5Md20AcNfu2bFWmB9gS66Fr6qg\"\r
+
+    }"
+order: 1776708723941
