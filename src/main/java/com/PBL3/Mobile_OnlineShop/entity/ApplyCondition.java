@@ -14,7 +14,7 @@ public class ApplyCondition {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long applyConditionId;
 
-    @ManyToOne
+    @OneToOne // đổi thành one-one
     @JoinColumn(name = "voucher_id")
     private Voucher voucher;
 

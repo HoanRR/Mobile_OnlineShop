@@ -22,7 +22,7 @@ public class OrderDetail {
     private ProductVariant productVariant;
 
     @ManyToOne
-    @JoinColumn(name = "device_id")
+    @JoinColumn(name = "device_id") // many to one ở đây là để đơn tránh điện thoại trả về ko bán được
     private Device device;
 
     private Double priceAtPurchase;

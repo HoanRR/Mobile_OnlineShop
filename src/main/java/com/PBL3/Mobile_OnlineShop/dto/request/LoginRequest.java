@@ -1,7 +1,5 @@
 package com.PBL3.Mobile_OnlineShop.dto.request;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import lombok.Data;
 
 @Data

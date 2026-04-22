@@ -6,7 +6,6 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @Table(name = "voucher")
@@ -31,9 +30,19 @@ public class Voucher {
 
     private LocalDateTime endDate;
 
+    @Column(name = "max_discount_amount", nullable = false)
+    private Double maxDiscountAmount;// thêm trường này để khỏi nổ két cửa hàng
+
     @Min(value = 0, message = "Giới hạn sử dụng không được âm")
     private Long usageLimit;
 
-    @OneToMany(mappedBy = "voucher")
-    private List<ApplyCondition> applyConditions;
+    @OneToOne(mappedBy = "voucher", cascade = CascadeType.ALL)
+    private ApplyCondition applyCondition;
+
+    public boolean isAvailable() { // Hàm hỗ trợ kiểm tra logic
+        LocalDateTime now = LocalDateTime.now();
+        return (startDate == null || now.isAfter(startDate)) &&
+                (endDate == null || now.isBefore(endDate)) &&
+                (usageLimit == null || usageLimit > 0);
+    }
 }

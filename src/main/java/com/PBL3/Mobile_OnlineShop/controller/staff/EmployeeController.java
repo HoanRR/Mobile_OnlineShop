@@ -1,4 +1,4 @@
-package com.PBL3.Mobile_OnlineShop.controller;
+package com.PBL3.Mobile_OnlineShop.controller.staff;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
