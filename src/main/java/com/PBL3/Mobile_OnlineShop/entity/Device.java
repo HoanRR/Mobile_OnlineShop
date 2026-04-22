@@ -8,6 +8,7 @@ import jakarta.validation.constraints.Pattern;
 @Entity
 @Table(name = "device")
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Device {

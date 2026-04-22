@@ -1,8 +1,6 @@
 package com.PBL3.Mobile_OnlineShop.Config;
 
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.NonFinal;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
@@ -40,13 +38,15 @@ public class SecurityConfig {
     }
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http)  {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
                 .authorizeHttpRequests(auth -> auth
+                        // Cho phép truy cập tài nguyên tĩnh (HTML, CSS, JS, IMG)
+                        .requestMatchers("/", "/*.html", "/css/**", "/js/**", "/img/**").permitAll()
                         // Cho phép truy cập các endpoint công khai (POST)
                         .requestMatchers(HttpMethod.POST, PUBLIC_POST_ENDPOINTS).permitAll()
                         // Cho phép GET các sản phẩm công khai (nếu cần)

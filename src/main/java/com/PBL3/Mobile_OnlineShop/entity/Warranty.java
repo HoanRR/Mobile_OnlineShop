@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "warranty")
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class Warranty {

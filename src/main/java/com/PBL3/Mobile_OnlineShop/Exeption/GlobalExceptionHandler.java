@@ -1,6 +1,6 @@
 package com.PBL3.Mobile_OnlineShop.Exeption;
 
-import com.PBL3.Mobile_OnlineShop.dto.reponse.ErrorResponse;
+import com.PBL3.Mobile_OnlineShop.dto.response.ErrorResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
