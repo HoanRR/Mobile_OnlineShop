@@ -1,8 +1,6 @@
 package com.PBL3.Mobile_OnlineShop.Config;
 
 import lombok.RequiredArgsConstructor;
-import lombok.experimental.NonFinal;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;

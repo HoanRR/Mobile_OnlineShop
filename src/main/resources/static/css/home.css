@@ -2,6 +2,14 @@
     display: grid;
 }
 
+
+/* Style cho banner*/
+
+.slide {
+    color: white;
+    background: linear-gradient(135deg, #2b2b36 0%, #15151b 100%);
+}
+
 .slider-wrapper {
     position: relative;
     width: 100%;
@@ -115,18 +123,7 @@
     margin-bottom: 20px;
 }
 
-.slide-content .old-price {
-    font-size: 16px;
-    opacity: 0.8;
-    margin-bottom: 5px;
-}
 
-.slide-content .new-price {
-    font-size: 35px;
-    color: #ffe600;
-    font-weight: bold;
-    margin-bottom: 25px;
-}
 
 .slide-image {
     flex: 1;
@@ -139,6 +136,21 @@
     filter: drop-shadow(0px 10px 15px rgba(0, 0, 0, 0.3));
 }
 
+
+.btn-buy {
+    display: inline-block;
+    padding: 10px 25px;
+    background: white;
+    color: #333;
+    border-radius: 30px;
+    font-weight: bold;
+}
+
+.btn-buy:hover {
+    transform: scale(1.05);
+}
+
+/* Cho hien thi san pham */
 .danh-sach-san-pham {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));

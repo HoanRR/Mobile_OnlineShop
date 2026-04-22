@@ -28,6 +28,54 @@ const danhSachDienThoai = [
 ];
 
 
+document.addEventListener("DOMContentLoaded", function() {
+    const track = document.querySelector('.slider-track');
+    if(!track) return; 
+
+    const slides = Array.from(track.children);
+    const nextButton = document.getElementById('btn-next');
+    const prevButton = document.getElementById('btn-prv');
+    const dotsNav = document.querySelector('.slider-dots');
+    const dots = Array.from(dotsNav.children);
+
+    let currentIndex = 0;
+    const slideIntervalTime = 5000; // thoi gian chuyen 5000 mili giay
+    let slideTimer;
+
+    function moveToSlide(index) {
+        if (index < 0) index = slides.length - 1;
+        if (index >= slides.length) index = 0;
+
+        track.style.transform = 'translateX(-' + index * 100 + '%)';
+        
+        dots.forEach(d => d.classList.remove('active'));
+        dots[index].classList.add('active');
+        
+        currentIndex = index;
+    }
+
+    if(nextButton) nextButton.addEventListener('click', () => { moveToSlide(currentIndex + 1); resetTimer(); });
+    if(prevButton) prevButton.addEventListener('click', () => { moveToSlide(currentIndex - 1); resetTimer(); });
+
+    dots.forEach((dot, index) => {
+        dot.addEventListener('click', () => {
+            moveToSlide(index);
+            resetTimer();
+        });
+    });
+
+    function startTimer() {
+        slideTimer = setInterval(() => moveToSlide(currentIndex + 1), slideIntervalTime);
+    }
+
+    function resetTimer() {
+        clearInterval(slideTimer);
+        startTimer();
+    }
+
+    startTimer();
+});
+
 const khoSanPham = document.getElementById("danh-sach-sp");
 
 if (khoSanPham) {
@@ -82,9 +130,11 @@ function themVaoGioHang(idSanPham) {
         });
     }
     
+        alert(`Thông tin ảnh sản phẩm ${JSON.stringify(gioHang)}`);
 
     localStorage.setItem('cart', JSON.stringify(gioHang));
 
     alert(`Đã thêm ${sanPham.ten} vào giỏ hàng!`);
+    alert(`Thông tin ảnh sản phẩm ${sanPham.anh}`);
 
 }
