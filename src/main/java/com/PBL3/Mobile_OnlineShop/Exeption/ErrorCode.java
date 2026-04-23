@@ -23,7 +23,8 @@ public enum ErrorCode {
     FORBIDDEN("FORBIDDEN", "Bạn không có quyền truy cập", HttpStatus.FORBIDDEN),
     VALIDATION_ERROR("VALIDATION_ERROR", "Dữ liệu không hợp lệ", HttpStatus.BAD_REQUEST),
     INTERNAL_ERROR("INTERNAL_ERROR", "Lỗi hệ thống", HttpStatus.INTERNAL_SERVER_ERROR),
-    UNAUTHENTICATED("UNAUTHENTICATED_ERROR", "Lỗi chưa xác thực", HttpStatus.FORBIDDEN);
+    UNAUTHENTICATED("UNAUTHENTICATED_ERROR", "Lỗi chưa xác thực", HttpStatus.FORBIDDEN),
+    INVALID_DATA("INVALID_DATA", "Dữ liệu không hợp lệ", HttpStatus.UNPROCESSABLE_ENTITY);
 
     private final String code;
     private final String message;

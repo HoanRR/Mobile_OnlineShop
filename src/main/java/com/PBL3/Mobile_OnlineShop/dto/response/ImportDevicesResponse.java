@@ -16,18 +16,6 @@ import java.util.List;
 public class ImportDevicesResponse {
     int imported; // Số lượng thiết bị import vào
 
-    List<devicesInfo> devices;
-
-    @Data
-    @Builder
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @FieldDefaults(level = AccessLevel.PRIVATE)
-    public static class devicesInfo{
-            @JsonProperty("devices_id")
-            Long devices_id;
-            String imei;
-            String status;
-    }
+    List<DevicesResponse> devices;
 }
 

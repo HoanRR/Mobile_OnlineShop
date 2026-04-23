@@ -21,17 +21,5 @@ public class GetDevicesResponse {
     String productName;
     String color;
 
-    warratyInfo warratyInfo;
-    @Data
-    @Builder
-    @AllArgsConstructor
-    @NoArgsConstructor
-    @FieldDefaults(level = AccessLevel.PRIVATE)
-    public static class warratyInfo{
-        @JsonProperty("warrantyId")
-        Long warrantyId;
-        LocalDateTime  startDate;
-        LocalDateTime  endDate;
-        int warrantyMonth;
-    }
+    WarrantyResponse warratyInfo;
 }

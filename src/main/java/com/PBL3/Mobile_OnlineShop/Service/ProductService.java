@@ -6,10 +6,16 @@ import com.PBL3.Mobile_OnlineShop.Repository.DeviceRepository;
 import com.PBL3.Mobile_OnlineShop.Repository.ProductRepository;
 import com.PBL3.Mobile_OnlineShop.Repository.ProductVariantRepository;
 import com.PBL3.Mobile_OnlineShop.Repository.WarrantyRepository;
+import com.PBL3.Mobile_OnlineShop.dto.request.AddProductRequest;
 import com.PBL3.Mobile_OnlineShop.dto.request.ImportDevicesRequest;
+import com.PBL3.Mobile_OnlineShop.dto.request.VariantRequest;
 import com.PBL3.Mobile_OnlineShop.dto.response.GetDevicesResponse;
 import com.PBL3.Mobile_OnlineShop.dto.response.ImportDevicesResponse;
+import com.PBL3.Mobile_OnlineShop.dto.response.DevicesResponse;
+import com.PBL3.Mobile_OnlineShop.dto.response.WarrantyResponse;
+import com.PBL3.Mobile_OnlineShop.mapper.ProductVariantMapper;
 import com.PBL3.Mobile_OnlineShop.entity.Device;
+import com.PBL3.Mobile_OnlineShop.entity.Product;
 import com.PBL3.Mobile_OnlineShop.entity.ProductVariant;
 import com.PBL3.Mobile_OnlineShop.entity.Warranty;
 import lombok.AccessLevel;
@@ -30,6 +36,7 @@ public class ProductService {
     DeviceRepository deviceRepository;
     ProductVariantRepository productVariantRepository;
     WarrantyRepository warrantyRepository;
+    ProductVariantMapper productVariantMapper;
 
     public ImportDevicesResponse importDevices(ImportDevicesRequest request){
 
@@ -44,7 +51,7 @@ public class ProductService {
             throw new AppException(ErrorCode.PRODUCT_NOT_FOUND, "Không tìm thấy mẫu sản phẩm (Product Variant) với ID: " + request.getProduct_variant_id());
         }
 
-        List<ImportDevicesResponse.devicesInfo> listDeviceInfo = new ArrayList<>();
+        List<DevicesResponse> listDeviceInfo = new ArrayList<>();
         for (String imei : request.getImei_list()) {
             Device device = Device.builder()
                     .imei(imei)
@@ -53,7 +60,7 @@ public class ProductService {
                     .build();
 
             Device savedDevice = deviceRepository.save(device);
-            ImportDevicesResponse.devicesInfo info = ImportDevicesResponse.devicesInfo.builder()
+            DevicesResponse info = DevicesResponse.builder()
                     .devices_id(savedDevice.getDeviceId())
                     .imei(savedDevice.getImei())
                     .status(savedDevice.getStatus())
@@ -82,7 +89,7 @@ public class ProductService {
                 .productVariantId(device.getProductVariant().getProductVariantId())
                 .productName(device.getProductVariant().getProduct().getProductName())
                 .color(device.getProductVariant().getColor())
-                .warratyInfo(GetDevicesResponse.warratyInfo.builder()
+                .warratyInfo(WarrantyResponse.builder()
                         .warrantyId(warranty.getWarrantyId())
                         .startDate(warranty.getStartDate())
                         .endDate(warranty.getEndDate())
@@ -90,4 +97,36 @@ public class ProductService {
                         .build())
                 .build();
     }
+
+    public void AddProduct(AddProductRequest request){
+        if (request == null || request.getProduct_name() == null || request.getProduct_name().trim().isEmpty()
+                || request.getVariants() == null || request.getVariants().isEmpty()) {
+            throw new AppException(ErrorCode.INVALID_DATA, "Tên sản phẩm và danh sách phiên bản không được để trống");
+        }
+
+        if (productRepository.existsByProductName(request.getProduct_name())){
+            Product product = productRepository.findByProductName(request.getProduct_name())
+                    .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND, "Không tìm thấy sản phẩm với tên:" + request.getProduct_name()));
+            
+            for (VariantRequest variantRequest : request.getVariants()){
+                ProductVariant productVariant = productVariantMapper.toProductVariant(variantRequest);
+                productVariant.setProduct(product);
+                productVariantRepository.save(productVariant);
+            }
+        }
+        else{
+            Product product = Product.builder()
+                    .productName(request.getProduct_name())
+                    .brand(request.getBrand())
+                    .productImageLink(request.getProduct_image_link())
+                    .build();
+            productRepository.save(product);
+            for (VariantRequest variantRequest : request.getVariants()){
+                ProductVariant productVariant = productVariantMapper.toProductVariant(variantRequest);
+                productVariant.setProduct(product);
+                productVariantRepository.save(productVariant);
+            }
+        }
+    }
+
 }
