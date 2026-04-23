@@ -16,6 +16,8 @@ public interface UserService {
 
     LoginResponse login(LoginRequest request);
 
+    public void logout(String token);
+
     RefreshTokenResponse refreshAccessToken(RefreshTokenRequest request);
 
     PaginatedResponse<UserResponse> getUsers(String roleStr, String search, String sortBy, int page, int limit);
@@ -23,5 +25,7 @@ public interface UserService {
     UserDetailResponse getUserDetail(Long userId);
 
     String createStaff(StaffCreateRequest request);
+
     void updateUser(Long userId, UserUpdateRequest request);
+
 }

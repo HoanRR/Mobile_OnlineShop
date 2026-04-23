@@ -1,6 +1,7 @@
 package com.PBL3.Mobile_OnlineShop.service.impl;
 
 import com.PBL3.Mobile_OnlineShop.dto.request.VoucherCreateRequest;
+import com.PBL3.Mobile_OnlineShop.dto.request.VoucherExtendRequest;
 import com.PBL3.Mobile_OnlineShop.dto.response.VoucherResponse;
 import com.PBL3.Mobile_OnlineShop.entity.ApplyCondition;
 import com.PBL3.Mobile_OnlineShop.entity.ProductVariant;
@@ -12,8 +13,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+
+// Import 2 anh bạn này vào
+import com.PBL3.Mobile_OnlineShop.exception.AppException;
+import com.PBL3.Mobile_OnlineShop.exception.ErrorCode;
 
 @Service
 @RequiredArgsConstructor
@@ -23,51 +29,41 @@ public class VoucherServiceImpl implements VoucherService {
     private final ProductVariantRepository productVariantRepository;
 
     @Override
-    @Transactional // Bắt buộc phải có để Rollback nếu lỗi giữa chừng
+    @Transactional
     public VoucherResponse createVoucher(VoucherCreateRequest request) {
 
-        // 1. Kiểm tra trùng mã (Yêu cầu báo lỗi 409 trong thiết kế)
+        // CMT: Đổi sang lỗi VOUCHER_EXISTS mà bạn vừa khai báo trong ErrorCode
         if (voucherRepository.existsByVoucherCode(request.getVoucherCode())) {
-            throw new IllegalStateException("Mã voucher đã tồn tại");
+            throw new AppException(ErrorCode.VOUCHER_EXISTS);
         }
 
-        // 2. Đổ dữ liệu vào Entity Voucher
+        // ... (Phần đổ dữ liệu giữ nguyên)
         Voucher voucher = new Voucher();
-        voucher.setVoucherCode(request.getVoucherCode().toUpperCase()); // Luôn viết hoa mã
+        voucher.setVoucherCode(request.getVoucherCode().toUpperCase());
         voucher.setDiscountPercentage(request.getDiscountPercentage());
         voucher.setMaxDiscountAmount(request.getMaxDiscountAmount());
         voucher.setStartDate(request.getStartDate());
         voucher.setEndDate(request.getEndDate());
         voucher.setUsageLimit(request.getUsageLimit());
+        voucher.setUsedCount(0L);
 
-        // 3. Xử lý logic ApplyCondition (Nếu Frontend có gửi lên)
         if (request.getApplyCondition() != null) {
             ApplyCondition condition = new ApplyCondition();
             condition.setMinValue(request.getApplyCondition().getMinValue());
-
-            // KẾT NỐI 2 CHIỀU (Bi-directional): Cực kỳ quan trọng để Cascade hoạt động
             condition.setVoucher(voucher);
 
-            // Nếu có chỉ định áp dụng cho Sản phẩm cụ thể
             List<Long> variantIds = request.getApplyCondition().getProductVariantIds();
             if (variantIds != null && !variantIds.isEmpty()) {
-                // Nhờ JPA lôi 1 phát tất cả các sản phẩm có ID trong mảng này lên
                 List<ProductVariant> variants = productVariantRepository.findAllById(variantIds);
                 condition.setProductVariants(variants);
             } else {
-                // Nếu rỗng -> Áp dụng cho tất cả
                 condition.setProductVariants(new ArrayList<>());
             }
-
-            // Gắn Điều kiện vào Voucher
             voucher.setApplyCondition(condition);
         }
 
-        // 4. Lưu xuống Database (Phép màu Cascade: Tự động lưu cả ApplyCondition và
-        // Bảng trung gian)
         Voucher savedVoucher = voucherRepository.save(voucher);
 
-        // 5. Trả về kết quả
         return VoucherResponse.builder()
                 .voucherId(savedVoucher.getVoucherId())
                 .voucherCode(savedVoucher.getVoucherCode())
@@ -77,5 +73,36 @@ public class VoucherServiceImpl implements VoucherService {
                 .endDate(savedVoucher.getEndDate())
                 .usageLimit(savedVoucher.getUsageLimit())
                 .build();
+    }
+
+    @Transactional
+    @Override
+    public void extendVoucher(Long voucherId, VoucherExtendRequest request) {
+
+        // CMT: Dùng ErrorCode mới tạo
+        Voucher voucher = voucherRepository.findById(voucherId)
+                .orElseThrow(() -> new AppException(ErrorCode.VOUCHER_NOT_FOUND));
+
+        LocalDateTime newEndDate = request.getEndDate();
+
+        if (voucher.getStartDate() != null && newEndDate.isBefore(voucher.getStartDate())) {
+            // CMT: Bắn lỗi custom message
+            throw new AppException(ErrorCode.VALIDATION_ERROR, "Ngày kết thúc không hợp lệ");
+        }
+
+        if (voucher.getEndDate() != null && newEndDate.isBefore(voucher.getEndDate())) {
+            // CMT: Bắn lỗi custom message
+            throw new AppException(ErrorCode.VALIDATION_ERROR, "Chỉ được gia hạn, không được rút ngắn");
+        }
+
+        voucher.setEndDate(newEndDate);
+
+        if (request.getUsageLimit() != null) {
+            if (request.getUsageLimit() < voucher.getUsedCount()) {
+                // CMT: Bắn lỗi custom message
+                throw new AppException(ErrorCode.VALIDATION_ERROR, "Usage limit không được nhỏ hơn số đã sử dụng");
+            }
+            voucher.setUsageLimit(request.getUsageLimit());
+        }
     }
 }

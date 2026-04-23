@@ -30,6 +30,9 @@ public class Voucher {
 
     private LocalDateTime endDate;
 
+    @Column(nullable = false)
+    private Long usedCount;// 22/4 thêm thuộc tính này để kiểm tra số lượt đã dùng
+
     @Column(name = "max_discount_amount", nullable = false)
     private Double maxDiscountAmount;// thêm trường này để khỏi nổ két cửa hàng
 
@@ -39,10 +42,34 @@ public class Voucher {
     @OneToOne(mappedBy = "voucher", cascade = CascadeType.ALL)
     private ApplyCondition applyCondition;
 
-    public boolean isAvailable() { // Hàm hỗ trợ kiểm tra logic
+    /*
+     * public boolean isAvailable() { // Hàm hỗ trợ kiểm tra logic
+     * LocalDateTime now = LocalDateTime.now();
+     * return (startDate == null || now.isAfter(startDate)) &&
+     * (endDate == null || now.isBefore(endDate)) &&
+     * (usageLimit == null || usageLimit > 0)&&
+     * (usedCount == null || usedCount < usageLimit);
+     * }
+     */
+    public boolean isAvailable() {
         LocalDateTime now = LocalDateTime.now();
-        return (startDate == null || now.isAfter(startDate)) &&
-                (endDate == null || now.isBefore(endDate)) &&
-                (usageLimit == null || usageLimit > 0);
+
+        if (startDate != null && now.isBefore(startDate))
+            return false;
+        if (endDate != null && now.isAfter(endDate))
+            return false;
+
+        if (usageLimit != null && usedCount >= usageLimit)
+            return false;
+
+        return true;
     }
+
+    @PrePersist
+    public void prePersist() {
+        if (usedCount == null) {
+            usedCount = 0L;
+        }
+    }
+
 }
