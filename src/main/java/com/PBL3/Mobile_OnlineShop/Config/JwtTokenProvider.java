@@ -40,7 +40,7 @@ public class JwtTokenProvider {
                     .issuer("phoneshop.vn")
                     .issueTime(new Date())
                     .expirationTime(Date.from(
-                            Instant.now().plus(ACCESS_TOKEN_EXPIRY_HOURS, ChronoUnit.MINUTES)))
+                            Instant.now().plus(ACCESS_TOKEN_EXPIRY_HOURS, ChronoUnit.HOURS)))
                     .jwtID(UUID.randomUUID().toString())
                     .claim("scope", user.getRoles().name())
                     .claim("userId", user.getUserId())
