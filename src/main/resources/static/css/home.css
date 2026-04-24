@@ -1,0 +1,217 @@
+#khu-vuc-trang-chu {
+    display: grid;
+}
+
+
+/* Style cho banner*/
+
+.slide {
+    color: white;
+    background: linear-gradient(135deg, #2b2b36 0%, #15151b 100%);
+}
+
+.slider-wrapper {
+    position: relative;
+    width: 100%;
+    max-width: 800px;
+    margin-bottom: 20px;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.slider-track {
+    display: flex;
+    width: 100%;
+}
+
+
+.slider-track img {
+    width: 100%;
+    flex-shrink: 0;
+    object-fit: cover;
+    display: block;
+}
+
+.btn-slider {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.3);
+    color: white;
+    border: none;
+    padding: 15px 20px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.btn-slider:hover {
+    background: rgba(0, 0, 0, 0.8);
+}
+
+.btn-prev {
+    left: 10px;
+}
+
+.btn-next {
+    right: 10px;
+}
+
+.slider-dots {
+    position: absolute;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 10px;
+}
+
+.dot {
+    width: 12px;
+    height: 12px;
+    background: rgba(255, 255, 255, 0.5);
+    border-radius: 50%;
+    cursor: pointer;
+}
+
+.dot.active {
+    background: white;
+}
+
+.slide {
+    min-width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 40px 60px;
+    border-radius: 15px;
+}
+
+.slide-orange {
+    background: linear-gradient(to right, #ff5e00, #ff9900);
+    color: white;
+}
+
+.slide-content {
+    flex: 1;
+}
+
+.slide-content .badge {
+    background: #ffe600;
+    color: #cc4400;
+    padding: 5px 15px;
+    border-radius: 20px;
+    font-size: 14px;
+    font-weight: bold;
+}
+
+.slide-content h2 {
+    font-size: 45px;
+    margin: 15px 0;
+    line-height: 1.1;
+    font-weight: 900;
+}
+
+.slide-content .specs {
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
+
+
+.slide-image {
+    flex: 1;
+    text-align: right;
+}
+
+.slide-image img {
+    max-width: 300px;
+    height: auto;
+    filter: drop-shadow(0px 10px 15px rgba(0, 0, 0, 0.3));
+}
+
+
+.btn-buy {
+    display: inline-block;
+    padding: 10px 25px;
+    background: white;
+    color: #333;
+    border-radius: 30px;
+    font-weight: bold;
+}
+
+.btn-buy:hover {
+    transform: scale(1.05);
+}
+
+/* Cho hien thi san pham */
+.danh-sach-san-pham {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 20px;
+    padding: 30px 50px;
+    max-width: 1250px;
+    margin: 0 auto;
+}
+
+.the-san-pham {
+    background-color: white;
+    border-radius: 12px;
+    padding: 15px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    border: 1px solid #eee;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+}
+
+.the-san-pham:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
+    border-color: #d70018;
+}
+
+.the-san-pham img {
+    width: 100%;
+    height: 180px;
+    object-fit: contain;
+    margin-bottom: 15px;
+}
+
+.the-san-pham h3 {
+    font-size: 17px;
+    font-weight: 700;
+    color: #333;
+    margin-bottom: 5px;
+    text-align: center;
+    height: 40px;
+    overflow: hidden;
+}
+
+.gia-tien {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #e50000;
+    font-weight: bold;
+    font-size: 18px;
+    margin: 5px 0;
+}
+
+.gia-cu {
+    color: #999;
+    text-decoration: line-through;
+    font-size: 13px;
+    margin-left: 8px;
+}
+
+.nhom-nut-mua {
+    display: flex;
+    gap: 5px;
+}
