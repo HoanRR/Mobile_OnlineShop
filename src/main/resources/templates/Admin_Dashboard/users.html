@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Người dùng - HT Mobile Admin</title>
-    <link rel="stylesheet" href="/admin/css/admin-style.css">
+    <link rel="stylesheet" href="../../static/admin/css/admin-style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         /* CSS cho phần Lọc và Bảng */
@@ -59,23 +59,10 @@
 </head>
 <body>
     <div class="admin-wrapper">
-        <nav class="admin-sidebar">
-            <div class="admin-logo">HT Mobile Admin</div>
-            <ul>
-                <li><a href="dashboard.html"><i class="fa-solid fa-chart-line"></i> Tổng quan</a></li>
-                <li><a href="products.html"><i class="fa-solid fa-mobile-screen"></i> Quản lý Sản phẩm</a></li>
-                <li><a href="orders.html"><i class="fa-solid fa-cart-shopping"></i> Quản lý Đơn hàng</a></li>
-                <li><a href="vouchers.html"><i class="fa-solid fa-ticket"></i> Mã giảm giá</a></li>
-                <li class="active"><a href="users.html"><i class="fa-solid fa-users"></i> Quản lý Người dùng</a></li>
-                <li style="margin-top: 30px;"><a href="#"><i class="fa-solid fa-right-from-bracket"></i> Đăng xuất</a></li>
-            </ul>
-        </nav>
+        <div id="sidebar-container"></div>
 
         <main class="admin-content">
-            <header class="content-header">
-                <h2>Quản lý Người dùng</h2>
-                <button class="btn-add" onclick="openStaffModal()"><i class="fa-solid fa-user-plus"></i> Thêm Nhân Viên</button>
-            </header>
+            <div id="header-container"></div>
 
             <div class="filter-bar">
                 <input type="text" placeholder="Tìm tên, email, SĐT..." style="width: 250px;">
@@ -187,6 +174,17 @@
             document.getElementById('staffModal').style.display = 'none';
         }
     </script>
-    <script src="/admin/js/admin-script.js"></script>
+    <script src="../../static/admin/js/admin-script.js"></script>
+    <script>
+        // Load Sidebar
+        fetch('sidebar.html')
+            .then(response => response.text())
+            .then(data => document.getElementById('sidebar-container').innerHTML = data);
+        
+        // Load Header
+        fetch('header.html')
+            .then(response => response.text())
+            .then(data => document.getElementById('header-container').innerHTML = data);
+    </script>
 </body>
 </html>

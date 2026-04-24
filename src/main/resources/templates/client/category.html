@@ -1,0 +1,203 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Danh má»¥c sáº£n pháº©m - HT Mobile</title>
+    <link rel="stylesheet" href="../../static/css/style.css">
+    <link rel="stylesheet" href="../../static/css/client-style.css">
+</head>
+<body>
+
+    <header class="thanh-nav">
+        <div class="logo">HT Mobile</div>
+        <div class="tim-kiem">
+            <input type="text" placeholder="Báº¡n cáº§n tÃ¬m Ä‘iá»‡n thoáº¡i gÃ¬?">
+        </div>
+        <div class="nut-bam-header">
+            <div class="tra-cuu-don-hang">
+                <button>
+                    <img src="../../static/img/clipboard.png" alt="Tra cá»©u">
+                    <h3>Tra cá»©u Ä‘Æ¡n hÃ ng</h3>
+                </button>
+            </div>
+            <div class="Dang-nhap">
+                <a href="../login.html" class="btn-header">
+                    <img src="../../static/img/user-interface.png" alt="ÄÄƒng nháº­p">
+                    <h3>ÄÄƒng nháº­p</h3>
+                </a>
+            </div>
+            <div class="gio-hang">
+                <button onclick="window.location.href='cart.html'">
+                    <img src="../../static/img/gio_hang.png" alt="Giá» hÃ ng">
+                    <h3>Giá» hÃ ng</h3>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main class="container category-layout">
+        <!-- Sidebar Filter -->
+        <aside class="filter-sidebar">
+            <div class="filter-group">
+                <h3>ThÆ°Æ¡ng hiá»‡u</h3>
+                <label class="filter-item"><input type="checkbox"> Apple (iPhone)</label>
+                <label class="filter-item"><input type="checkbox" checked> Samsung</label>
+            </div>
+            
+            <div class="filter-group">
+                <h3>Má»©c giÃ¡</h3>
+                <label class="filter-item"><input type="radio" name="price"> DÆ°á»›i 10 triá»‡u</label>
+                <label class="filter-item"><input type="radio" name="price"> Tá»« 10 - 20 triá»‡u</label>
+                <label class="filter-item"><input type="radio" name="price" checked> TrÃªn 20 triá»‡u</label>
+            </div>
+
+            <div class="filter-group">
+                <h3>Dung lÆ°á»£ng</h3>
+                <label class="filter-item"><input type="checkbox"> 128GB</label>
+                <label class="filter-item"><input type="checkbox" checked> 256GB</label>
+                <label class="filter-item"><input type="checkbox"> 512GB</label>
+            </div>
+            
+            <button class="btn-filter" onclick="alert('Äang lá»c dá»¯ liá»‡u...')">Lá»c sáº£n pháº©m</button>
+        </aside>
+
+        <!-- Product Grid -->
+        <section class="product-grid">
+            <div class="product-item">
+                <span class="discount-badge">-15%</span>
+                <img src="../../static/img/products/iphone-16-pro-max.webp" alt="iPhone 16 Pro Max" class="product-img" onerror="this.src='https://via.placeholder.com/200'">
+                <h3 class="product-name">iPhone 16 Pro Max 256GB</h3>
+                <div class="price-box">
+                    <span class="old-price">34.990.000Ä‘</span>
+                    <span class="new-price">29.990.000Ä‘</span>
+                </div>
+                <button class="btn-add" onclick="window.location.href='product-detail.html'">ThÃªm vÃ o giá»</button>
+            </div>
+
+            <div class="product-item">
+                <span class="discount-badge">-10%</span>
+                <img src="../../static/img/products/iphone-17-pro-max_3.webp" alt="iPhone 17 Pro Max" class="product-img" onerror="this.src='https://via.placeholder.com/200'">
+                <h3 class="product-name">iPhone 17 Pro Max</h3>
+                <div class="price-box">
+                    <span class="old-price">33.990.000Ä‘</span>
+                    <span class="new-price">30.490.000Ä‘</span>
+                </div>
+                <button class="btn-add" onclick="window.location.href='product-detail.html'">ThÃªm vÃ o giá»</button>
+            </div>
+
+            <div class="product-item">
+                <span class="discount-badge">-12%</span>
+                <img src="../../static/img/products/iphone-15-plus-256gb_3.webp" alt="iPhone 15 Plus" class="product-img" onerror="this.src='https://via.placeholder.com/200'">
+                <h3 class="product-name">iPhone 15 Plus 128GB</h3>
+                <div class="price-box">
+                    <span class="old-price">25.990.000Ä‘</span>
+                    <span class="new-price">22.990.000Ä‘</span>
+                </div>
+                <button class="btn-add" onclick="window.location.href='product-detail.html'">ThÃªm vÃ o giá»</button>
+            </div>
+
+            <div class="product-item">
+                <span class="discount-badge">-10%</span>
+                <img src="../../static/img/products/iphone-16-1.webp" alt="iPhone 16" class="product-img" onerror="this.src='https://via.placeholder.com/200'">
+                <h3 class="product-name">iPhone 16 128GB</h3>
+                <div class="price-box">
+                    <span class="old-price">25.990.000Ä‘</span>
+                    <span class="new-price">22.990.000Ä‘</span>
+                </div>
+                <button class="btn-add" onclick="window.location.href='product-detail.html'">ThÃªm vÃ o giá»</button>
+            </div>
+
+            <div class="product-item">
+                <span class="discount-badge">-20%</span>
+                <img src="../../static/img/products/iphone-13_2_2.webp" alt="iPhone 13" class="product-img" onerror="this.src='https://via.placeholder.com/200'">
+                <h3 class="product-name">iPhone 13 128GB</h3>
+                <div class="price-box">
+                    <span class="old-price">15.990.000Ä‘</span>
+                    <span class="new-price">13.490.000Ä‘</span>
+                </div>
+                <button class="btn-add" onclick="window.location.href='product-detail.html'">ThÃªm vÃ o giá»</button>
+            </div>
+
+            <div class="product-item">
+                <span class="discount-badge">-18%</span>
+                <img src="../../static/img/products/iphone-11-128gb.webp" alt="iPhone 11" class="product-img" onerror="this.src='https://via.placeholder.com/200'">
+                <h3 class="product-name">iPhone 11 128GB</h3>
+                <div class="price-box">
+                    <span class="old-price">11.990.000Ä‘</span>
+                    <span class="new-price">9.990.000Ä‘</span>
+                </div>
+                <button class="btn-add" onclick="window.location.href='product-detail.html'">ThÃªm vÃ o giá»</button>
+            </div>
+
+            <div class="product-item">
+                <span class="discount-badge">-15%</span>
+                <img src="../../static/img/products/iphone_air-3_2.webp" alt="iPhone Air" class="product-img" onerror="this.src='https://via.placeholder.com/200'">
+                <h3 class="product-name">iPhone Air</h3>
+                <div class="price-box">
+                    <span class="old-price">19.990.000Ä‘</span>
+                    <span class="new-price">17.990.000Ä‘</span>
+                </div>
+                <button class="btn-add" onclick="window.location.href='product-detail.html'">ThÃªm vÃ o giá»</button>
+            </div>
+
+            <!-- Faked/Additional Products -->
+            <div class="product-item">
+                <span class="discount-badge">-5%</span>
+                <img src="../../static/img/products/iphone-17-pro-256-gb.webp" alt="iPhone 17 Pro" class="product-img" onerror="this.src='https://via.placeholder.com/200'">
+                <h3 class="product-name">iPhone 17 Pro 256GB</h3>
+                <div class="price-box">
+                    <span class="old-price">32.990.000Ä‘</span>
+                    <span class="new-price">30.990.000Ä‘</span>
+                </div>
+                <button class="btn-add" onclick="window.location.href='product-detail.html'">ThÃªm vÃ o giá»</button>
+            </div>
+
+            <div class="product-item">
+                <span class="discount-badge">-8%</span>
+                <img src="../../static/img/products/iphone_17_256gb-3_2.jpg" alt="iPhone 17" class="product-img" onerror="this.src='https://via.placeholder.com/200'">
+                <h3 class="product-name">iPhone 17 256GB</h3>
+                <div class="price-box">
+                    <span class="old-price">29.990.000Ä‘</span>
+                    <span class="new-price">27.490.000Ä‘</span>
+                </div>
+                <button class="btn-add" onclick="window.location.href='product-detail.html'">ThÃªm vÃ o giá»</button>
+            </div>
+
+            <div class="product-item">
+                <span class="discount-badge">-12%</span>
+                <img src="../../static/img/products/iphone-14-pro_2__5.webp" alt="iPhone 14 Pro" class="product-img" onerror="this.src='https://via.placeholder.com/200'">
+                <h3 class="product-name">iPhone 14 Pro Max 256GB</h3>
+                <div class="price-box">
+                    <span class="old-price">27.990.000Ä‘</span>
+                    <span class="new-price">24.590.000Ä‘</span>
+                </div>
+                <button class="btn-add" onclick="window.location.href='product-detail.html'">ThÃªm vÃ o giá»</button>
+            </div>
+
+            <div class="product-item">
+                <span class="discount-badge">-15%</span>
+                <img src="../../static/img/products/iphone-15-plus-256gb_3.webp" alt="iPhone 15 Plus" class="product-img" onerror="this.src='https://via.placeholder.com/200'">
+                <h3 class="product-name">iPhone 15 128GB</h3>
+                <div class="price-box">
+                    <span class="old-price">21.990.000Ä‘</span>
+                    <span class="new-price">18.690.000Ä‘</span>
+                </div>
+                <button class="btn-add" onclick="window.location.href='product-detail.html'">ThÃªm vÃ o giá»</button>
+            </div>
+            
+            <div class="product-item">
+                <span class="discount-badge">-20%</span>
+                <img src="../../static/img/products/iphone-11.webp" alt="iPhone 11 64GB" class="product-img" onerror="this.src='https://via.placeholder.com/200'">
+                <h3 class="product-name">iPhone 11 64GB</h3>
+                <div class="price-box">
+                    <span class="old-price">10.990.000Ä‘</span>
+                    <span class="new-price">8.790.000Ä‘</span>
+                </div>
+                <button class="btn-add" onclick="window.location.href='product-detail.html'">ThÃªm vÃ o giá»</button>
+            </div>
+        </section>
+    </main>
+
+</body>
+</html>
