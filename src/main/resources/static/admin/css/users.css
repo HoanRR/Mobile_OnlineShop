@@ -1,0 +1,12 @@
+/* Users page specific styles */
+
+/* User status badge styles */
+.status-active { 
+    background: #4caf50; 
+    color: white; 
+}
+
+.status-banned { 
+    background: #f44336; 
+    color: white; 
+}

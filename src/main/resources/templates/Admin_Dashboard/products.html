@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <title>Sản phẩm - HT Mobile Admin</title>
-    <link rel="stylesheet" href="../../static/admin/css/admin-style.css">
+    <link rel="stylesheet" href="../../static/admin/css/admin-base.css">
+    <link rel="stylesheet" href="../../static/admin/css/products.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -47,17 +48,7 @@
             </div>
         </main>
     </div>
-    <script src="../../static/admin/js/admin-script.js"></script>
-    <script>
-        // Load Sidebar
-        fetch('sidebar.html')
-            .then(response => response.text())
-            .then(data => document.getElementById('sidebar-container').innerHTML = data);
-        
-        // Load Header
-        fetch('header.html')
-            .then(response => response.text())
-            .then(data => document.getElementById('header-container').innerHTML = data);
-    </script>
+    <script src="../../static/admin/js/admin-base.js"></script>
+    <script src="../../static/admin/js/products.js"></script>
 </body>
 </html>
