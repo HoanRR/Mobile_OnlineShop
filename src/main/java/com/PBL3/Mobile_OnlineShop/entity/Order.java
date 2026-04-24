@@ -6,10 +6,13 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import java.time.LocalDateTime;
 import java.util.List;
+
+import com.PBL3.Mobile_OnlineShop.enums.OrderStatus;
+
 import jakarta.validation.constraints.Pattern;
 
 @Entity
-@Table(name = "order")    // Tránh conflict với keyword ORDER trong SQL
+@Table(name = "orders") // Tránh conflict với keyword ORDER trong SQL
 @Getter
 @Setter
 @Builder
@@ -24,8 +27,9 @@ public class Order {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @Column(length = 20)
-    private String orderStatus;
+    @Column(length = 20, name = "order_status")
+    @Enumerated(EnumType.STRING)
+    private OrderStatus orderStatus;
 
     private LocalDateTime orderDate;
 

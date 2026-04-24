@@ -8,7 +8,14 @@ import org.springframework.http.HttpStatus;
 @AllArgsConstructor
 public enum ErrorCode {
 
-
+    // Thêm vào trong enum ErrorCode hiện tại của bạn
+    WARRANTY_NOT_ACTIVATED("WARRANTY_NOT_ACTIVATED", "Thiết bị chưa được kích hoạt bảo hành", HttpStatus.BAD_REQUEST), // 400
+    WARRANTY_EXPIRED("WARRANTY_EXPIRED", "Hết hạn bảo hành", HttpStatus.UNPROCESSABLE_ENTITY), // 422
+    IMEI_NOT_FOUND("IMEI_NOT_FOUND", "IMEI không tồn tại", HttpStatus.NOT_FOUND), // 404
+    IMEI_ALREADY_SOLD("IMEI_ALREADY_SOLD", "IMEI đã được bán hoặc không khả dụng", HttpStatus.CONFLICT), // 409
+    ORDER_NOT_FOUND("ORDER_NOT_FOUND", "Đơn hàng không tồn tại", HttpStatus.NOT_FOUND),
+    INVALID_STATUS_TRANSITION("INVALID_STATUS_TRANSITION", "Transition trạng thái không hợp lệ",
+            HttpStatus.UNPROCESSABLE_ENTITY), // 422
     USERNAME_EXISTS("USERNAME_EXISTS", "Username đã tồn tại", HttpStatus.CONFLICT),
     EMAIL_EXISTS("EMAIL_EXISTS", "Email đã tồn tại", HttpStatus.CONFLICT),
     PHONE_EXISTS("PHONE_EXISTS", "Số điện thoại đã tồn tại", HttpStatus.CONFLICT),
