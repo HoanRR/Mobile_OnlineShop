@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ÄÄƒng nháº­p - HT Mobile</title>
+    <title>Đăng nhập - HT Mobile</title>
     <link rel="stylesheet" href="../static/css/style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
@@ -12,25 +12,25 @@
     <header class="thanh-nav">
         <div class="logo">HT Mobile</div>
         <div class="tim-kiem">
-            <input type="text" placeholder="Báº¡n cáº§n tÃ¬m Ä‘iá»‡n thoáº¡i gÃ¬?">
+            <input type="text" placeholder="Bạn cần tìm điện thoại gì?">
         </div>
         <div class="nut-bam-header">
             <div class="tra-cuu-don-hang">
                 <button>
-                    <img src="../static/img/clipboard.png" alt="Tra cá»©u">
-                    <h3>Tra cá»©u Ä‘Æ¡n hÃ ng</h3>
+                    <img src="../static/img/clipboard.png" alt="Tra cứu">
+                    <h3>Tra cứu Đơn hàng</h3>
                 </button>
             </div>
             <div class="Dang-nhap">
                 <a href="login.html" class="btn-header">
-                    <img src="../static/img/user-interface.png" alt="ÄÄƒng nháº­p">
-                    <h3>ÄÄƒng nháº­p</h3>
+                    <img src="../static/img/user-interface.png" alt="Đăng nhập">
+                    <h3>Đăng nhập</h3>
                 </a>
             </div>
             <div class="gio-hang">
                 <button>
-                    <img src="../static/img/gio_hang.png" alt="Giá» hÃ ng">
-                    <h3>Giá» hÃ ng</h3>
+                    <img src="../static/img/gio_hang.png" alt="Giỏ hàng">
+                    <h3>Giỏ hàng</h3>
                 </button>
             </div>
         </div>
@@ -39,40 +39,40 @@
     <main class="noi-dung">
         <div class="login-container">
             <div class="login-header">
-                <h2>ÄÄƒng nháº­p</h2>
-                <h3>ChÃ o má»«ng báº¡n quay láº¡i vá»›i HT Mobile</h3>
-                <p>Báº¡n chÆ°a cÃ³ tÃ i khoáº£n? <a href="register.html">ÄÄƒng kÃ½ ngay</a></p>
+                <h2>Đăng nhập</h2>
+                <h3>Chào mừng bạn quay lại với HT Mobile</h3>
+                <p>Bạn chưa có tài khoản? <a href="register.html">Đăng ký ngay</a></p>
             </div>
 
             <form class="login-form" onsubmit="event.preventDefault(); if(document.querySelector('input[name=role]:checked').value === 'customer') window.location.href='client/index.html'; else alert('Giao diện dành cho Nhân viên hoặc Quản trị viên đang được phát triển!');">
                 <div class="role-selection">
-                    <label>Báº¡n Ä‘Äƒng nháº­p vá»›i tÆ° cÃ¡ch:</label>
+                    <label>Bạn đăng nhập với tư cách:</label>
                     <div class="radio-group">
-                        <label><input type="radio" name="role" value="customer" checked> KhÃ¡ch hÃ ng</label>
-                        <label><input type="radio" name="role" value="staff"> NhÃ¢n viÃªn</label>
-                        <label><input type="radio" name="role" value="admin"> Quáº£n trá»‹ viÃªn</label>
+                        <label><input type="radio" name="role" value="customer" checked> Khách hàng</label>
+                        <label><input type="radio" name="role" value="staff"> Nhân viên</label>
+                        <label><input type="radio" name="role" value="admin"> Quản trị viên</label>
                     </div>
                 </div>
 
                 <div class="form-group">
-                    <label for="username">Sá»‘ Ä‘iá»‡n thoáº¡i hoáº·c Email</label>
-                    <input type="text" id="username" placeholder="Nháº­p tÃ i khoáº£n hoáº·c Email">
+                    <label for="username">Số điện thoại hoặc Email</label>
+                    <input type="text" id="username" placeholder="Nhập tài khoản hoặc Email">
                 </div>
             
                 <div class="form-group">
-                    <label for="password">Máº­t kháº©u</label>
-                    <input type="password" id="password" placeholder="Nháº­p máº­t kháº©u cá»§a báº¡n">
+                    <label for="password">Mật khẩu</label>
+                    <input type="password" id="password" placeholder="Nhập mật khẩu của bạn">
                 </div>
 
                 <div class="forgot-password">
-                    <a href="#">QuÃªn máº­t kháº©u?</a>
+                    <a href="#">Quên mật khẩu?</a>
                 </div>
                 
-                <button type="submit" class="btn-login">ÄÄƒng nháº­p</button>
+                <button type="submit" class="btn-login">Đăng nhập</button>
             </form>
 
             <div class="social-login-section">
-                <p class="divider"><span>Hoáº·c Ä‘Äƒng nháº­p báº±ng</span></p>
+                <p class="divider"><span>Hoặc đăng nhập bằng</span></p>
                 <div class="social-buttons">
                     <button class="btn-google">
                         <i class="fa-brands fa-google"></i> Google
