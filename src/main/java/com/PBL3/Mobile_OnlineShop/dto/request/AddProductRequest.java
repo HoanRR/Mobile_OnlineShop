@@ -13,7 +13,6 @@ import java.util.List;
 public class AddProductRequest {
     @NotBlank
     String product_name;
-
     String brand;
     String product_image_link;
     List<VariantRequest> variants;

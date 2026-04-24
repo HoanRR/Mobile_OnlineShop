@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đăng nhập - HT Mobile</title>
+    <link rel="stylesheet" href="css/base.css">
+    <link rel="stylesheet" href="css/header.css">
+    <link rel="stylesheet" href="css/login.css">
+</head>
+<body>
+    <header class="thanh-nav">
+        <a href="index.html">
+            <div class="logo">HT Mobile</div>
+        </a>
+        <div class="tim-kiem">
+            <input type="text" placeholder="Bạn cần tìm điện thoại gì?">
+        </div>
+        <div class="nut-bam-header">
+            <div class="tra-cuu-don-hang">
+                <button>
+                    <h3>Tra cứu đơn hàng</h3>
+                </button>
+            </div>
+            <div class="Dang-nhap">
+                <a href="login.html" class="btn-header">
+                    <h3>Đăng nhập</h3>
+                </a>
+            </div>
+            <div class="gio-hang">
+                <a href="cart.html">
+                    <h3>Giỏ hàng</h3>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main id="khu-vuc-dang-nhap" class="noi-dung">
+        <div>
+            <h2>Đăng nhập</h2>
+            <h3>Bạn cần đăng nhập để mua sắm dễ dàng hơn</h3>
+            <p>Bạn chưa có tài khoản? <a href="register.html">Đăng ký</a></p>
+        </div>
+        <div>
+            <label for="username">Tên đăng nhập hoặc Email</label><br>
+            <input type="text" id="username" placeholder="Nhập tài khoản hoặc Email"><br>
+            <br>
+
+            <label for="password">Mật khẩu</label><br>
+            <input type="password" id="password" placeholder="Nhập mật khẩu của bạn"><br>
+
+            <a href="reset-password.html">Quên mật khẩu?</a>
+        </div>
+
+        <div id="error-message" style="color: red; text-align: center; margin-top: 10px; display: none;"></div>
+
+        <br>
+        <button id="button-dang-nhap">
+            Đăng nhập
+        </button>
+    </main>
+
+    <script src="js/login.js"></script>
+</body>
+</html>

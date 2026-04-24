@@ -30,7 +30,7 @@ public class JwtTokenProvider {
 
     private final InvalidatedTokenRepository invalidatedTokenRepository;
 
-    private static final long ACCESS_TOKEN_EXPIRY_HOURS = 1;
+    private static final long ACCESS_TOKEN_EXPIRY_HOURS = 2;
 
     public String generateToken(User user) {
         try {

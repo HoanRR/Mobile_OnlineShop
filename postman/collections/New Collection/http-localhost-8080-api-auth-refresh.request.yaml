@@ -1,0 +1,8 @@
+$kind: http-request
+name: http://localhost:8080/api/auth/refresh
+url: http://localhost:8080/api/auth/refresh
+method: POST
+body:
+  type: json
+  content: '{ "token": "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbjIiLCJzY29wZSI6IkFETUlOIiwiaXNzIjoicGhvbmVzaG9wLnZuIiwiZXhwIjoxNzc2Nzg2NDkzLCJpYXQiOjE3NzY3ODY0MzMsInVzZXJJZCI6NiwianRpIjoiZDcwZDFmMTMtY2FkMS00MDgwLTk3MzktZGIwOGI0YjRkZDA3In0.sht9oA_DHQAouwhmBG62H4u9xWh4_qJcpHFiQbUYvCP8JUgncYLQk6NJm3VJPDpFttxbIFzB8bVV59vY0Se8AQ" }'
+order: 3802961830886440
