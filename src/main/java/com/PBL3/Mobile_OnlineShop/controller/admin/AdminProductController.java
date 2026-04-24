@@ -3,6 +3,7 @@ package com.PBL3.Mobile_OnlineShop.controller.admin;
 import com.PBL3.Mobile_OnlineShop.Service.ProductService;
 import com.PBL3.Mobile_OnlineShop.dto.request.AddProductRequest;
 import com.PBL3.Mobile_OnlineShop.dto.request.ImportDevicesRequest;
+import com.PBL3.Mobile_OnlineShop.dto.request.UpdateProductRequest;
 import com.PBL3.Mobile_OnlineShop.dto.response.GetDevicesResponse;
 import com.PBL3.Mobile_OnlineShop.dto.response.ImportDevicesResponse;
 import com.PBL3.Mobile_OnlineShop.dto.response.MessageResponse;
@@ -39,6 +40,21 @@ public class AdminProductController {
         productService.AddProduct(request);
         return ResponseEntity.ok(MessageResponse.builder()
                         .message("Tạo thành công")
+                .build());
+    }
+    @PatchMapping("/products/{product_id}")
+    public ResponseEntity<MessageResponse> UpdateProduct(@PathVariable ("product_id") Long productid,UpdateProductRequest request){
+        productService.UpdateProduct(request, productid);
+        return ResponseEntity.ok(MessageResponse.builder()
+                .message("Cập nhập thành công")
+                .build());
+    }
+
+    @DeleteMapping("/products/{product_id}")
+    public ResponseEntity<MessageResponse> DeleteProduct(@PathVariable("product_id") Long productId) {
+        productService.DeleteProduct(productId);
+        return ResponseEntity.ok(MessageResponse.builder()
+                .message("Xóa sản phẩm thành công")
                 .build());
     }
 }

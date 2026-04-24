@@ -1,0 +1,5 @@
+$kind: http-request
+name: api/admin/user/4
+url: http://localhost:8080/api/admin/user/4
+method: GET
+order: 4502753312373300

@@ -1,0 +1,10 @@
+$kind: http-request
+name: api/admin/devices/354321010000003
+url: http://localhost:8080/api/admin/devices/354321010000003
+method: GET
+auth:
+  credentials:
+    - key: token
+      value: ""
+  type: bearer
+order: 4422790078208333

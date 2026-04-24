@@ -1,5 +1,7 @@
 package com.PBL3.Mobile_OnlineShop.entity;
 
+import com.PBL3.Mobile_OnlineShop.enums.DeviceStatus;
+
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
@@ -26,5 +28,6 @@ public class Device {
     private ProductVariant productVariant;
 
     @Column(length = 20, name = "status")
-    private String status;
+    @Enumerated(EnumType.STRING)
+    private DeviceStatus status;
 }

@@ -1,0 +1,18 @@
+$kind: http-request
+name: api/staff/orders/1/status
+url: http://localhost:8080/api/staff/orders/1/status
+method: PATCH
+body:
+  type: json
+  content: "{\r
+
+    \    \"order_status\": \"CANCELLED\",\r
+
+    \  \"is_paid\": true  \r
+
+    }"
+auth:
+  type: bearer
+  credentials:
+    token: eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJuZ3V5ZW52YW5hIiwic2NvcGUiOiJFTVBMT1lFRSIsImlzcyI6InBob25lc2hvcC52biIsImV4cCI6MTc3NzA0MzAyNywiaWF0IjoxNzc3MDQyOTY3LCJ1c2VySWQiOjIsImp0aSI6IjM3NTZlOGNkLWRjOWItNDc3ZC04MDA3LWFlYWI5ZTFkMzNkZSJ9.EPNGnWrcye74X-EzfWizC-1KW-croswRwag5BtXbK4AgkIcmn5yzLHshjriiA4iOomsWuLS4kLlyNx-42bJY8w
+order: 4501882540313948

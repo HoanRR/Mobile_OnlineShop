@@ -2,17 +2,17 @@ package com.PBL3.Mobile_OnlineShop.Service;
 
 import com.PBL3.Mobile_OnlineShop.Exeption.AppException;
 import com.PBL3.Mobile_OnlineShop.Exeption.ErrorCode;
-import com.PBL3.Mobile_OnlineShop.Repository.DeviceRepository;
-import com.PBL3.Mobile_OnlineShop.Repository.ProductRepository;
-import com.PBL3.Mobile_OnlineShop.Repository.ProductVariantRepository;
-import com.PBL3.Mobile_OnlineShop.Repository.WarrantyRepository;
+import com.PBL3.Mobile_OnlineShop.Repository.*;
 import com.PBL3.Mobile_OnlineShop.dto.request.AddProductRequest;
 import com.PBL3.Mobile_OnlineShop.dto.request.ImportDevicesRequest;
+import com.PBL3.Mobile_OnlineShop.dto.request.UpdateProductRequest;
 import com.PBL3.Mobile_OnlineShop.dto.request.VariantRequest;
 import com.PBL3.Mobile_OnlineShop.dto.response.GetDevicesResponse;
 import com.PBL3.Mobile_OnlineShop.dto.response.ImportDevicesResponse;
 import com.PBL3.Mobile_OnlineShop.dto.response.DevicesResponse;
 import com.PBL3.Mobile_OnlineShop.dto.response.WarrantyResponse;
+import com.PBL3.Mobile_OnlineShop.enums.DeviceStatus;
+import com.PBL3.Mobile_OnlineShop.mapper.ProductMapper;
 import com.PBL3.Mobile_OnlineShop.mapper.ProductVariantMapper;
 import com.PBL3.Mobile_OnlineShop.entity.Device;
 import com.PBL3.Mobile_OnlineShop.entity.Product;
@@ -23,6 +23,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,6 +38,9 @@ public class ProductService {
     ProductVariantRepository productVariantRepository;
     WarrantyRepository warrantyRepository;
     ProductVariantMapper productVariantMapper;
+    ProductMapper productMapper;
+    OrderRepository orderRepository;
+    OrderDetailRepository orderDetailRepository;
 
     public ImportDevicesResponse importDevices(ImportDevicesRequest request){
 
@@ -55,7 +59,7 @@ public class ProductService {
         for (String imei : request.getImei_list()) {
             Device device = Device.builder()
                     .imei(imei)
-                    .status("AVAILABLE")
+                    .status(DeviceStatus.AVAILABLE)
                     .productVariant(productVariant)
                     .build();
 
@@ -63,7 +67,7 @@ public class ProductService {
             DevicesResponse info = DevicesResponse.builder()
                     .devices_id(savedDevice.getDeviceId())
                     .imei(savedDevice.getImei())
-                    .status(savedDevice.getStatus())
+                    .status(savedDevice.getStatus().toString())
                     .build();
             listDeviceInfo.add(info);
         }
@@ -85,7 +89,7 @@ public class ProductService {
         return GetDevicesResponse.builder()
                 .deviceId(device.getDeviceId())
                 .imei(device.getImei())
-                .status(device.getStatus())
+                .status(device.getStatus().toString())
                 .productVariantId(device.getProductVariant().getProductVariantId())
                 .productName(device.getProductVariant().getProduct().getProductName())
                 .color(device.getProductVariant().getColor())
@@ -127,6 +131,31 @@ public class ProductService {
                 productVariantRepository.save(productVariant);
             }
         }
+    }
+
+    public void UpdateProduct(UpdateProductRequest request, Long product_id){
+        Product product = productRepository.findByProductId(product_id).orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND, "Không tồn tại sản phẩm với id:" + product_id));
+        productMapper.updateProductFromRequest(request, product);
+        productRepository.save(product);
+    }
+    @Transactional
+    public void DeleteProduct(Long product_id){
+        // 1. Kiểm tra sản phẩm có tồn tại không (404)
+        Product product = productRepository.findByProductId(product_id)
+                .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND,
+                        "Không tìm thấy sản phẩm với id: " + product_id));
+
+        // 2. Kiểm tra có đơn hàng liên quan không (409)
+        List<ProductVariant> variants = product.getVariants();
+        if (variants != null && !variants.isEmpty()) {
+            boolean hasOrders = orderDetailRepository.existsByProductVariantIn(variants);
+            if (hasOrders) {
+                throw new AppException(ErrorCode.PRODUCT_HAS_ORDERS);
+            }
+        }
+
+        // 3. Xóa product (cascade sẽ tự xóa các ProductVariant tương ứng)
+        productRepository.delete(product);
     }
 
 }

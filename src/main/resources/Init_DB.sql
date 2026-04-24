@@ -15,29 +15,13 @@
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
--- ============================================================
--- DROP TABLE theo thứ tự: con trước, cha sau
--- ============================================================
-DROP TABLE IF EXISTS `warranty`;
-DROP TABLE IF EXISTS `order_detail`;
-DROP TABLE IF EXISTS `product_review`;
-DROP TABLE IF EXISTS `cart_detail`;
-DROP TABLE IF EXISTS `apply_condition_variant`;
-DROP TABLE IF EXISTS `apply_condition`;
-DROP TABLE IF EXISTS `invalidated_token`;
-DROP TABLE IF EXISTS `device`;
-DROP TABLE IF EXISTS `cart`;
-DROP TABLE IF EXISTS `order`;
-DROP TABLE IF EXISTS `product_variant`;
-DROP TABLE IF EXISTS `voucher`;
-DROP TABLE IF EXISTS `product`;
-DROP TABLE IF EXISTS `user`;
+
 
 -- ============================================================
--- CREATE TABLE theo thứ tự: cha trước, con sau
+-- CREATE TABLE IF NOT EXISTS theo thứ tự: cha trước, con sau
 -- ============================================================
 
-CREATE TABLE `user` (
+CREATE TABLE IF NOT EXISTS `user` (
   `user_id`      BIGINT       NOT NULL AUTO_INCREMENT,
   `username`     VARCHAR(100) NOT NULL,
   `name`         VARCHAR(255) DEFAULT NULL,
@@ -53,7 +37,7 @@ CREATE TABLE `user` (
 
 -- --------------------------------------------------------
 
-CREATE TABLE `invalidated_token` (
+CREATE TABLE IF NOT EXISTS `invalidated_token` (
   `id`          VARCHAR(255) NOT NULL,
   `expiry_time` DATETIME(6)  DEFAULT NULL,
   PRIMARY KEY (`id`)
@@ -61,7 +45,7 @@ CREATE TABLE `invalidated_token` (
 
 -- --------------------------------------------------------
 
-CREATE TABLE `product` (
+CREATE TABLE IF NOT EXISTS `product` (
   `product_id`         BIGINT       NOT NULL AUTO_INCREMENT,
   `product_name`       VARCHAR(255) NOT NULL,
   `brand`              VARCHAR(255) DEFAULT NULL,
@@ -71,7 +55,7 @@ CREATE TABLE `product` (
 
 -- --------------------------------------------------------
 
-CREATE TABLE `product_variant` (
+CREATE TABLE IF NOT EXISTS `product_variant` (
   `product_variant_id` BIGINT       NOT NULL AUTO_INCREMENT,
   `product_id`         BIGINT       DEFAULT NULL,
   `color`              VARCHAR(100) DEFAULT NULL,
@@ -89,7 +73,7 @@ CREATE TABLE `product_variant` (
 
 -- --------------------------------------------------------
 
-CREATE TABLE `device` (
+CREATE TABLE IF NOT EXISTS `device` (
   `device_id`          BIGINT      NOT NULL AUTO_INCREMENT,
   `imei`               VARCHAR(50) NOT NULL,
   `status`             VARCHAR(20) DEFAULT NULL,
@@ -101,7 +85,7 @@ CREATE TABLE `device` (
 
 -- --------------------------------------------------------
 
-CREATE TABLE `voucher` (
+CREATE TABLE IF NOT EXISTS `voucher` (
   `voucher_id`          BIGINT      NOT NULL AUTO_INCREMENT,
   `voucher_code`        VARCHAR(50) NOT NULL,
   `discount_percentage` DOUBLE      NOT NULL,
@@ -114,7 +98,7 @@ CREATE TABLE `voucher` (
 
 -- --------------------------------------------------------
 
-CREATE TABLE `apply_condition` (
+CREATE TABLE IF NOT EXISTS `apply_condition` (
   `apply_condition_id` BIGINT NOT NULL AUTO_INCREMENT,
   `min_value`          DOUBLE DEFAULT NULL,
   `voucher_id`         BIGINT DEFAULT NULL,
@@ -124,7 +108,7 @@ CREATE TABLE `apply_condition` (
 
 -- --------------------------------------------------------
 
-CREATE TABLE `apply_condition_variant` (
+CREATE TABLE IF NOT EXISTS `apply_condition_variant` (
   `apply_condition_id` BIGINT NOT NULL,
   `product_variant_id` BIGINT NOT NULL,
   CONSTRAINT `fk_acv_condition` FOREIGN KEY (`apply_condition_id`) REFERENCES `apply_condition` (`apply_condition_id`),
@@ -133,7 +117,7 @@ CREATE TABLE `apply_condition_variant` (
 
 -- --------------------------------------------------------
 
-CREATE TABLE `cart` (
+CREATE TABLE IF NOT EXISTS `cart` (
   `cart_id`   BIGINT      NOT NULL AUTO_INCREMENT,
   `user_id`   BIGINT      DEFAULT NULL,
   `update_at` DATETIME(6) DEFAULT NULL,
@@ -144,7 +128,7 @@ CREATE TABLE `cart` (
 
 -- --------------------------------------------------------
 
-CREATE TABLE `cart_detail` (
+CREATE TABLE IF NOT EXISTS `cart_detail` (
   `cart_detail_id`     BIGINT NOT NULL AUTO_INCREMENT,
   `cart_id`            BIGINT DEFAULT NULL,
   `product_variant_id` BIGINT DEFAULT NULL,
@@ -156,7 +140,7 @@ CREATE TABLE `cart_detail` (
 
 -- --------------------------------------------------------
 
-CREATE TABLE `order` (
+CREATE TABLE IF NOT EXISTS `orders` (
   `order_id`         BIGINT       NOT NULL AUTO_INCREMENT,
   `user_id`          BIGINT       DEFAULT NULL,
   `voucher_id`       BIGINT       DEFAULT NULL,
@@ -176,21 +160,21 @@ CREATE TABLE `order` (
 
 -- --------------------------------------------------------
 
-CREATE TABLE `order_detail` (
+CREATE TABLE IF NOT EXISTS `order_detail` (
   `order_detail_id`   BIGINT NOT NULL AUTO_INCREMENT,
   `order_id`          BIGINT DEFAULT NULL,
   `device_id`         BIGINT DEFAULT NULL,
   `variant_id`        BIGINT DEFAULT NULL,
   `price_at_purchase` DOUBLE DEFAULT NULL,
   PRIMARY KEY (`order_detail_id`),
-  CONSTRAINT `fk_od_order`   FOREIGN KEY (`order_id`)   REFERENCES `order`           (`order_id`),
+  CONSTRAINT `fk_od_order`   FOREIGN KEY (`order_id`)   REFERENCES `orders`           (`order_id`),
   CONSTRAINT `fk_od_device`  FOREIGN KEY (`device_id`)  REFERENCES `device`          (`device_id`),
   CONSTRAINT `fk_od_variant` FOREIGN KEY (`variant_id`) REFERENCES `product_variant` (`product_variant_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 -- --------------------------------------------------------
 
-CREATE TABLE `product_review` (
+CREATE TABLE IF NOT EXISTS `product_review` (
   `product_review_id`  BIGINT       NOT NULL AUTO_INCREMENT,
   `product_id`         BIGINT       NOT NULL,
   `product_variant_id` BIGINT       DEFAULT NULL,
@@ -207,7 +191,7 @@ CREATE TABLE `product_review` (
 
 -- --------------------------------------------------------
 
-CREATE TABLE `warranty` (
+CREATE TABLE IF NOT EXISTS `warranty` (
   `warranty_id`    BIGINT NOT NULL AUTO_INCREMENT,
   `device_id`      BIGINT DEFAULT NULL,
   `warranty_month` INT    DEFAULT NULL,

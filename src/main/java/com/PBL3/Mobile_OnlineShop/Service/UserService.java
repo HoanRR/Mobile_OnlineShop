@@ -40,7 +40,7 @@ public class UserService {
                     .order_id(order.getOrderId())
                     .order_date(order.getOrderDate())
                     .total_amount(order.getTotalAmount())
-                    .order_status(order.getOrderStatus())
+                    .order_status(order.getOrderStatus().toString())
                     .build();
             orderHistoryResponse.add(OHReponse);
         }

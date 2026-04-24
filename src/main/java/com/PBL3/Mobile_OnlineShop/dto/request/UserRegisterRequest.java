@@ -1,5 +1,7 @@
 package com.PBL3.Mobile_OnlineShop.dto.request;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
@@ -18,6 +20,7 @@ public class UserRegisterRequest {
 
     @NotBlank(message = "Số điện thoại không được để trống")
     @Pattern(regexp = "^(0|\\+84)[0-9]{9}$", message = "Số điện thoại không hợp lệ")
+    @JsonProperty("phone_number")
     private String phoneNumber;
 
     @NotBlank(message = "Mật khẩu không được để trống")
