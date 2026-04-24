@@ -12,9 +12,11 @@ public class ApplyConditionVariant {
 
     @ManyToOne
     @MapsId("applyConditionId")
+    @JoinColumn(name = "apply_condition_id")
     private ApplyCondition applyCondition;
 
     @ManyToOne
     @MapsId("productVariantId")
+    @JoinColumn(name = "product_variant_id")
     private ProductVariant productVariant;
 }

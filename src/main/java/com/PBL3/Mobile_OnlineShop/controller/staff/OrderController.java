@@ -3,6 +3,7 @@ package com.PBL3.Mobile_OnlineShop.controller.staff;
 import com.PBL3.Mobile_OnlineShop.Service.OrderService;
 import com.PBL3.Mobile_OnlineShop.dto.request.OfflineOrderRequest;
 import com.PBL3.Mobile_OnlineShop.dto.request.UpdateOrderStatusRequest;
+import com.PBL3.Mobile_OnlineShop.dto.response.MessageResponse;
 import com.PBL3.Mobile_OnlineShop.dto.response.OfflineOrderResponse;
 
 import jakarta.validation.Valid;
@@ -22,14 +23,17 @@ public class OrderController {
 
     @PatchMapping("/{order_id}/status")
     @PreAuthorize("hasAuthority('EMPLOYEE')")
-    public ResponseEntity<String> updateOrderStatus(
+    public ResponseEntity<MessageResponse> updateOrderStatus(
             @PathVariable("order_id") Long orderId,
             @Valid @RequestBody UpdateOrderStatusRequest request) {
 
         orderService.updateStatus(orderId, request);
 
         // Trả về HTTP 200 OK
-        return ResponseEntity.ok("Cập nhật thành công");
+        return ResponseEntity.ok(MessageResponse.builder()
+                .message("Cập nhật thành công")
+                .build()
+        );
     }
 
     @PostMapping("/offline")
