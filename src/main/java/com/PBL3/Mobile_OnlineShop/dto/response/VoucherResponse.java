@@ -8,10 +8,12 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class RegisterReponse {
-    Long userId;
-    String username;
-    String email;
-    String role;
-    String fulname;
+public class VoucherResponse {
+    Long voucher_id;
+    String voucher_code;
+    Double discount_percentage;
+    String start_date;
+    String end_date;
+    Long usage_limit;
+
 }

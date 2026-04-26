@@ -13,7 +13,7 @@ import com.PBL3.Mobile_OnlineShop.dto.request.IntrospectRequest;
 import com.PBL3.Mobile_OnlineShop.dto.request.LoginRequest;
 import com.PBL3.Mobile_OnlineShop.dto.request.LogoutRequest;
 import com.PBL3.Mobile_OnlineShop.dto.request.RefreshTokenRequest;
-import com.PBL3.Mobile_OnlineShop.dto.request.UserRegisterRequest;
+import com.PBL3.Mobile_OnlineShop.dto.request.RegisterCustomerRequest;
 import com.PBL3.Mobile_OnlineShop.entity.InvalidatedToken;
 import com.PBL3.Mobile_OnlineShop.entity.User;
 import com.PBL3.Mobile_OnlineShop.enums.Role;
@@ -40,7 +40,7 @@ public class AuthService {
     private final JwtTokenProvider jwtTokenProvider;
 
     @Transactional
-    public RegisterReponse register(UserRegisterRequest request) {
+    public RegisterReponse register(RegisterCustomerRequest request) {
         if (userRepository.existsByUsername(request.getUsername())) {
             throw new AppException(ErrorCode.USERNAME_EXISTS, "Email hoặc username đã tồn tại");
         }
@@ -54,9 +54,10 @@ public class AuthService {
         User user = User.builder()
                 .username(request.getUsername())
                 .email(request.getEmail())
+                .FullName(request.getFullName())
                 .phoneNumber(request.getPhoneNumber())
                 .password(passwordEncoder.encode(request.getPassword()))
-                .roles(Role.CUSTOMER)
+                .role(Role.CUSTOMER)
                 .build();
 
         User savedUser = userRepository.save(user);
@@ -64,8 +65,9 @@ public class AuthService {
         return RegisterReponse.builder()
                 .userId(savedUser.getUserId())
                 .username(savedUser.getUsername())
+                .fulname(savedUser.getFullName())
                 .email(savedUser.getEmail())
-                .role(savedUser.getRoles().name())
+                .role(savedUser.getRole().name())
                 .build();
     }
 
@@ -80,13 +82,13 @@ public class AuthService {
 
         String token = jwtTokenProvider.generateToken(user);
 
-        var jit = jwtTokenProvider.verifyToken(token);
+//        var jit = jwtTokenProvider.verifyToken(token);
         return LoginResponse.builder()
                 .token(token)
                 .user(LoginResponse.UserInfo.builder()
                         .userId(user.getUserId())
                         .username(user.getUsername())
-                        .role(user.getRoles().name())
+                        .role(user.getRole().name())
                         .build())
                 .build();
     }

@@ -7,6 +7,7 @@ import java.util.List;
 @Entity
 @Table(name = "apply_condition")
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class ApplyCondition {

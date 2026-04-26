@@ -41,7 +41,7 @@ public class JwtTokenProvider {
                     .expirationTime(Date.from(
                             Instant.now().plus(ACCESS_TOKEN_EXPIRY_HOURS, ChronoUnit.HOURS)))
                     .jwtID(UUID.randomUUID().toString())
-                    .claim("scope", user.getRoles().name())
+                    .claim("scope", user.getRole().name())
                     .claim("userId", user.getUserId())
                     .build();
 

@@ -9,10 +9,13 @@ import jakarta.validation.constraints.Size;
 import lombok.Data;
 
 @Data
-public class UserRegisterRequest {
+public class RegisterCustomerRequest {
 
     @NotBlank(message = "Tên đăng nhập không được để trống")
     private String username;
+
+    @NotBlank(message = "Họ và tên không được để trống")
+    private String FullName;
 
     @NotBlank(message = "Email không được để trống")
     @Email(message = "Email không đúng định dạng")

@@ -34,7 +34,8 @@ public class User {
     @Column(length = 255, nullable = false, unique = true)
     String email;
 
-    String name;
+    @NotBlank(message = "Họ và tên không được để trống")
+    String FullName;
 
     @NotBlank(message = "Số điện thoại không được để trống")
     @Pattern(regexp = "^(0|\\+84)[0-9]{9}$", message = "Số điện thoại không hợp lệ")
@@ -48,7 +49,7 @@ public class User {
 
     @Enumerated(EnumType.STRING)
     @Column(length = 20, nullable = false)
-    Role roles;
+    Role role;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     Cart cart;

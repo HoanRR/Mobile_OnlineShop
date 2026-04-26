@@ -36,6 +36,6 @@ public class Voucher {
     @Min(value = 0, message = "Giới hạn sử dụng không được âm")
     private Long usageLimit;
 
-    @OneToMany(mappedBy = "voucher")
-    private List<ApplyCondition> applyConditions;
+    @OneToOne(mappedBy = "voucher",cascade = CascadeType.ALL, orphanRemoval = true)
+    private ApplyCondition applyConditions;
 }

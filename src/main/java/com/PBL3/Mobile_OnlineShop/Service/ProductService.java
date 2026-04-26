@@ -73,7 +73,7 @@ public class ProductService {
         }
         
         // Cập nhật lại số lượng totalAvailable cho ProductVariant
-        long availableCount = deviceRepository.countByProductVariantAndStatus(productVariant, "AVAILABLE");
+        long availableCount = deviceRepository.countByProductVariantAndStatus(productVariant, DeviceStatus.AVAILABLE);
         productVariant.setTotalAvailable(availableCount);
         productVariantRepository.save(productVariant);
 

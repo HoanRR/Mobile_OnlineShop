@@ -22,12 +22,12 @@
 -- user  (password đã BCrypt round=10)
 -- ============================================================
 LOCK TABLES `user` WRITE;
-INSERT IGNORE INTO `user` VALUES
+INSERT IGNORE INTO `user` (user_id, username, full_name, email, password, phone_number, role) VALUES
 (1, 'admin',      'Nguyễn Quản Trị', 'admin@shop.vn',   '$2a$10$gFd2tfwrmXW2mJw0koh2j.ulKFlTYcohJvj8Gg.6lkWS7d/H1qphu.', '0900000001', 'ADMIN'),
-(2, 'nguyenvana', 'Nguyễn Văn A',    'vana@gmail.com',  '$2a$10$IbnH.08t4XwIGJBi4nEyeO7Dmgoi5r.qSR9B9LwpvbvIWMy5O51gi', '0911111111', 'EMPLOYEE'),
-(3, 'tranthib',   'Trần Thị B',      'thib@gmail.com',  '$2a$10$gFd2tfwrmXW2mJw0koh2j.ulKFlTYcohJvj8Gg.6lkWS7d/H1qphu', '0922222222', 'CUSTOMER'),
-(4, 'levanc',     'Lê Văn C',        'vanc@gmail.com',  '$2a$10$sf/R07qS5J7f424ybNR4A.W1IYBkJxwXB3IQl/45fC2D0v7fG1buG', '0933333333', 'CUSTOMER'),
-(5, 'phamthid',   'Phạm Thị D',      'thid@gmail.com',  '$2a$10$sf/R07qS5J7f424ybNR4A.W1IYBkJxwXB3IQl/45fC2D0v7fG1buG', '0944444444', 'CUSTOMER');
+(2, 'nguyenvana', 'Nguyễn Văn A',    'vana@gmail.com',  '$2a$10$IbnH.08t4XwIGJBi4nEyeO7Dmgoi5r.qSR9B9LwpvbvIWMy5O51gi',  '0911111111', 'EMPLOYEE'),
+(3, 'tranthib',   'Trần Thị B',      'thib@gmail.com',  '$2a$10$gFd2tfwrmXW2mJw0koh2j.ulKFlTYcohJvj8Gg.6lkWS7d/H1qphu',  '0922222222', 'CUSTOMER'),
+(4, 'levanc',     'Lê Văn C',        'vanc@gmail.com',  '$2a$10$sf/R07qS5J7f424ybNR4A.W1IYBkJxwXB3IQl/45fC2D0v7fG1buG',  '0933333333', 'CUSTOMER'),
+(5, 'phamthid',   'Phạm Thị D',      'thid@gmail.com',  '$2a$10$sf/R07qS5J7f424ybNR4A.W1IYBkJxwXB3IQl/45fC2D0v7fG1buG',  '0944444444', 'CUSTOMER');
 UNLOCK TABLES;
 
 -- ============================================================

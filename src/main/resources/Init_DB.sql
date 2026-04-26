@@ -24,11 +24,11 @@
 CREATE TABLE IF NOT EXISTS `user` (
   `user_id`      BIGINT       NOT NULL AUTO_INCREMENT,
   `username`     VARCHAR(100) NOT NULL,
-  `name`         VARCHAR(255) DEFAULT NULL,
+  `full_name`    VARCHAR(255) DEFAULT NULL,
   `email`        VARCHAR(255) NOT NULL,
   `password`     VARCHAR(255) NOT NULL,
   `phone_number` VARCHAR(20)  NOT NULL,
-  `roles`        VARCHAR(20)  NOT NULL,
+  `role`         VARCHAR(20)  NOT NULL,
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `uq_user_email`        (`email`),
   UNIQUE KEY `uq_user_phone`        (`phone_number`),

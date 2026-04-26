@@ -20,6 +20,7 @@ public enum ErrorCode {
     EMAIL_EXISTS("EMAIL_EXISTS", "Email đã tồn tại", HttpStatus.CONFLICT),
     PHONE_EXISTS("PHONE_EXISTS", "Số điện thoại đã tồn tại", HttpStatus.CONFLICT),
     IMEI_EXISTS("IMEI_EXISTS", "IMEI đã tồn tại trong hệ thống", HttpStatus.CONFLICT),
+    VOUCHER_EXISTS("VOUCHER_EXISTS", "VOUCHER đã tồn tại trong hệ thống", HttpStatus.CONFLICT),
     INVALID_CREDENTIALS("INVALID_CREDENTIALS", "Sai username hoặc mật khẩu", HttpStatus.UNAUTHORIZED),
     INVALID_REFRESH_TOKEN("INVALID_REFRESH_TOKEN", "Refresh token hết hạn hoặc không hợp lệ", HttpStatus.UNAUTHORIZED),
     USER_NOT_FOUND("USER_NOT_FOUND", "Người dùng không tồn tại", HttpStatus.NOT_FOUND),
@@ -32,7 +33,9 @@ public enum ErrorCode {
     INTERNAL_ERROR("INTERNAL_ERROR", "Lỗi hệ thống", HttpStatus.INTERNAL_SERVER_ERROR),
     UNAUTHENTICATED("UNAUTHENTICATED_ERROR", "Lỗi chưa xác thực", HttpStatus.FORBIDDEN),
     PRODUCT_HAS_ORDERS("PRODUCT_HAS_ORDERS", "Không thể xóa sản phẩm vì đã có đơn hàng liên quan", HttpStatus.CONFLICT),
-    INVALID_DATA("INVALID_DATA", "Dữ liệu không hợp lệ", HttpStatus.UNPROCESSABLE_ENTITY);
+    INVALID_DATA("INVALID_DATA", "Dữ liệu không hợp lệ", HttpStatus.UNPROCESSABLE_ENTITY),
+    VOUCHER_NOT_FOUND("VOUCHER_NOT_FOUND", "Voucher không tồn tại", HttpStatus.NOT_FOUND),
+    ;
 
     private final String code;
     private final String message;
