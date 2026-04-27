@@ -1,0 +1,1472 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>API Contract – Phone Store (v2)</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap');
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:        #0f1117;
+    --bg2:       #161b27;
+    --bg3:       #1e2537;
+    --border:    #2a3350;
+    --text:      #e2e8f8;
+    --muted:     #7a8aaa;
+    --accent:    #3b82f6;
+    --green:     #22c55e;
+    --red:       #ef4444;
+    --yellow:    #f59e0b;
+    --purple:    #a78bfa;
+    --teal:      #2dd4bf;
+
+    --m-get:     #1e3a5f;
+    --m-get-t:   #60a5fa;
+    --m-post:    #14392b;
+    --m-post-t:  #4ade80;
+    --m-put:     #3d2d0a;
+    --m-put-t:   #fbbf24;
+    --m-delete:  #3d1212;
+    --m-delete-t:#f87171;
+    --m-patch:   #2d1f4a;
+    --m-patch-t: #c4b5fd;
+
+    --r: 6px;
+    --font: 'IBM Plex Sans', sans-serif;
+    --mono: 'IBM Plex Mono', monospace;
+  }
+
+  body { font-family: var(--font); background: var(--bg); color: var(--text); font-size: 14px; line-height: 1.6; min-height: 100vh; }
+
+  .shell { max-width: 900px; margin: 0 auto; padding: 32px 20px 60px; }
+
+  /* Header */
+  .hdr { display: flex; align-items: baseline; gap: 14px; margin-bottom: 28px; border-bottom: 1px solid var(--border); padding-bottom: 20px; }
+  .hdr h1 { font-size: 18px; font-weight: 600; letter-spacing: -.3px; }
+  .hdr .ver { font-family: var(--mono); font-size: 11px; padding: 2px 8px; border-radius: 20px; background: var(--bg3); color: var(--accent); border: 1px solid #2a3a5e; }
+
+  /* Stats */
+  .stats { display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 24px; }
+  .stat { background: var(--bg2); border: 1px solid var(--border); border-radius: var(--r); padding: 10px 18px; }
+  .stat-n { font-size: 22px; font-weight: 600; color: var(--text); }
+  .stat-l { font-size: 11px; color: var(--muted); margin-top: 1px; }
+
+  /* Fix banner */
+  .fix-banner { background: #1a2a1a; border: 1px solid #2d4a2d; border-radius: var(--r); padding: 12px 16px; margin-bottom: 24px; font-size: 12px; color: #86efac; }
+  .fix-banner strong { color: #4ade80; }
+
+  /* Tabs */
+  .tabs { display: flex; gap: 6px; flex-wrap: wrap; margin-bottom: 20px; }
+  .tab { padding: 7px 16px; font-size: 13px; border: 1px solid var(--border); border-radius: 20px; cursor: pointer; background: var(--bg2); color: var(--muted); transition: all .15s; font-family: var(--font); }
+  .tab:hover { border-color: var(--accent); color: var(--text); }
+  .tab.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+  /* Section */
+  .section { display: none; }
+  .section.active { display: block; }
+
+  /* Group */
+  .grp { margin-bottom: 24px; }
+  .grp-title { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .08em; margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 8px; }
+
+  /* Endpoint */
+  .ep { border: 1px solid var(--border); border-radius: var(--r); margin-bottom: 6px; overflow: hidden; background: var(--bg2); transition: border-color .15s; }
+  .ep:hover { border-color: #3a4a6a; }
+  .ep.changed { border-left: 3px solid var(--yellow); }
+  .ep.added   { border-left: 3px solid var(--green); }
+
+  .ep-hdr { display: flex; align-items: center; gap: 10px; padding: 11px 14px; cursor: pointer; user-select: none; }
+  .ep-hdr:hover { background: var(--bg3); }
+
+  .method { font-family: var(--mono); font-size: 10px; font-weight: 500; padding: 3px 8px; border-radius: 4px; min-width: 52px; text-align: center; }
+  .GET    { background: var(--m-get);    color: var(--m-get-t); }
+  .POST   { background: var(--m-post);   color: var(--m-post-t); }
+  .PUT    { background: var(--m-put);    color: var(--m-put-t); }
+  .DELETE { background: var(--m-delete); color: var(--m-delete-t); }
+  .PATCH  { background: var(--m-patch);  color: var(--m-patch-t); }
+
+  .ep-path { font-family: var(--mono); font-size: 13px; flex: 1; color: var(--text); }
+  .ep-desc { font-size: 12px; color: var(--muted); }
+
+  .badge { font-size: 10px; padding: 2px 8px; border-radius: 10px; font-weight: 500; white-space: nowrap; }
+  .b-auth  { background: #2d1212; color: #f87171; border: 1px solid #4a1c1c; }
+  .b-admin { background: #3d2d0a; color: #fbbf24; border: 1px solid #5a4010; }
+  .b-staff { background: #2d1f4a; color: #c4b5fd; border: 1px solid #3d2d6a; }
+  .b-fix   { background: #1a2a1a; color: #4ade80; border: 1px solid #2d4a2d; font-size: 10px; }
+  .b-new   { background: #0f2a1a; color: #34d399; border: 1px solid #1a4a2a; font-size: 10px; }
+
+  .chevron { margin-left: auto; font-size: 11px; color: var(--muted); transition: transform .2s; flex-shrink: 0; }
+  .ep-hdr.open .chevron { transform: rotate(180deg); }
+
+  /* Body */
+  .ep-body { display: none; padding: 14px 16px; border-top: 1px solid var(--border); background: var(--bg); }
+  .ep-body.open { display: block; }
+
+  .fix-note { background: #1a2a1a; border: 1px solid #2d4a2d; border-radius: 4px; padding: 8px 12px; margin-bottom: 12px; font-size: 12px; color: #86efac; }
+  .fix-note strong { color: #4ade80; }
+
+  .ep-sec { margin-bottom: 12px; }
+  .ep-sec:last-child { margin-bottom: 0; }
+  .ep-sec-t { font-size: 11px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 6px; }
+
+  .code { font-family: var(--mono); font-size: 12px; background: var(--bg2); border: 1px solid var(--border); border-radius: 5px; padding: 10px 13px; color: var(--text); line-height: 1.7; white-space: pre; overflow-x: auto; }
+  .code .cmt { color: var(--muted); }
+  .code .key { color: var(--m-get-t); }
+  .code .val { color: var(--teal); }
+  .code .fix { color: #4ade80; }
+
+  .resp-row { display: flex; gap: 8px; align-items: baseline; margin-bottom: 4px; font-size: 12px; }
+  .s-ok  { color: var(--green); font-weight: 600; font-family: var(--mono); font-size: 11px; }
+  .s-err { color: var(--red);   font-weight: 600; font-family: var(--mono); font-size: 11px; }
+  .arrow { color: var(--muted); }
+
+  /* Flow diagram */
+  .flow { display: flex; align-items: center; gap: 6px; flex-wrap: wrap; font-family: var(--mono); font-size: 11px; }
+  .flow-st { padding: 3px 10px; border-radius: 3px; background: var(--bg3); border: 1px solid var(--border); color: var(--text); }
+  .flow-arr { color: var(--muted); }
+
+  /* Enum ref */
+  .enum-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  @media (max-width: 600px) { .enum-grid { grid-template-columns: 1fr; } }
+  .enum-item { background: var(--bg2); border: 1px solid var(--border); border-radius: 4px; padding: 8px 12px; }
+  .enum-label { font-size: 11px; color: var(--muted); margin-bottom: 4px; }
+  .enum-vals { display: flex; gap: 4px; flex-wrap: wrap; }
+  .enum-val { font-family: var(--mono); font-size: 10px; padding: 2px 7px; border-radius: 3px; background: var(--bg3); color: var(--teal); }
+</style>
+</head>
+<body>
+<div class="shell">
+
+  <div class="hdr">
+    <h1>API Contract — Phone Store</h1>
+    <span class="ver">v2 — revised</span>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-n">40</div><div class="stat-l">Endpoints</div></div>
+    <div class="stat"><div class="stat-n">5</div><div class="stat-l">Modules</div></div>
+    <div class="stat"><div class="stat-n">3</div><div class="stat-l">Roles</div></div>
+    <div class="stat"><div class="stat-n">7</div><div class="stat-l">Thay đổi</div></div>
+    <div class="stat"><div class="stat-n">2</div><div class="stat-l">Endpoint mới</div></div>
+  </div>
+
+  <div class="fix-banner">
+    <strong>Thay đổi so với v1:</strong>
+    ① POST warranty → GET &nbsp;|&nbsp;
+    ② Cart item: variants[] → variant{} &nbsp;|&nbsp;
+    ③ Review thêm comment &nbsp;|&nbsp;
+    ④ PUT partial → PATCH &nbsp;|&nbsp;
+    ⑤ PATCH quantity=0 → tách DELETE item &nbsp;|&nbsp;
+    ⑥ Thêm PATCH /api/me/password &nbsp;|&nbsp;
+    ⑦ Report revenue thêm filter order_status
+  </div>
+
+  <div class="tabs">
+    <div class="tab active" onclick="showTab('products',this)">Sản phẩm</div>
+    <div class="tab" onclick="showTab('orders',this)">Đơn hàng</div>
+    <div class="tab" onclick="showTab('customers',this)">Khách hàng</div>
+    <div class="tab" onclick="showTab('admin',this)">Admin</div>
+    <div class="tab" onclick="showTab('auth',this)">Auth</div>
+  </div>
+
+  <!-- ==================== PRODUCTS ==================== -->
+  <div id="products" class="section active">
+
+    <div class="grp">
+      <div class="grp-title">Sản phẩm &amp; biến thể</div>
+
+      <div class="ep">
+        <div class="ep-hdr" onclick="toggle(this)">
+          <span class="method GET">GET</span>
+          <span class="ep-path">/api/products</span>
+          <span class="ep-desc">Danh sách sản phẩm</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="ep-body">
+          <div class="ep-sec">
+            <div class="ep-sec-t">Query Params</div>
+            <div class="code">page, limit, brand, keyword
+sort_by: price | avg_rating | product_name
+order: asc | desc</div>
+          </div>
+          <div class="ep-sec">
+            <div class="ep-sec-t">Response 200</div>
+            <div class="code">{
+  "data": [
+    {
+      "product_id": 1,
+      "product_name": "iPhone 16 Pro",
+      "brand": "Apple",
+      "product_image_link": "https://...",
+      "min_price": 29990000,
+      "avg_rating": 4.7
+    }
+  ],
+  "pagination": { "page": 1, "limit": 20, "total": 150 }
+}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ep">
+        <div class="ep-hdr" onclick="toggle(this)">
+          <span class="method GET">GET</span>
+          <span class="ep-path">/api/products/:product_id</span>
+          <span class="ep-desc">Chi tiết sản phẩm + biến thể + đánh giá</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="ep-body">
+          <div class="ep-sec">
+            <div class="ep-sec-t">Response 200</div>
+            <div class="code">{
+  "product_id": 1,
+  "product_name": "iPhone 16 Pro",
+  "brand": "Apple",
+  "product_image_link": "https://...",
+  "variants": [
+    {
+      "product_variant_id": 5,
+      "color": "Black Titanium",
+      "storage_capacity": 128,
+      "battery_capacity": 3582,
+      "resolution": "2556x1179",
+      "chip": "A18 Pro",
+      "ram": "8GB",
+      "price": 29990000,
+      "total_available": 12,
+      "variant_image_link": "https://..."
+    }
+  ],
+  "reviews": [
+    {
+      "product_review_id": 10,
+      "user_id": 3,
+      "username": "nguyenvana",
+      "rating": 5,
+      "comment": "Sản phẩm rất tốt, pin trâu",
+      "review_date": "2024-11-01T10:00:00",
+      "is_purchased": true,
+      "variant": { "product_variant_id": 5, "color": "Black Titanium", "storage_capacity": 128 }
+    }
+  ]
+}</div>
+          </div>
+          <div class="ep-sec">
+            <div class="ep-sec-t">Responses</div>
+            <div class="resp-row"><span class="s-ok">200</span><span class="arrow">→</span>Trả về chi tiết</div>
+            <div class="resp-row"><span class="s-err">404</span><span class="arrow">→</span>Sản phẩm không tồn tại</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ep">
+        <div class="ep-hdr" onclick="toggle(this)">
+          <span class="method POST">POST</span>
+          <span class="ep-path">/api/admin/products</span>
+          <span class="ep-desc">Thêm sản phẩm mới</span>
+          <span class="badge b-admin">Admin</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="ep-body">
+          <div class="ep-sec">
+            <div class="ep-sec-t">Request Body</div>
+            <div class="code">{
+  "product_name": "iPhone 16 Pro",
+  "brand": "Apple",
+  "product_image_link": "https://...",
+  "variants": [
+    {
+      "color": "Black Titanium",
+      "storage_capacity": 128,
+      "battery_capacity": 3582,
+      "resolution": "2556x1179",
+      "chip": "A18 Pro",
+      "ram": "8GB",
+      "price": 29990000,
+      "total_available": 0,
+      "variant_image_link": "https://..."
+    }
+  ]
+}</div>
+          </div>
+          <div class="ep-sec">
+            <div class="ep-sec-t">Responses</div>
+            <div class="resp-row"><span class="s-ok">201</span><span class="arrow">→</span>Tạo thành công</div>
+            <div class="resp-row"><span class="s-err">422</span><span class="arrow">→</span>Dữ liệu không hợp lệ</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ep changed">
+        <div class="ep-hdr" onclick="toggle(this)">
+          <span class="method PATCH">PATCH</span>
+          <span class="ep-path">/api/admin/products/:product_id</span>
+          <span class="ep-desc">Cập nhật thông tin sản phẩm</span>
+          <span class="badge b-admin">Admin</span>
+          <span class="badge b-fix">✎ PUT→PATCH</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="ep-body">
+          <div class="fix-note"><strong>Sửa:</strong> Đổi từ PUT sang PATCH vì chỉ update partial fields, không yêu cầu gửi toàn bộ resource.</div>
+          <div class="ep-sec">
+            <div class="ep-sec-t">Request Body (tất cả tuỳ chọn)</div>
+            <div class="code">{
+  "product_name": "iPhone 16 Pro Max",
+  "brand": "Apple",
+  "product_image_link": "https://..."
+}</div>
+          </div>
+          <div class="ep-sec">
+            <div class="ep-sec-t">Responses</div>
+            <div class="resp-row"><span class="s-ok">200</span><span class="arrow">→</span>Cập nhật thành công</div>
+            <div class="resp-row"><span class="s-err">404</span><span class="arrow">→</span>Sản phẩm không tồn tại</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ep">
+        <div class="ep-hdr" onclick="toggle(this)">
+          <span class="method DELETE">DELETE</span>
+          <span class="ep-path">/api/admin/products/:product_id</span>
+          <span class="ep-desc">Xóa sản phẩm</span>
+          <span class="badge b-admin">Admin</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="ep-body">
+          <div class="ep-sec">
+            <div class="ep-sec-t">Responses</div>
+            <div class="resp-row"><span class="s-ok">200</span><span class="arrow">→</span>Xóa thành công</div>
+            <div class="resp-row"><span class="s-err">409</span><span class="arrow">→</span>Sản phẩm có đơn hàng liên quan, không thể xóa</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grp">
+      <div class="grp-title">IMEI &amp; Kho thiết bị</div>
+
+      <div class="ep">
+        <div class="ep-hdr" onclick="toggle(this)">
+          <span class="method POST">POST</span>
+          <span class="ep-path">/api/admin/devices/import</span>
+          <span class="ep-desc">Nhập IMEI vào kho</span>
+          <span class="badge b-admin">Admin</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="ep-body">
+          <div class="ep-sec">
+            <div class="ep-sec-t">Request Body</div>
+            <div class="code">{
+  "product_variant_id": 5,
+  "imei_list": ["356938035643809", "356938035643810"]
+}</div>
+          </div>
+          <div class="ep-sec">
+            <div class="ep-sec-t">Response 201</div>
+            <div class="code">{
+  "imported": 2,
+  "devices": [
+    { "device_id": 101, "imei": "356938035643809", "status": "AVAILABLE" },
+    { "device_id": 102, "imei": "356938035643810", "status": "AVAILABLE" }
+  ]
+}</div>
+          </div>
+          <div class="ep-sec">
+            <div class="ep-sec-t">Responses</div>
+            <div class="resp-row"><span class="s-ok">201</span><span class="arrow">→</span>Import thành công</div>
+            <div class="resp-row"><span class="s-err">409</span><span class="arrow">→</span>IMEI đã tồn tại trong hệ thống</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ep">
+        <div class="ep-hdr" onclick="toggle(this)">
+          <span class="method GET">GET</span>
+          <span class="ep-path">/api/admin/devices/:imei</span>
+          <span class="ep-desc">Tra cứu thiết bị theo IMEI</span>
+          <span class="badge b-admin">Admin</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="ep-body">
+          <div class="ep-sec">
+            <div class="ep-sec-t">Response 200</div>
+            <div class="code">{
+  "device_id": 101,
+  "imei": "356938035643809",
+  "status": "AVAILABLE",
+  "product_variant_id": 5,
+  "product_name": "iPhone 16 Pro",
+  "color": "Black Titanium",
+  "storage_capacity": 128,
+  "warranty": {
+    "warranty_id": 20,
+    "start_date": "2024-11-01T00:00:00",
+    "end_date": "2026-11-01T00:00:00",
+    "warranty_month": 24
+  }
+}</div>
+          </div>
+          <div class="ep-sec">
+            <div class="ep-sec-t">Responses</div>
+            <div class="resp-row"><span class="s-ok">200</span><span class="arrow">→</span>Trả về thông tin thiết bị</div>
+            <div class="resp-row"><span class="s-err">404</span><span class="arrow">→</span>IMEI không tồn tại</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== ORDERS ==================== -->
+  <div id="orders" class="section">
+
+    <div class="grp">
+      <div class="grp-title">Giỏ hàng</div>
+
+      <div class="ep changed">
+        <div class="ep-hdr" onclick="toggle(this)">
+          <span class="method GET">GET</span>
+          <span class="ep-path">/api/cart</span>
+          <span class="ep-desc">Lấy giỏ hàng của tôi</span>
+          <span class="badge b-auth">Auth</span>
+          <span class="badge b-fix">✎ variants[]→variant{}</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="ep-body">
+          <div class="fix-note"><strong>Sửa:</strong> Mỗi cart_detail chỉ liên kết với 1 product_variant, đổi <code>variants: [...]</code> thành <code>variant: {...}</code> để phản ánh đúng quan hệ 1-1.</div>
+          <div class="ep-sec">
+            <div class="ep-sec-t">Response 200</div>
+            <div class="code">{
+  "cart_id": 7,
+  "user_id": 3,
+  "updated_at": "2024-11-05T08:30:00",
+  "items": [
+    {
+      "cart_detail_id": 15,
+      "quantity": 1,
+      "variant": {
+        "product_variant_id": 5,
+        "product_name": "iPhone 16 Pro",
+        "color": "Black Titanium",
+        "storage_capacity": 128,
+        "price": 29990000,
+        "total_available": 12,
+        "variant_image_link": "https://..."
+      }
+    }
+  ],
+  "total": 29990000
+}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ep">
+        <div class="ep-hdr" onclick="toggle(this)">
+          <span class="method POST">POST</span>
+          <span class="ep-path">/api/cart/items</span>
+          <span class="ep-desc">Thêm sản phẩm vào giỏ</span>
+          <span class="badge b-auth">Auth</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="ep-body">
+          <div class="ep-sec">
+            <div class="ep-sec-t">Request Body</div>
+            <div class="code">{
+  "product_variant_id": 5,
+  "quantity": 1
+}</div>
+          </div>
+          <div class="ep-sec">
+            <div class="ep-sec-t">Responses</div>
+            <div class="resp-row"><span class="s-ok">200</span><span class="arrow">→</span>Đã thêm vào giỏ (nếu variant đã có, cộng dồn quantity)</div>
+            <div class="resp-row"><span class="s-err">400</span><span class="arrow">→</span>Hết hàng (total_available = 0)</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ep changed">
+        <div class="ep-hdr" onclick="toggle(this)">
+          <span class="method PATCH">PATCH</span>
+          <span class="ep-path">/api/cart/items/:cart_detail_id</span>
+          <span class="ep-desc">Cập nhật số lượng item trong giỏ</span>
+          <span class="badge b-auth">Auth</span>
+          <span class="badge b-fix">✎ Bỏ quantity=0</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="ep-body">
+          <div class="fix-note"><strong>Sửa:</strong> Bỏ hành vi ẩn <code>quantity=0 = xóa</code>. Muốn xóa dùng endpoint DELETE riêng bên dưới.</div>
+          <div class="ep-sec">
+            <div class="ep-sec-t">Request Body</div>
+            <div class="code">{
+  "quantity": 2    // phải >= 1; nếu muốn xóa dùng DELETE
+}</div>
+          </div>
+          <div class="ep-sec">
+            <div class="ep-sec-t">Responses</div>
+            <div class="resp-row"><span class="s-ok">200</span><span class="arrow">→</span>Cập nhật thành công</div>
+            <div class="resp-row"><span class="s-err">400</span><span class="arrow">→</span>quantity < 1 hoặc vượt quá tồn kho</div>
+            <div class="resp-row"><span class="s-err">404</span><span class="arrow">→</span>cart_detail_id không tồn tại</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ep added">
+        <div class="ep-hdr" onclick="toggle(this)">
+          <span class="method DELETE">DELETE</span>
+          <span class="ep-path">/api/cart/items/:cart_detail_id</span>
+          <span class="ep-desc">Xóa một sản phẩm khỏi giỏ</span>
+          <span class="badge b-auth">Auth</span>
+          <span class="badge b-new">★ Mới</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="ep-body">
+          <div class="fix-note"><strong>Thêm mới:</strong> Tách hành vi xóa ra endpoint riêng thay vì dùng quantity=0 ở PATCH.</div>
+          <div class="ep-sec">
+            <div class="ep-sec-t">Responses</div>
+            <div class="resp-row"><span class="s-ok">200</span><span class="arrow">→</span>Đã xóa sản phẩm khỏi giỏ</div>
+            <div class="resp-row"><span class="s-err">404</span><span class="arrow">→</span>cart_detail_id không tồn tại</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ep">
+        <div class="ep-hdr" onclick="toggle(this)">
+          <span class="method DELETE">DELETE</span>
+          <span class="ep-path">/api/cart</span>
+          <span class="ep-desc">Xóa toàn bộ giỏ hàng</span>
+          <span class="badge b-auth">Auth</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="ep-body">
+          <div class="ep-sec">
+            <div class="ep-sec-t">Responses</div>
+            <div class="resp-row"><span class="s-ok">200</span><span class="arrow">→</span>Giỏ hàng đã được xóa</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grp">
+      <div class="grp-title">Đơn hàng</div>
+
+      <div class="ep">
+        <div class="ep-hdr" onclick="toggle(this)">
+          <span class="method POST">POST</span>
+          <span class="ep-path">/api/orders</span>
+          <span class="ep-desc">Đặt hàng từ giỏ hàng</span>
+          <span class="badge b-auth">Auth</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="ep-body">
+          <div class="ep-sec">
+            <div class="ep-sec-t">Request Body</div>
+            <div class="code">{
+  "receiver_name": "Nguyễn Văn A",
+  "receiver_phone": "0912345678",
+  "shipping_address": "12 Lê Lợi, Quận 1, TP.HCM",
+  "payment_method": "COD",         // COD | ShopeePay | ATM
+  "voucher_code": "GIAM20"         // tuỳ chọn
+}</div>
+          </div>
+          <div class="ep-sec">
+            <div class="ep-sec-t">Response 201</div>
+            <div class="code">{
+  "order_id": 88,
+  "order_status": "WAIT",
+  "order_date": "2024-11-05T09:00:00",
+  "total_amount": 29990000,
+  "discount_amount": 5998000,
+  "is_paid": false,
+  "payment_method": "COD"
+}</div>
+          </div>
+          <div class="ep-sec">
+            <div class="ep-sec-t">Responses</div>
+            <div class="resp-row"><span class="s-ok">201</span><span class="arrow">→</span>Đặt hàng thành công</div>
+            <div class="resp-row"><span class="s-err">400</span><span class="arrow">→</span>Giỏ hàng rỗng</div>
+            <div class="resp-row"><span class="s-err">422</span><span class="arrow">→</span>Voucher không hợp lệ / hết hạn / chưa đạt min_value</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ep">
+        <div class="ep-hdr" onclick="toggle(this)">
+          <span class="method GET">GET</span>
+          <span class="ep-path">/api/orders</span>
+          <span class="ep-desc">Lịch sử đơn hàng của tôi</span>
+          <span class="badge b-auth">Auth</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="ep-body">
+          <div class="ep-sec">
+            <div class="ep-sec-t">Query Params</div>
+            <div class="code">order_status: WAIT | CONFIRMED | PROCESSING | SHIPPING | DELIVERED | RETURNED
+page, limit</div>
+          </div>
+          <div class="ep-sec">
+            <div class="ep-sec-t">Response 200</div>
+            <div class="code">{
+  "data": [
+    {
+      "order_id": 88,
+      "order_status": "DELIVERED",
+      "order_date": "2024-11-05T09:00:00",
+      "total_amount": 29990000,
+      "discount_amount": 5998000,
+      "payment_method": "COD",
+      "is_paid": true
+    }
+  ],
+  "pagination": { "page": 1, "limit": 20, "total": 5 }
+}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ep">
+        <div class="ep-hdr" onclick="toggle(this)">
+          <span class="method GET">GET</span>
+          <span class="ep-path">/api/orders/:order_id</span>
+          <span class="ep-desc">Chi tiết đơn hàng</span>
+          <span class="badge b-auth">Auth</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="ep-body">
+          <div class="ep-sec">
+            <div class="ep-sec-t">Response 200</div>
+            <div class="code">{
+  "order_id": 88,
+  "user_id": 3,
+  "order_status": "DELIVERED",
+  "order_date": "2024-11-05T09:00:00",
+  "total_amount": 29990000,
+  "discount_amount": 5998000,
+  "payment_method": "COD",
+  "is_paid": true,
+  "voucher_id": 2,
+  "delivery": {
+    "receiver_name": "Nguyễn Văn A",
+    "receiver_phone": "0912345678",
+    "shipping_address": "12 Lê Lợi, Quận 1, TP.HCM"
+  },
+  "items": [
+    {
+      "order_detail_id": 200,
+      "variant_id": 5,
+      "device_id": 101,
+      "imei": "356938035643809",
+      "product_name": "iPhone 16 Pro",
+      "color": "Black Titanium",
+      "storage_capacity": 128,
+      "price_at_purchase": 29990000
+    }
+  ]
+}</div>
+          </div>
+          <div class="ep-sec">
+            <div class="ep-sec-t">Responses</div>
+            <div class="resp-row"><span class="s-ok">200</span><span class="arrow">→</span>Trả về chi tiết</div>
+            <div class="resp-row"><span class="s-err">403</span><span class="arrow">→</span>Không phải đơn của bạn</div>
+            <div class="resp-row"><span class="s-err">404</span><span class="arrow">→</span>Đơn hàng không tồn tại</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ep">
+        <div class="ep-hdr" onclick="toggle(this)">
+          <span class="method PATCH">PATCH</span>
+          <span class="ep-path">/api/staff/orders/:order_id/status</span>
+          <span class="ep-desc">Cập nhật trạng thái đơn</span>
+          <span class="badge b-staff">Staff</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="ep-body">
+          <div class="ep-sec">
+            <div class="ep-sec-t">Request Body</div>
+            <div class="code">{
+  "order_status": "CONFIRMED",
+  "is_paid": true    // tuỳ chọn, cập nhật khi thanh toán xong
+}</div>
+          </div>
+          <div class="ep-sec">
+            <div class="ep-sec-t">Luồng trạng thái</div>
+            <div class="flow">
+              <span class="flow-st">WAIT</span><span class="flow-arr">→</span>
+              <span class="flow-st">CONFIRMED</span><span class="flow-arr">→</span>
+              <span class="flow-st">PROCESSING</span><span class="flow-arr">→</span>
+              <span class="flow-st">SHIPPING</span><span class="flow-arr">→</span>
+              <span class="flow-st">DELIVERED</span>
+            </div>
+            <div style="margin-top:8px" class="flow">
+              <span class="flow-arr" style="padding-left:120px">↘</span>
+              <span class="flow-st" style="background:#3d1212;border-color:#5a1c1c;color:#f87171">RETURNED</span>
+            </div>
+          </div>
+          <div class="ep-sec">
+            <div class="ep-sec-t">Responses</div>
+            <div class="resp-row"><span class="s-ok">200</span><span class="arrow">→</span>Cập nhật thành công</div>
+            <div class="resp-row"><span class="s-err">422</span><span class="arrow">→</span>Transition trạng thái không hợp lệ</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ep">
+        <div class="ep-hdr" onclick="toggle(this)">
+          <span class="method POST">POST</span>
+          <span class="ep-path">/api/staff/orders/offline</span>
+          <span class="ep-desc">Tạo đơn hàng tại quầy</span>
+          <span class="badge b-staff">Staff</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="ep-body">
+          <div class="ep-sec">
+            <div class="ep-sec-t">Request Body</div>
+            <div class="code">{
+  "receiver_name": "Khách lẻ",
+  "receiver_phone": "0912345678",
+  "shipping_address": "Tại cửa hàng",
+  "payment_method": "COD",
+  "is_paid": true,
+  "items": [
+    { "imei": "356938035643809" }
+  ]
+}</div>
+          </div>
+          <div class="ep-sec">
+            <div class="ep-sec-t">Response 201</div>
+            <div class="code">{
+  "order_id": 89,
+  "order_status": "DELIVERED",
+  "total_amount": 29990000,
+  "items": [
+    {
+      "order_detail_id": 201,
+      "device_id": 101,
+      "imei": "356938035643809",
+      "price_at_purchase": 29990000
+    }
+  ]
+}</div>
+          </div>
+          <div class="ep-sec">
+            <div class="ep-sec-t">Responses</div>
+            <div class="resp-row"><span class="s-ok">201</span><span class="arrow">→</span>Tạo đơn thành công</div>
+            <div class="resp-row"><span class="s-err">404</span><span class="arrow">→</span>IMEI không tồn tại</div>
+            <div class="resp-row"><span class="s-err">409</span><span class="arrow">→</span>IMEI đã được bán</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grp">
+      <div class="grp-title">Voucher / Mã giảm giá</div>
+
+      <div class="ep">
+        <div class="ep-hdr" onclick="toggle(this)">
+          <span class="method POST">POST</span>
+          <span class="ep-path">/api/vouchers/validate</span>
+          <span class="ep-desc">Kiểm tra &amp; tính toán mã giảm giá</span>
+          <span class="badge b-auth">Auth</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="ep-body">
+          <div class="ep-sec">
+            <div class="ep-sec-t">Request Body</div>
+            <div class="code">{
+  "voucher_code": "GIAM20",
+  "order_total": 29990000
+}</div>
+          </div>
+          <div class="ep-sec">
+            <div class="ep-sec-t">Response 200</div>
+            <div class="code">{
+  "valid": true,
+  "voucher_id": 2,
+  "voucher_code": "GIAM20",
+  "discount_percentage": 20.0,
+  "discount_amount": 5998000,
+  "final_total": 23992000,
+  "end_date": "2024-12-31T23:59:59",
+  "usage_limit": 100
+}</div>
+          </div>
+          <div class="ep-sec">
+            <div class="ep-sec-t">Responses</div>
+            <div class="resp-row"><span class="s-ok">200</span><span class="arrow">→</span>Hợp lệ hoặc không hợp lệ (xem trường <code>valid</code>)</div>
+            <div class="resp-row"><span class="s-err">422</span><span class="arrow">→</span>Đơn hàng chưa đạt giá trị tối thiểu (min_value)</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== CUSTOMERS ==================== -->
+  <div id="customers" class="section">
+
+    <div class="grp">
+      <div class="grp-title">Tài khoản &amp; Hồ sơ</div>
+
+      <div class="ep">
+        <div class="ep-hdr" onclick="toggle(this)">
+          <span class="method GET">GET</span>
+          <span class="ep-path">/api/me</span>
+          <span class="ep-desc">Thông tin cá nhân</span>
+          <span class="badge b-auth">Auth</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="ep-body">
+          <div class="ep-sec">
+            <div class="ep-sec-t">Response 200</div>
+            <div class="code">{
+  "user_id": 3,
+  "username": "nguyenvana",
+  "name": "Nguyễn Văn A",
+  "email": "a@example.com",
+  "phone_number": "0912345678",
+  "role": "CUSTOMER"
+}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ep changed">
+        <div class="ep-hdr" onclick="toggle(this)">
+          <span class="method PATCH">PATCH</span>
+          <span class="ep-path">/api/me</span>
+          <span class="ep-desc">Cập nhật thông tin cá nhân</span>
+          <span class="badge b-auth">Auth</span>
+          <span class="badge b-fix">✎ PUT→PATCH</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="ep-body">
+          <div class="fix-note"><strong>Sửa:</strong> Đổi từ PUT sang PATCH — chỉ gửi các field cần thay đổi.</div>
+          <div class="ep-sec">
+            <div class="ep-sec-t">Request Body (tất cả tuỳ chọn)</div>
+            <div class="code">{
+  "name": "Nguyễn Văn B",
+  "username": "nguyenvana2",
+  "phone_number": "0987654321"
+}</div>
+          </div>
+          <div class="ep-sec">
+            <div class="ep-sec-t">Responses</div>
+            <div class="resp-row"><span class="s-ok">200</span><span class="arrow">→</span>Cập nhật thành công</div>
+            <div class="resp-row"><span class="s-err">409</span><span class="arrow">→</span>Username hoặc phone_number đã tồn tại</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ep added">
+        <div class="ep-hdr" onclick="toggle(this)">
+          <span class="method PATCH">PATCH</span>
+          <span class="ep-path">/api/me/password</span>
+          <span class="ep-desc">Đổi mật khẩu</span>
+          <span class="badge b-auth">Auth</span>
+          <span class="badge b-new">★ Mới</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="ep-body">
+          <div class="fix-note"><strong>Thêm mới:</strong> Endpoint đổi mật khẩu bị thiếu ở v1.</div>
+          <div class="ep-sec">
+            <div class="ep-sec-t">Request Body</div>
+            <div class="code">{
+  "old_password": "Abc@12345",
+  "new_password": "NewPass@999"
+}</div>
+          </div>
+          <div class="ep-sec">
+            <div class="ep-sec-t">Responses</div>
+            <div class="resp-row"><span class="s-ok">200</span><span class="arrow">→</span>Đổi mật khẩu thành công</div>
+            <div class="resp-row"><span class="s-err">401</span><span class="arrow">→</span>Mật khẩu cũ không đúng</div>
+            <div class="resp-row"><span class="s-err">422</span><span class="arrow">→</span>Mật khẩu mới không đủ độ mạnh</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grp">
+      <div class="grp-title">Đánh giá sản phẩm</div>
+
+      <div class="ep changed">
+        <div class="ep-hdr" onclick="toggle(this)">
+          <span class="method POST">POST</span>
+          <span class="ep-path">/api/products/:product_id/reviews</span>
+          <span class="ep-desc">Viết đánh giá sản phẩm</span>
+          <span class="badge b-auth">Auth</span>
+          <span class="badge b-fix">✎ Thêm comment</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="ep-body">
+          <div class="fix-note"><strong>Sửa:</strong> Thêm field <code>comment</code> bắt buộc — entity ProductReview có <code>comment NOT NULL</code> nhưng v1 không có trong request body.</div>
+          <div class="ep-sec">
+            <div class="ep-sec-t">Request Body</div>
+            <div class="code">{
+  "rating": 5,
+  "comment": "Pin dùng được cả ngày, camera rất sắc nét",
+  "order_id": 88,              // xác minh đã mua
+  "product_variant_id": 5      // biến thể đã mua (tuỳ chọn)
+}</div>
+          </div>
+          <div class="ep-sec">
+            <div class="ep-sec-t">Response 201</div>
+            <div class="code">{
+  "product_review_id": 10,
+  "product_id": 1,
+  "user_id": 3,
+  "rating": 5,
+  "comment": "Pin dùng được cả ngày, camera rất sắc nét",
+  "review_date": "2024-11-10T14:00:00",
+  "is_purchased": true,
+  "variant": { "product_variant_id": 5, "color": "Black Titanium", "storage_capacity": 128 }
+}</div>
+          </div>
+          <div class="ep-sec">
+            <div class="ep-sec-t">Responses</div>
+            <div class="resp-row"><span class="s-ok">201</span><span class="arrow">→</span>Đánh giá đã gửi</div>
+            <div class="resp-row"><span class="s-err">403</span><span class="arrow">→</span>Chưa mua sản phẩm này</div>
+            <div class="resp-row"><span class="s-err">409</span><span class="arrow">→</span>Đã đánh giá sản phẩm này rồi</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ep">
+        <div class="ep-hdr" onclick="toggle(this)">
+          <span class="method GET">GET</span>
+          <span class="ep-path">/api/products/:product_id/reviews</span>
+          <span class="ep-desc">Xem đánh giá sản phẩm</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="ep-body">
+          <div class="ep-sec">
+            <div class="ep-sec-t">Query Params</div>
+            <div class="code">product_variant_id, rating, page, limit</div>
+          </div>
+          <div class="ep-sec">
+            <div class="ep-sec-t">Response 200</div>
+            <div class="code">{
+  "avg_rating": 4.7,
+  "total_reviews": 128,
+  "distribution": { "5": 90, "4": 25, "3": 8, "2": 3, "1": 2 },
+  "reviews": [
+    {
+      "product_review_id": 10,
+      "user_id": 3,
+      "username": "nguyenvana",
+      "rating": 5,
+      "comment": "Pin dùng được cả ngày, camera rất sắc nét",
+      "review_date": "2024-11-10T14:00:00",
+      "is_purchased": true,
+      "variant": { "product_variant_id": 5, "color": "Black Titanium", "storage_capacity": 128 }
+    }
+  ],
+  "pagination": { "page": 1, "limit": 20, "total": 128 }
+}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grp">
+      <div class="grp-title">Bảo hành</div>
+
+      <div class="ep changed">
+        <div class="ep-hdr" onclick="toggle(this)">
+          <span class="method GET">GET</span>
+          <span class="ep-path">/api/staff/warranty/:imei</span>
+          <span class="ep-desc">Tra cứu bảo hành theo IMEI</span>
+          <span class="badge b-staff">Staff</span>
+          <span class="badge b-fix">✎ POST→GET</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="ep-body">
+          <div class="fix-note"><strong>Sửa:</strong> Đổi từ <code>POST /api/staff/warranty</code> với body <code>{imei}</code> thành <code>GET /api/staff/warranty/:imei</code> — đây là thao tác tra cứu (read-only), không tạo resource mới.</div>
+          <div class="ep-sec">
+            <div class="ep-sec-t">Response 200</div>
+            <div class="code">{
+  "warranty_id": 20,
+  "device_id": 101,
+  "imei": "356938035643809",
+  "product_name": "iPhone 16 Pro",
+  "color": "Black Titanium",
+  "start_date": "2024-11-01T00:00:00",
+  "end_date": "2026-11-01T00:00:00",
+  "warranty_month": 24,
+  "is_valid": true
+}</div>
+          </div>
+          <div class="ep-sec">
+            <div class="ep-sec-t">Responses</div>
+            <div class="resp-row"><span class="s-ok">200</span><span class="arrow">→</span>Còn trong thời hạn bảo hành</div>
+            <div class="resp-row"><span class="s-err">404</span><span class="arrow">→</span>Không tìm thấy IMEI</div>
+            <div class="resp-row"><span class="s-err">422</span><span class="arrow">→</span>Hết hạn bảo hành</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== ADMIN ==================== -->
+  <div id="admin" class="section">
+
+    <div class="grp">
+      <div class="grp-title">Quản lý người dùng</div>
+
+      <div class="ep">
+        <div class="ep-hdr" onclick="toggle(this)">
+          <span class="method GET">GET</span>
+          <span class="ep-path">/api/admin/users</span>
+          <span class="ep-desc">Danh sách người dùng</span>
+          <span class="badge b-admin">Admin</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="ep-body">
+          <div class="ep-sec">
+            <div class="ep-sec-t">Query Params</div>
+            <div class="code">role: CUSTOMER | EMPLOYEE | ADMIN
+search, sort_by: username | email
+page, limit</div>
+          </div>
+          <div class="ep-sec">
+            <div class="ep-sec-t">Response 200</div>
+            <div class="code">{
+  "data": [
+    {
+      "user_id": 3,
+      "username": "nguyenvana",
+      "email": "a@example.com",
+      "phone_number": "0912345678",
+      "role": "CUSTOMER"
+    }
+  ],
+  "pagination": { "page": 1, "limit": 20, "total": 300 }
+}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ep">
+        <div class="ep-hdr" onclick="toggle(this)">
+          <span class="method GET">GET</span>
+          <span class="ep-path">/api/admin/users/:user_id</span>
+          <span class="ep-desc">Chi tiết người dùng + lịch sử đơn hàng</span>
+          <span class="badge b-admin">Admin</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="ep-body">
+          <div class="ep-sec">
+            <div class="ep-sec-t">Response 200</div>
+            <div class="code">{
+  "user_id": 3,
+  "username": "nguyenvana",
+  "email": "a@example.com",
+  "phone_number": "0912345678",
+  "role": "CUSTOMER",
+  "order_history": [
+    {
+      "order_id": 88,
+      "order_status": "DELIVERED",
+      "total_amount": 29990000,
+      "order_date": "2024-11-05T09:00:00"
+    }
+  ]
+}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ep">
+        <div class="ep-hdr" onclick="toggle(this)">
+          <span class="method POST">POST</span>
+          <span class="ep-path">/api/admin/users/staff</span>
+          <span class="ep-desc">Thêm tài khoản nhân viên</span>
+          <span class="badge b-admin">Admin</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="ep-body">
+          <div class="ep-sec">
+            <div class="ep-sec-t">Request Body</div>
+            <div class="code">{
+  "username": "nhanvien01",
+  "email": "nv01@phoneshop.vn",
+  "phone_number": "0911111111",
+  "password": "AutoGen@123",    // auto-generate nếu bỏ trống
+  "role": "EMPLOYEE"
+}</div>
+          </div>
+          <div class="ep-sec">
+            <div class="ep-sec-t">Responses</div>
+            <div class="resp-row"><span class="s-ok">201</span><span class="arrow">→</span>Tạo tài khoản thành công</div>
+            <div class="resp-row"><span class="s-err">409</span><span class="arrow">→</span>Email hoặc username đã tồn tại</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ep changed">
+        <div class="ep-hdr" onclick="toggle(this)">
+          <span class="method PATCH">PATCH</span>
+          <span class="ep-path">/api/admin/users/:user_id</span>
+          <span class="ep-desc">Cập nhật thông tin người dùng</span>
+          <span class="badge b-admin">Admin</span>
+          <span class="badge b-fix">✎ PUT→PATCH</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="ep-body">
+          <div class="fix-note"><strong>Sửa:</strong> Đổi từ PUT sang PATCH — partial update.</div>
+          <div class="ep-sec">
+            <div class="ep-sec-t">Request Body (tất cả tuỳ chọn)</div>
+            <div class="code">{
+  "phone_number": "0922222222",
+  "role": "EMPLOYEE"
+}</div>
+          </div>
+          <div class="ep-sec">
+            <div class="ep-sec-t">Responses</div>
+            <div class="resp-row"><span class="s-ok">200</span><span class="arrow">→</span>Cập nhật thành công</div>
+            <div class="resp-row"><span class="s-err">404</span><span class="arrow">→</span>User không tồn tại</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grp">
+      <div class="grp-title">Báo cáo &amp; Thống kê</div>
+
+      <div class="ep changed">
+        <div class="ep-hdr" onclick="toggle(this)">
+          <span class="method GET">GET</span>
+          <span class="ep-path">/api/admin/reports/revenue</span>
+          <span class="ep-desc">Báo cáo doanh thu</span>
+          <span class="badge b-admin">Admin</span>
+          <span class="badge b-fix">✎ Thêm filter status</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="ep-body">
+          <div class="fix-note"><strong>Sửa:</strong> Thêm filter <code>order_status</code> để chỉ tính doanh thu từ đơn thực sự hoàn thành (mặc định: DELIVERED), loại bỏ đơn RETURNED.</div>
+          <div class="ep-sec">
+            <div class="ep-sec-t">Query Params</div>
+            <div class="code">period: day | month | year
+from: 2024-01-01
+to: 2024-12-31
+order_status: DELIVERED | RETURNED | ALL    // mặc định: DELIVERED</div>
+          </div>
+          <div class="ep-sec">
+            <div class="ep-sec-t">Response 200</div>
+            <div class="code">{
+  "total_revenue": 1250000000,
+  "total_orders": 850,
+  "total_devices_sold": 870,
+  "filter": {
+    "from": "2024-01-01",
+    "to": "2024-12-31",
+    "order_status": "DELIVERED"
+  },
+  "chart": [
+    { "date": "2024-11-01", "revenue": 150000000, "order_count": 10 }
+  ]
+}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ep">
+        <div class="ep-hdr" onclick="toggle(this)">
+          <span class="method GET">GET</span>
+          <span class="ep-path">/api/admin/reports/top-products</span>
+          <span class="ep-desc">Top sản phẩm bán chạy</span>
+          <span class="badge b-admin">Admin</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="ep-body">
+          <div class="ep-sec">
+            <div class="ep-sec-t">Query Params</div>
+            <div class="code">limit: 10, from, to, brand</div>
+          </div>
+          <div class="ep-sec">
+            <div class="ep-sec-t">Response 200</div>
+            <div class="code">[
+  {
+    "rank": 1,
+    "product_id": 1,
+    "product_name": "iPhone 16 Pro",
+    "brand": "Apple",
+    "product_variant_id": 5,
+    "color": "Black Titanium",
+    "storage_capacity": 128,
+    "units_sold": 120,
+    "revenue": 3598800000,
+    "percentage": 28.8
+  }
+]</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grp">
+      <div class="grp-title">Quản lý Voucher</div>
+
+      <div class="ep">
+        <div class="ep-hdr" onclick="toggle(this)">
+          <span class="method POST">POST</span>
+          <span class="ep-path">/api/admin/vouchers</span>
+          <span class="ep-desc">Tạo voucher mới</span>
+          <span class="badge b-admin">Admin</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="ep-body">
+          <div class="ep-sec">
+            <div class="ep-sec-t">Request Body</div>
+            <div class="code">{
+  "voucher_code": "GIAM20",
+  "discount_percentage": 20.0,
+  "start_date": "2024-01-01T00:00:00",
+  "end_date": "2024-12-31T23:59:59",
+  "usage_limit": 100,
+  "apply_condition": {
+    "min_value": 10000000,
+    "product_variant_ids": [5, 6, 7]    // để trống = áp dụng tất cả
+  }
+}</div>
+          </div>
+          <div class="ep-sec">
+            <div class="ep-sec-t">Response 201</div>
+            <div class="code">{
+  "voucher_id": 2,
+  "voucher_code": "GIAM20",
+  "discount_percentage": 20.0,
+  "start_date": "2024-01-01T00:00:00",
+  "end_date": "2024-12-31T23:59:59",
+  "usage_limit": 100
+}</div>
+          </div>
+          <div class="ep-sec">
+            <div class="ep-sec-t">Responses</div>
+            <div class="resp-row"><span class="s-ok">201</span><span class="arrow">→</span>Tạo thành công</div>
+            <div class="resp-row"><span class="s-err">409</span><span class="arrow">→</span>Mã voucher_code đã tồn tại</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ep">
+        <div class="ep-hdr" onclick="toggle(this)">
+          <span class="method PATCH">PATCH</span>
+          <span class="ep-path">/api/admin/vouchers/:voucher_id/extend</span>
+          <span class="ep-desc">Gia hạn voucher</span>
+          <span class="badge b-admin">Admin</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="ep-body">
+          <div class="ep-sec">
+            <div class="ep-sec-t">Request Body</div>
+            <div class="code">{
+  "end_date": "2025-06-30T23:59:59",
+  "usage_limit": 200    // tuỳ chọn — tăng thêm lượt dùng
+}</div>
+          </div>
+          <div class="ep-sec">
+            <div class="ep-sec-t">Responses</div>
+            <div class="resp-row"><span class="s-ok">200</span><span class="arrow">→</span>Gia hạn thành công</div>
+            <div class="resp-row"><span class="s-err">404</span><span class="arrow">→</span>Voucher không tồn tại</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ==================== AUTH ==================== -->
+  <div id="auth" class="section">
+
+    <div class="grp">
+      <div class="grp-title">Xác thực</div>
+
+      <div class="ep">
+        <div class="ep-hdr open" onclick="toggle(this)">
+          <span class="method POST">POST</span>
+          <span class="ep-path">/api/auth/register</span>
+          <span class="ep-desc">Đăng ký tài khoản</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="ep-body open">
+          <div class="ep-sec">
+            <div class="ep-sec-t">Request Body</div>
+            <div class="code">{
+  "username": "nguyenvana",
+  "email": "a@example.com",
+  "phone_number": "0912345678",
+  "password": "Abc@12345"
+}</div>
+          </div>
+          <div class="ep-sec">
+            <div class="ep-sec-t">Response 201</div>
+            <div class="code">{
+  "user_id": 3,
+  "username": "nguyenvana",
+  "email": "a@example.com",
+  "role": "CUSTOMER"
+}</div>
+          </div>
+          <div class="ep-sec">
+            <div class="ep-sec-t">Responses</div>
+            <div class="resp-row"><span class="s-ok">201</span><span class="arrow">→</span>Đăng ký thành công</div>
+            <div class="resp-row"><span class="s-err">409</span><span class="arrow">→</span>Email hoặc username đã tồn tại</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ep">
+        <div class="ep-hdr open" onclick="toggle(this)">
+          <span class="method POST">POST</span>
+          <span class="ep-path">/api/auth/login</span>
+          <span class="ep-desc">Đăng nhập</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="ep-body open">
+          <div class="ep-sec">
+            <div class="ep-sec-t">Request Body</div>
+            <div class="code">{
+  "username": "nguyenvana",
+  "password": "Abc@12345"
+}</div>
+          </div>
+          <div class="ep-sec">
+            <div class="ep-sec-t">Response 200</div>
+            <div class="code">{
+  "access_token": "eyJ...",     // JWT, hết hạn 1h
+  "refresh_token": "eyJ...",    // hết hạn 30d
+  "user": {
+    "user_id": 3,
+    "username": "nguyenvana",
+    "role": "CUSTOMER"           // ADMIN | CUSTOMER | EMPLOYEE
+  }
+}</div>
+          </div>
+          <div class="ep-sec">
+            <div class="ep-sec-t">Responses</div>
+            <div class="resp-row"><span class="s-ok">200</span><span class="arrow">→</span>Đăng nhập thành công</div>
+            <div class="resp-row"><span class="s-err">401</span><span class="arrow">→</span>Sai username hoặc mật khẩu</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ep">
+        <div class="ep-hdr" onclick="toggle(this)">
+          <span class="method POST">POST</span>
+          <span class="ep-path">/api/auth/refresh</span>
+          <span class="ep-desc">Làm mới access token</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="ep-body">
+          <div class="ep-sec">
+            <div class="ep-sec-t">Request Body</div>
+            <div class="code">{ "refresh_token": "eyJ..." }</div>
+          </div>
+          <div class="ep-sec">
+            <div class="ep-sec-t">Response 200</div>
+            <div class="code">{ "access_token": "eyJ..." }</div>
+          </div>
+          <div class="ep-sec">
+            <div class="ep-sec-t">Responses</div>
+            <div class="resp-row"><span class="s-ok">200</span><span class="arrow">→</span>Token mới đã cấp</div>
+            <div class="resp-row"><span class="s-err">401</span><span class="arrow">→</span>refresh_token hết hạn hoặc không hợp lệ</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ep">
+        <div class="ep-hdr" onclick="toggle(this)">
+          <span class="method POST">POST</span>
+          <span class="ep-path">/api/auth/logout</span>
+          <span class="ep-desc">Đăng xuất (vô hiệu hóa refresh token)</span>
+          <span class="badge b-auth">Auth</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="ep-body">
+          <div class="ep-sec">
+            <div class="ep-sec-t">Mô tả</div>
+            <div class="code">Vô hiệu hóa refresh_token trên server (blacklist hoặc xóa).
+Response 200: { "message": "Đăng xuất thành công" }</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="grp">
+      <div class="grp-title">Quy ước chung</div>
+      <div class="ep">
+        <div class="ep-hdr" onclick="toggle(this)">
+          <span class="ep-path" style="font-family:var(--font);font-size:13px">Base URL &amp; Headers &amp; Enums</span>
+          <span class="chevron">▼</span>
+        </div>
+        <div class="ep-body">
+          <div class="ep-sec">
+            <div class="ep-sec-t">Base URL</div>
+            <div class="code">https://api.phoneshop.vn/api/v1</div>
+          </div>
+          <div class="ep-sec">
+            <div class="ep-sec-t">Headers bắt buộc</div>
+            <div class="code">Content-Type: application/json
+Authorization: Bearer {access_token}   // với các endpoint có badge Auth/Admin/Staff</div>
+          </div>
+          <div class="ep-sec">
+            <div class="ep-sec-t">Cấu trúc lỗi chuẩn</div>
+            <div class="code">{
+  "error": {
+    "code": "PRODUCT_NOT_FOUND",
+    "message": "Sản phẩm không tồn tại",
+    "status": 404
+  }
+}</div>
+          </div>
+          <div class="ep-sec">
+            <div class="ep-sec-t">Enum tham chiếu</div>
+            <div class="enum-grid">
+              <div class="enum-item">
+                <div class="enum-label">order_status</div>
+                <div class="enum-vals">
+                  <span class="enum-val">WAIT</span><span class="enum-val">CONFIRMED</span><span class="enum-val">PROCESSING</span><span class="enum-val">SHIPPING</span><span class="enum-val">DELIVERED</span><span class="enum-val">RETURNED</span>
+                </div>
+              </div>
+              <div class="enum-item">
+                <div class="enum-label">payment_method</div>
+                <div class="enum-vals">
+                  <span class="enum-val">COD</span><span class="enum-val">ShopeePay</span><span class="enum-val">ATM</span>
+                </div>
+              </div>
+              <div class="enum-item">
+                <div class="enum-label">device_status</div>
+                <div class="enum-vals">
+                  <span class="enum-val">AVAILABLE</span><span class="enum-val">RESERVED</span><span class="enum-val">SHIPPING</span><span class="enum-val">SOLD</span><span class="enum-val">REFUND</span><span class="enum-val">ERROR</span>
+                </div>
+              </div>
+              <div class="enum-item">
+                <div class="enum-label">role</div>
+                <div class="enum-vals">
+                  <span class="enum-val">ADMIN</span><span class="enum-val">CUSTOMER</span><span class="enum-val">EMPLOYEE</span>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+  function showTab(id, el) {
+    document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+    document.getElementById(id).classList.add('active');
+    el.classList.add('active');
+  }
+  function toggle(header) {
+    header.nextElementSibling.classList.toggle('open');
+    header.classList.toggle('open');
+  }
+</script>
+</body>
+</html>

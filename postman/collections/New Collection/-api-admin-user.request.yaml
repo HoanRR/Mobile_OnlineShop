@@ -1,0 +1,27 @@
+$kind: http-request
+name: /api/admin/user
+url: http://localhost:8080/api/admin/user
+method: POST
+body:
+  type: json
+  content: "{ \r
+
+    \"full_name\" : \"Nguyen Van Vien\",\r
+
+    \  \"username\": \"nhanvien01\",\r
+
+    \  \"email\": \"nv01@phoneshop.vn\",\r
+
+    \  \"phone_number\": \"0911111112\",\r
+
+    \r
+
+    \  \"role\": \"EMPLOYEE\"\r
+
+    }"
+auth:
+  credentials:
+    - key: token
+      value: eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsInNjb3BlIjoiQURNSU4iLCJpc3MiOiJwaG9uZXNob3Audm4iLCJleHAiOjE3NzcyMDU3NzksImlhdCI6MTc3NzE5ODU3OSwidXNlcklkIjoxLCJqdGkiOiI4ODllN2ZkMi03NmUzLTQ3Y2QtOGMxNC1mOGM2YWZjYzdkMDgifQ.4gAjnyCiW6jr0GidmCUkOZdPFRbDG_UDlxVl4INaKs8B3cBwnLlV0BPXC-Kw9UEelGX0b9g_W-9OM1lX4ITEVA
+  type: bearer
+order: 4503545769859159

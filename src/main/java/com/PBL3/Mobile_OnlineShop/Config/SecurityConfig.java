@@ -29,7 +29,10 @@ public class SecurityConfig {
             "/api/auth/register",
             "/api/auth/refresh",
             "/api/auth/introspect",
-            "/api/auth/logout"
+            "/api/auth/logout",
+            "/api/products",
+            "/api/products/{product_id}"
+
     };
 
     @Bean

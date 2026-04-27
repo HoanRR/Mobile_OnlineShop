@@ -7,17 +7,11 @@ import com.PBL3.Mobile_OnlineShop.dto.request.AddProductRequest;
 import com.PBL3.Mobile_OnlineShop.dto.request.ImportDevicesRequest;
 import com.PBL3.Mobile_OnlineShop.dto.request.UpdateProductRequest;
 import com.PBL3.Mobile_OnlineShop.dto.request.VariantRequest;
-import com.PBL3.Mobile_OnlineShop.dto.response.GetDevicesResponse;
-import com.PBL3.Mobile_OnlineShop.dto.response.ImportDevicesResponse;
-import com.PBL3.Mobile_OnlineShop.dto.response.DevicesResponse;
-import com.PBL3.Mobile_OnlineShop.dto.response.WarrantyResponse;
+import com.PBL3.Mobile_OnlineShop.dto.response.*;
+import com.PBL3.Mobile_OnlineShop.entity.*;
 import com.PBL3.Mobile_OnlineShop.enums.DeviceStatus;
 import com.PBL3.Mobile_OnlineShop.mapper.ProductMapper;
 import com.PBL3.Mobile_OnlineShop.mapper.ProductVariantMapper;
-import com.PBL3.Mobile_OnlineShop.entity.Device;
-import com.PBL3.Mobile_OnlineShop.entity.Product;
-import com.PBL3.Mobile_OnlineShop.entity.ProductVariant;
-import com.PBL3.Mobile_OnlineShop.entity.Warranty;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
@@ -27,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 @Slf4j
 @Service
@@ -156,6 +151,97 @@ public class ProductService {
 
         // 3. Xóa product (cascade sẽ tự xóa các ProductVariant tương ứng)
         productRepository.delete(product);
+    }
+
+    @Transactional(readOnly = true)
+    public PaginatedResponse<ProductViewResponse> GetProductView (
+            Integer page,
+            Integer limit,
+            String brand,
+            String keyword,
+            String sort_by,
+            String order)
+    {
+        sort_by = sort_by.equals("price") ? "min_price" : sort_by;
+
+        Set<String> ALLOWED_SORT_COLUMNS = Set.of(
+                "min_price", "avg_rating", "product_name"
+        );
+
+        if (!ALLOWED_SORT_COLUMNS.contains(sort_by)) sort_by = "min_price";
+        String sortOrder = "desc".equalsIgnoreCase(order) ? "DESC" : "ASC";
+
+        int offset = (page-1) *limit;
+
+        String brandParam   = (brand   != null && !brand.isBlank())   ? brand   : null;
+        String keywordParam = (keyword != null && !keyword.isBlank()) ? keyword : null;
+
+        List<ProductSummaryProjection> raw = productRepository.findAllWithFilters(brandParam, keywordParam, limit, offset, sort_by, sortOrder);
+
+        long total = productRepository.countWithFilters(brandParam, keywordParam);
+
+        List<ProductViewResponse> data = raw.stream()
+                .map(p -> ProductViewResponse.builder()
+                        .product_id(p.getProduct_id())
+                        .product_name(p.getProduct_name())
+                        .brand(p.getBrand())
+                        .product_image_link(p.getProduct_image_link())
+                        .min_price(p.getMin_price())
+                        .avg_rating(p.getAvg_rating())
+                        .build()
+                )
+                .toList();
+
+        return PaginatedResponse.<ProductViewResponse>builder()
+                .data(data)
+                .pagination(new PaginatedResponse.PaginationMeta(page, limit, total))
+                .build();
+    }
+
+    @Transactional
+    public ProductDetailResponse GetProductDetail(Long product_id){
+        Product product = productRepository.findByProductId(product_id).orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND));
+        List<ProductVariantResponse>  variants = product.getVariants().stream()
+                .map(pv -> ProductVariantResponse
+                        .builder()
+                        .productVariantId(pv.getProductVariantId())
+                        .price(pv.getPrice())
+                        .ram(pv.getRam())
+                        .chip(pv.getChip())
+                        .variantImageLink(pv.getVariantImageLink())
+                        .batteryCapacity(pv.getBatteryCapacity())
+                        .storageCapacity(pv.getStorageCapacity())
+                        .totalAvailable(pv.getTotalAvailable())
+                        .color(pv.getColor())
+                        .build()).toList();
+        List<ReviewResponse> reviews = new ArrayList<>();
+        for (ProductReview pr : product.getReviews()){
+            ReviewResponse.variantInfo variantInfo = ReviewResponse.variantInfo
+                    .builder()
+                    .product_variant_id(pr.getProductVariant().getProductVariantId())
+                    .storage_capacity(pr.getProductVariant().getStorageCapacity())
+                    .color(pr.getProductVariant().getColor())
+                    .build();
+            ReviewResponse reviewResponse = ReviewResponse
+                    .builder()
+                    .product_review_id(pr.getProductReviewId())
+                    .user_id(pr.getUser().getUserId())
+                    .review_date(pr.getReviewDate().toString())
+                    .rating(pr.getRating())
+                    .comment(pr.getComment())
+                    .is_purchased(pr.getIsPurchased())
+                    .variant(variantInfo)
+                    .build();
+            reviews.add(reviewResponse);
+        }
+        return ProductDetailResponse.builder()
+                .product_id(product.getProductId())
+                .brand(product.getBrand())
+                .product_name(product.getProductName())
+                .product_image_link(product.getProductImageLink())
+                .variant(variants)
+                .review(reviews)
+                .build();
     }
 
 }

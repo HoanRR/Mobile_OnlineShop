@@ -1,0 +1,18 @@
+$kind: http-request
+name: /api/admin/reports/revenue
+url: http://localhost:8080/api/admin/reports/revenue?period=day&from=2025-03-01&to=2025-04-30&order_status=DELIVERED
+method: GET
+queryParams:
+  - key: period
+    value: day
+  - key: from
+    value: 2025-03-01
+  - key: to
+    value: 2025-04-30
+  - key: order_status
+    value: DELIVERED
+auth:
+  type: bearer
+  credentials:
+    token: eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsInNjb3BlIjoiQURNSU4iLCJpc3MiOiJwaG9uZXNob3Audm4iLCJleHAiOjE3NzcyMDU3NzksImlhdCI6MTc3NzE5ODU3OSwidXNlcklkIjoxLCJqdGkiOiI4ODllN2ZkMi03NmUzLTQ3Y2QtOGMxNC1mOGM2YWZjYzdkMDgifQ.4gAjnyCiW6jr0GidmCUkOZdPFRbDG_UDlxVl4INaKs8B3cBwnLlV0BPXC-Kw9UEelGX0b9g_W-9OM1lX4ITEVA
+order: 4503439531922555
