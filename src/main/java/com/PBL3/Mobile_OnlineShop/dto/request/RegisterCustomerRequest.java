@@ -15,6 +15,7 @@ public class RegisterCustomerRequest {
     private String username;
 
     @NotBlank(message = "Họ và tên không được để trống")
+    @JsonProperty("full_name")
     private String FullName;
 
     @NotBlank(message = "Email không được để trống")
