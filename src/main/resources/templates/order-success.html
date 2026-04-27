@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Đặt hàng thành công - HT Mobile</title>
+    <link rel="stylesheet" href="../static/css/base.css">
+    <link rel="stylesheet" href="../static/css/header.css">
+    <link rel="stylesheet" href="../static/css/order-success.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+
+<body>
+    <!-- Header Placeholder (Tái sử dụng header.html) -->
+    <div id="header-placeholder"></div>
+
+    <main class="noi-dung">
+        <div class="success-container">
+            <div class="icon-success">
+                <i class="fa-solid fa-check-circle"></i>
+            </div>
+            
+            <h1 class="success-title">Đặt hàng thành công!</h1>
+            <p class="success-subtitle">Cảm ơn bạn đã mua sắm tại phân hệ HT Mobile.</p>
+            
+            <div class="order-info-card">
+                <h3>Thông tin đơn hàng</h3>
+                <div class="order-detail-row">
+                    <span>Mã đơn hàng:</span>
+                    <span class="highlight">#HTM-9824X</span>
+                </div>
+                <div class="order-detail-row">
+                    <span>Ngày đặt:</span>
+                    <span id="current-date"></span>
+                </div>
+                <div class="order-detail-row">
+                    <span>Phương thức thanh toán:</span>
+                    <span>Thanh toán khi nhận hàng (COD)</span>
+                </div>
+                <div class="order-detail-row total-row">
+                    <span>Tổng thanh toán:</span>
+                    <span class="price-total">Dự kiến tính theo giỏ</span>
+                </div>
+            </div>
+
+            <div class="success-actions">
+                <a href="index.html" class="btn-primary"><i class="fa-solid fa-cart-shopping"></i> Tiếp tục mua sắm</a>
+                <a href="#" class="btn-secondary" onclick="alert('Tính năng tra cứu đơn hàng bằng số điện thoại đang cập nhật!')"><i class="fa-solid fa-truck-fast"></i> Tra cứu trạng thái</a>
+            </div>
+        </div>
+    </main>
+
+    <!-- Footer Placeholder (Tái sử dụng footer.html) -->
+    <div id="footer-placeholder"></div>
+
+    <script src="../static/js/common.js"></script>
+    <script>
+        // Set dynamic date
+        const today = new Date();
+        const dateString = today.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' }) + ' ' + today.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
+        document.getElementById('current-date').innerText = dateString;
+    </script>
+</body>
+
+</html>

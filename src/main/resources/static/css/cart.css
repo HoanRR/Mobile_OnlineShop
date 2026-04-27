@@ -27,7 +27,8 @@
 .cart-item img {
     width: 100px;
     height: 100px;
-    /*object-fit: contain;*/
+    object-fit: contain;
+    margin: 0 15px;
 }
 
 .item-info {
@@ -143,4 +144,47 @@ label[for="select-all"] {
     padding: 15px 0;
     border-bottom: 1px solid #eee;
     gap: 15px;
+}
+
+
+.discount-section {
+    margin: 15px 0;
+    padding: 10px 0;
+    border-top: 1px dashed #eee;
+}
+
+.input-group {
+    display: flex;
+    gap: 10px;
+}
+
+.input-group input {
+    flex: 1;
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+#btn-apply-coupon {
+    padding: 8px 15px;
+    background: #333;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+}
+
+#btn-apply-coupon:hover {
+    background: #000;
+}
+
+#discount-message {
+    font-size: 12px;
+    margin-top: 5px;
+}
+
+.discount-line {
+    color: #28a745; 
+    font-weight: 500;
 }
