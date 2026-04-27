@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Tổng quan - HT Mobile Staff</title>
+    <link rel="stylesheet" href="../../static/staff/css/staff-base.css">
+    <link rel="stylesheet" href="../../static/staff/css/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        /* --- CSS CHO CÁC THẺ THỐNG KÊ (KPI CARDS) --- */
+        .dashboard-cards { display: flex; gap: 20px; margin-bottom: 30px; flex-wrap: wrap; }
+        .card { 
+            flex: 1; min-width: 200px; background-color: #222; padding: 20px; border-radius: 12px; 
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3); border-left: 5px solid #e50000;
+            display: flex; align-items: center; justify-content: space-between;
+        }
+        .card-info h4 { color: #aaa; margin: 0 0 10px 0; font-size: 14px; text-transform: uppercase; }
+        .card-info h2 { color: white; margin: 0; font-size: 28px; }
+        .card-icon { font-size: 40px; color: #444; }
+
+        /* --- CSS CHO KHU VỰC BIỂU ĐỒ & BẢNG XẾP HẠNG --- */
+        .dashboard-row { display: flex; gap: 20px; flex-wrap: wrap; }
+        .chart-container { 
+            flex: 2; min-width: 400px; background-color: #222; padding: 20px; 
+            border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); 
+        }
+        .top-products { 
+            flex: 1; min-width: 300px; background-color: #222; padding: 20px; 
+            border-radius: 12px; box-shadow: 0 5px 15px rgba(0,0,0,0.3); 
+        }
+        .section-title { color: #e50000; margin-top: 0; margin-bottom: 20px; font-size: 18px; border-bottom: 1px solid #444; padding-bottom: 10px; }
+        
+        /* Bảng Top Sản Phẩm */
+        .top-table { width: 100%; border-collapse: collapse; }
+        .top-table th, .top-table td { padding: 12px 10px; text-align: left; border-bottom: 1px solid #333; color: #ccc; }
+        .top-table th { color: #888; font-size: 13px; text-transform: uppercase; }
+        .rank-1 { color: #FFD700; font-weight: bold; font-size: 18px;} /* Vàng */
+        .rank-2 { color: #C0C0C0; font-weight: bold; font-size: 16px;} /* Bạc */
+        .rank-3 { color: #CD7F32; font-weight: bold; font-size: 16px;} /* Đồng */
+    </style>
+</head>
+<body>
+    <div class="Staff-wrapper">
+        <div id="sidebar-container"></div>
+
+        <main class="Staff-content">
+            <div id="header-container"></div>
+
+            <div class="dashboard-cards">
+                <div class="card">
+                    <div class="card-info">
+                        <h4>Tổng Doanh Thu</h4>
+                        <h2 style="color: #4caf50;">1.250M ₫</h2>
+                    </div>
+                    <div class="card-icon"><i class="fa-solid fa-sack-dollar"></i></div>
+                </div>
+                <div class="card">
+                    <div class="card-info">
+                        <h4>Đơn Hàng Mới</h4>
+                        <h2>125</h2>
+                    </div>
+                    <div class="card-icon"><i class="fa-solid fa-boxes-packing"></i></div>
+                </div>
+                <div class="card">
+                    <div class="card-info">
+                        <h4>Sản Phẩm Đang Bán</h4>
+                        <h2>48</h2>
+                    </div>
+                    <div class="card-icon"><i class="fa-solid fa-mobile-screen"></i></div>
+                </div>
+                <div class="card">
+                    <div class="card-info">
+                        <h4>Khách Hàng</h4>
+                        <h2>1,024</h2>
+                    </div>
+                    <div class="card-icon"><i class="fa-solid fa-users"></i></div>
+                </div>
+            </div>
+
+            <div class="dashboard-row">
+                <div class="chart-container">
+                    <h3 class="section-title">Biểu đồ doanh thu 7 ngày qua</h3>
+                    <canvas id="revenueChart" height="120"></canvas>
+                </div>
+
+                <div class="top-products">
+                    <h3 class="section-title">Top 5 Bán Chạy Nhất</h3>
+                    <table class="top-table">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Tên sản phẩm</th>
+                                <th>Đã bán</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="rank-1">1</td>
+                                <td><strong style="color: white;">iPhone 15 Pro Max</strong></td>
+                                <td style="color: #4caf50; font-weight: bold;">150</td>
+                            </tr>
+                            <tr>
+                                <td class="rank-2">2</td>
+                                <td><strong style="color: white;">Samsung S24 Ultra</strong></td>
+                                <td style="color: #4caf50; font-weight: bold;">120</td>
+                            </tr>
+                            <tr>
+                                <td class="rank-3">3</td>
+                                <td><strong style="color: white;">Xiaomi 14 Pro</strong></td>
+                                <td style="color: #4caf50; font-weight: bold;">95</td>
+                            </tr>
+                            <tr>
+                                <td>4</td>
+                                <td>iPhone 14 Pro Max</td>
+                                <td>80</td>
+                            </tr>
+                            <tr>
+                                <td>5</td>
+                                <td>Samsung Z Fold 5</td>
+                                <td>45</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        const ctx = document.getElementById('revenueChart').getContext('2d');
+        const revenueChart = new Chart(ctx, {
+            type: 'bar', // Chọn loại biểu đồ cột
+            data: {
+                labels: ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'CN'],
+                datasets: [{
+                    label: 'Doanh thu (Triệu VNĐ)',
+                    data: [120, 190, 150, 220, 180, 250, 300], // Dữ liệu giả định
+                    backgroundColor: '#e50000', // Màu cột đỏ chuẩn HT Mobile
+                    borderRadius: 5
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { labels: { color: '#ccc' } }
+                },
+                scales: {
+                    y: { 
+                        beginAtZero: true,
+                        grid: { color: '#333' },
+                        ticks: { color: '#888' }
+                    },
+                    x: {
+                        grid: { display: false },
+                        ticks: { color: '#888' }
+                    }
+                }
+            }
+        });
+    </script>
+    <script src="../../static/staff/js/staff-base.js"></script>
+    <script src="../../static/staff/js/dashboard.js"></script>
+</body>
+</html>

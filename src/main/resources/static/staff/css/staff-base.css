@@ -1,0 +1,62 @@
+﻿/* =========================================
+   STAFF BASE - STYLING CHUNG (FIX CHO CLASS STAFF-)
+========================================= */
+* { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+
+body { background-color: #1a1a1a; color: white; display: block; overflow-x: hidden; margin: 0; padding: 0; }
+
+.admin-wrapper, .Staff-wrapper { display: block; width: 100%; min-height: 100vh; position: relative; }
+
+/* --- SIDEBAR --- */
+.admin-sidebar { 
+    width: 260px; height: 100vh; background-color: #222; 
+    position: fixed; top: 0; left: 0; border-right: 1px solid #333; 
+    overflow-y: auto; z-index: 1000; 
+}
+.admin-logo { padding: 30px 20px; font-size: 24px; font-weight: bold; text-align: center; background-color: #e50000; color: white; letter-spacing: 1px; }
+.admin-sidebar ul { list-style: none; padding: 20px 10px; margin: 0; }
+.admin-sidebar ul li { margin-bottom: 5px; }
+.admin-sidebar ul li a { display: flex; align-items: center; gap: 12px; padding: 15px; color: #ccc; text-decoration: none; border-radius: 12px; transition: 0.3s; }
+.admin-sidebar ul li.active a, .admin-sidebar ul li a:hover { background: #e50000; color: white; }
+
+/* --- CONTENT --- */
+.admin-content, .Staff-content { 
+    display: block;
+    margin-left: 260px; 
+    width: calc(100% - 260px); 
+    min-height: 100vh; 
+    padding: 40px; 
+    box-sizing: border-box; 
+    overflow-x: hidden; 
+}
+.content-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px; border-bottom: 1px solid #333; padding-bottom: 20px; }
+.content-header h2 { font-size: 24px; color: #fff; }
+.user-info { color: #e50000; font-weight: bold; }
+
+/* --- BẢNG DỮ LIỆU --- */
+.table-container { background: #2a2a2a; padding: 25px; border-radius: 20px; overflow-x: auto; margin-bottom: 30px; margin-top: 20px; }
+.admin-table, .Staff-table { width: 100%; border-collapse: collapse; text-align: left; }
+.admin-table th, .Staff-table th { padding: 15px; color: #e50000; border-bottom: 1px solid #444; font-size: 14px; text-transform: uppercase; }
+.admin-table td, .Staff-table td { padding: 15px; color: #eee; border-bottom: 1px solid #333; vertical-align: middle; }
+
+/* --- BUTTONS & STATUS --- */
+.btn-add { background-color: #e50000; color: white; padding: 10px 20px; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; transition: 0.3s; margin-bottom: 15px; }
+.btn-add:hover { background-color: #cc0000; }
+
+.action-btns { display: flex; gap: 8px; }
+.action-btns button { border: none; padding: 8px 12px; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+.btn-edit { background: #444; color: #fff; } 
+.btn-edit:hover { background: #e50000; }
+.btn-delete { background: #444; color: #ff4444; } 
+.btn-delete:hover { background: #ff4444; color: white; }
+
+.badge { padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; }
+.badge-active { background-color: #4caf50; color: white; }
+.badge-expired { background-color: #f44336; color: white; }
+
+/* Tùy chỉnh Staff */
+.filter-bar { display: flex; gap: 15px; margin-bottom: 20px; margin-top: 20px; background-color: #222; padding: 15px; border-radius: 10px; }
+
+/* Logout Button */
+.logout-btn { color: #ff4d4d !important; margin-top: 20px; }
+.logout-btn:hover { background-color: rgba(255, 77, 77, 0.1) !important; color: #ff4d4d !important; }
