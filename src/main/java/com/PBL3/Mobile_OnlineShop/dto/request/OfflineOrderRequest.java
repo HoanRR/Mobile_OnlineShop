@@ -4,13 +4,11 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import java.util.List;
 
-@Getter
-@Setter
+@Data
 public class OfflineOrderRequest {
 
     @NotBlank(message = "Tên người nhận không được trống")
@@ -36,8 +34,7 @@ public class OfflineOrderRequest {
     @NotEmpty(message = "Danh sách IMEI không được trống")
     private List<ImeiRequest> items;
 
-    @Getter
-    @Setter
+    @Data
     public static class ImeiRequest {
         @NotBlank(message = "IMEI không được trống")
         private String imei;

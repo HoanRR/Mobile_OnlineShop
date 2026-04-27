@@ -9,6 +9,11 @@ import org.springframework.http.HttpStatus;
 public enum ErrorCode {
 
     // Thêm vào trong enum ErrorCode hiện tại của bạn
+    CART_NOT_FOUND("CART_NOT_FOUND", "Không tìm thấy giỏ hàng của bạn", HttpStatus.NOT_FOUND), // 404
+    CART_DETAIL_NOT_FOUND("CART_DETAIL_NOT_FOUND", "Sản phẩm không tồn tại trong giỏ hàng của bạn",
+            HttpStatus.NOT_FOUND), // 404
+    VARIANT_NOT_FOUND("VARIANT_NOT_FOUND", "Không tìm thấy phân loại sản phẩm", HttpStatus.NOT_FOUND), // 404
+    OUT_OF_STOCK("OUT_OF_STOCK", "Sản phẩm đã hết hàng hoặc không đủ số lượng yêu cầu", HttpStatus.BAD_REQUEST), // 400
     WARRANTY_NOT_ACTIVATED("WARRANTY_NOT_ACTIVATED", "Thiết bị chưa được kích hoạt bảo hành", HttpStatus.BAD_REQUEST), // 400
     WARRANTY_EXPIRED("WARRANTY_EXPIRED", "Hết hạn bảo hành", HttpStatus.UNPROCESSABLE_ENTITY), // 422
     IMEI_NOT_FOUND("IMEI_NOT_FOUND", "IMEI không tồn tại", HttpStatus.NOT_FOUND), // 404
