@@ -4,6 +4,8 @@ import com.PBL3.Mobile_OnlineShop.dto.response.OrderHistoryResponse;
 import com.PBL3.Mobile_OnlineShop.entity.Order;
 import com.PBL3.Mobile_OnlineShop.entity.User;
 import com.PBL3.Mobile_OnlineShop.enums.OrderStatus;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -16,6 +18,19 @@ import java.util.Optional;
 
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long> {
+
+    @Query("SELECT o FROM Order o WHERE o.user = :user " +
+            "AND (:status IS NULL OR o.orderStatus = :status) " +
+            "ORDER BY o.orderDate DESC")
+    Page<Order> findByUserWithStatusFilter(@Param("user") User user,
+                                           @Param("status") OrderStatus status,
+                                           Pageable pageable);
+
+    @Query("SELECT o FROM Order o WHERE o.user = :user " +
+            "AND (o.orderId = :orderId) ")
+    Optional<Order> findByUserWithIdFilter(@Param("user") User user,
+                                           @Param("orderId") Long orderId);
+
     @Query("SELECT COUNT(o), SUM(o.totalAmount) FROM Order o " +
             "WHERE o.orderDate >= :fromDate AND o.orderDate <= :toDate " +
             "AND (:status IS NULL OR o.orderStatus = :status)")
@@ -36,3 +51,4 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
                                        @Param("statusStr") String statusStr,
                                        @Param("sqlFormat") String sqlFormat);
 }
+

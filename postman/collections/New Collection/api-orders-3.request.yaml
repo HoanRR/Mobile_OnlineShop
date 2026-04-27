@@ -1,0 +1,9 @@
+$kind: http-request
+name: api/orders/3
+url: http://localhost:8080/api/orders/3
+method: GET
+auth:
+  type: bearer
+  credentials:
+    token: eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJsZXZhbmMiLCJzY29wZSI6IkNVU1RPTUVSIiwiaXNzIjoicGhvbmVzaG9wLnZuIiwiZXhwIjoxNzc3MzEyOTEwLCJpYXQiOjE3NzczMDU3MTAsInVzZXJJZCI6NCwianRpIjoiNDgzZGYxYmQtYjViMi00ZmExLThiZGItM2E1ZDQ2ZGEyYTUyIn0.4tU4zf0KVDytxXlsTw4bU5KlVlr0PdJWEi--v1GHMWcCvg5no-QYb6pOmzKsFWlB0tqnzfEJq2MrDlhwN_x9xg
+order: 4503589136359667

@@ -3,7 +3,6 @@ package com.PBL3.Mobile_OnlineShop.dto.response;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Data
@@ -14,6 +13,9 @@ import java.time.LocalDateTime;
 public class OrderHistoryResponse {
     Long order_id;
     String order_status;
-    Double total_amount;
     LocalDateTime order_date;
+    Double total_amount;
+    Double discount_amount;
+    String payment_method;
+    Boolean is_paid;
 }
