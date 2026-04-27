@@ -130,11 +130,8 @@ function themVaoGioHang(idSanPham) {
         });
     }
     
-        alert(`Thông tin ảnh sản phẩm ${JSON.stringify(gioHang)}`);
 
     localStorage.setItem('cart', JSON.stringify(gioHang));
 
-    alert(`Đã thêm ${sanPham.ten} vào giỏ hàng!`);
-    alert(`Thông tin ảnh sản phẩm ${sanPham.anh}`);
 
 }

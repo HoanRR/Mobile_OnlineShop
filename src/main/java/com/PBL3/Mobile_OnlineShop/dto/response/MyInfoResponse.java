@@ -1,5 +1,8 @@
 package com.PBL3.Mobile_OnlineShop.dto.response;
 
+
+import com.PBL3.Mobile_OnlineShop.enums.Role;
+
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -12,10 +15,11 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UserResponse {
+public class MyInfoResponse {
     Long userId;
     String username;
+    String name;
     String email;
     String phoneNumber;
-    String role;
+    Role roles;
 }
