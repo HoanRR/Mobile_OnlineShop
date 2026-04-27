@@ -6,6 +6,8 @@ import com.PBL3.Mobile_OnlineShop.Repository.ProductVariantRepository;
 import com.PBL3.Mobile_OnlineShop.Repository.VoucherRepository;
 import com.PBL3.Mobile_OnlineShop.dto.request.CreateVoucherRequest;
 import com.PBL3.Mobile_OnlineShop.dto.request.UpdateVoucherRequest;
+import com.PBL3.Mobile_OnlineShop.dto.request.ValidateVoucherRequest;
+import com.PBL3.Mobile_OnlineShop.dto.response.ValidateVoucherResponse;
 import com.PBL3.Mobile_OnlineShop.dto.response.VoucherResponse;
 import com.PBL3.Mobile_OnlineShop.entity.ApplyCondition;
 import com.PBL3.Mobile_OnlineShop.entity.ProductVariant;
@@ -125,6 +127,47 @@ public class VoucherService {
 
         voucherRepository.save(voucher);
 
+    }
+
+    @Transactional(readOnly = true)
+    public ValidateVoucherResponse validateVoucher(ValidateVoucherRequest request) {
+        // 1. Tìm voucher theo mã
+        Voucher voucher = voucherRepository.findByVoucherCode(request.getVoucherCode())
+                .orElseThrow(() -> new AppException(ErrorCode.VOUCHER_NOT_FOUND));
+
+        LocalDateTime now = LocalDateTime.now();
+
+        // 2. Kiểm tra thời hạn voucher
+        if (voucher.getStartDate() != null && now.isBefore(voucher.getStartDate())) {
+            throw new AppException(ErrorCode.VOUCHER_EXPIRED, "Voucher chưa bắt đầu");
+        }
+        if (voucher.getEndDate() != null && now.isAfter(voucher.getEndDate())) {
+            throw new AppException(ErrorCode.VOUCHER_EXPIRED, "Voucher đã hết hạn");
+        }
+
+        // 3. Kiểm tra điều kiện min_value
+        ApplyCondition condition = voucher.getApplyConditions();
+        if (condition != null && condition.getMinValue() != null) {
+            if (request.getOrderTotal() < condition.getMinValue()) {
+                throw new AppException(ErrorCode.VOUCHER_INVALID_MIN_VALUE,
+                        "Đơn hàng tối thiểu " + condition.getMinValue() + " để sử dụng voucher này");
+            }
+        }
+
+        // 4. Tính toán giảm giá
+        Double discountAmount = request.getOrderTotal() * (voucher.getDiscountPercentage() / 100);
+        Double finalTotal = request.getOrderTotal() - discountAmount;
+
+        return ValidateVoucherResponse.builder()
+                .valid(true)
+                .voucherId(voucher.getVoucherId())
+                .voucherCode(voucher.getVoucherCode())
+                .discountPercentage(voucher.getDiscountPercentage())
+                .discountAmount(discountAmount)
+                .finalTotal(finalTotal)
+                .endDate(voucher.getEndDate() != null ? voucher.getEndDate().toString() : null)
+                .usageLimit(voucher.getUsageLimit())
+                .build();
     }
 
 }

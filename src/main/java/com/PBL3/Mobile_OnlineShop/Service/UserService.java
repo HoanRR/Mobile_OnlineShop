@@ -24,6 +24,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.SecureRandom;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -46,13 +47,16 @@ public class UserService {
                 .role(user.getRole())
                 .username(user.getUsername())
                 .build();
-        List<OrderHistoryResponse> orderHistoryResponse = List.of();
+        List<OrderHistoryResponse> orderHistoryResponse = new ArrayList<>();
         for (Order order: user.getOrders()){
             OrderHistoryResponse OHReponse = OrderHistoryResponse.builder()
                     .order_id(order.getOrderId())
                     .order_date(order.getOrderDate())
                     .total_amount(order.getTotalAmount())
-                    .order_status(order.getOrderStatus().toString())
+                    .discount_amount(order.getDiscountAmount())
+                    .payment_method(order.getPaymentMethod())
+                    .is_paid(order.getIsPaid())
+                    .order_status(order.getOrderStatus() != null ? order.getOrderStatus().toString() : null)
                     .build();
             orderHistoryResponse.add(OHReponse);
         }
