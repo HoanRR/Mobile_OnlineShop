@@ -15,7 +15,7 @@ public class RegisterCustomerRequest {
     private String username;
 
     @NotBlank(message = "Họ và tên không được để trống")
-    private String FullName;
+    private String fullName;
 
     @NotBlank(message = "Email không được để trống")
     @Email(message = "Email không đúng định dạng")

@@ -21,5 +21,5 @@ public class MyInfoResponse {
     String name;
     String email;
     String phoneNumber;
-    Role roles;
+    Role role;
 }

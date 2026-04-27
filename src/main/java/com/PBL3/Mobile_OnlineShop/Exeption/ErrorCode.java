@@ -35,6 +35,7 @@ public enum ErrorCode {
     PRODUCT_HAS_ORDERS("PRODUCT_HAS_ORDERS", "Không thể xóa sản phẩm vì đã có đơn hàng liên quan", HttpStatus.CONFLICT),
     INVALID_DATA("INVALID_DATA", "Dữ liệu không hợp lệ", HttpStatus.UNPROCESSABLE_ENTITY),
     VOUCHER_NOT_FOUND("VOUCHER_NOT_FOUND", "Voucher không tồn tại", HttpStatus.NOT_FOUND),
+    INVALID_PASSWORD("INVALID_PASSWORD", "Mật khẩu không chính xác", HttpStatus.UNAUTHORIZED),
     ;
 
     private final String code;

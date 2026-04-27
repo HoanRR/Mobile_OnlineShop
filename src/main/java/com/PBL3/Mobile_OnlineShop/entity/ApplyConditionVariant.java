@@ -2,7 +2,6 @@ package com.PBL3.Mobile_OnlineShop.entity;
 
 import jakarta.persistence.*;
 
-import java.io.Serializable;
 
 @Entity
 @Table(name = "apply_condition_variant")

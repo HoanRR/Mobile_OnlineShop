@@ -35,7 +35,7 @@ public class User {
     String email;
 
     @NotBlank(message = "Họ và tên không được để trống")
-    String FullName;
+    String fullName;
 
     @NotBlank(message = "Số điện thoại không được để trống")
     @Pattern(regexp = "^(0|\\+84)[0-9]{9}$", message = "Số điện thoại không hợp lệ")
