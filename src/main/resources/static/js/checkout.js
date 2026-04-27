@@ -70,12 +70,10 @@ function xuLyDatHang() {
 
     //  dùng fetch API gọi POST request gửi cục JSON lên Spring Boot
 
-    alert(`Đặt hàng thành công!\nCảm ơn ${hoTen} đã mua sắm tại HT Mobile.\nĐơn hàng sẽ được giao đến: ${diaChi}`);
-
     //Xóa các sản phẩm ĐÃ MUA khỏi giỏ hàng gốc
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
     let newCart = cart.filter(item => !item.selected); // Chỉ giữ lại những món chưa mua
     localStorage.setItem('cart', JSON.stringify(newCart));
 
-    window.location.href = "index.html";
+    window.location.href = "order-success.html";
 }
