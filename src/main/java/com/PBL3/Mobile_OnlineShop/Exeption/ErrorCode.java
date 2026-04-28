@@ -32,7 +32,6 @@ public enum ErrorCode {
     PRODUCT_NOT_FOUND("PRODUCT_NOT_FOUND", "Sản phẩm không tồn tại", HttpStatus.NOT_FOUND),
     DEVICES_NOT_FOUND("DEVICES_NOT_FOUND", "Thiết bị không tồn tại", HttpStatus.NOT_FOUND),
     WARRANTY_NOT_FOUND("WARRANTY_NOT_FOUND", "Thiết bị không tồn tại", HttpStatus.NOT_FOUND),
-    CART_NOT_FOUND("CART_NOT_FOUND", "Thiết bị không tồn tại", HttpStatus.NOT_FOUND),
     CART_EMPTY("CART_EMPTY","Giỏ hàng rỗng", HttpStatus.BAD_REQUEST),
     VOUCHER_INVALID("VOUCHER_INVALID", "Voucher không hợp lệ", HttpStatus.UNPROCESSABLE_CONTENT),
     VOUCHER_EXPIRED("VOUCHER_EXPIRED", "Voucher đã hết hạn hoặc chưa bắt đầu", HttpStatus.UNPROCESSABLE_ENTITY),
