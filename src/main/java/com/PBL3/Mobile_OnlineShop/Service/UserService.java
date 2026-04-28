@@ -210,14 +210,20 @@ public class UserService {
         return userMapper.toMyInfoResponse(user);
     }
 
-    public void updateMyInfoPartial(UpdateMyInfoRequest request) {
+    private String getUsernameFromContextHolder() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
         if (authentication == null || !authentication.isAuthenticated()) {
             throw new AppException(ErrorCode.UNAUTHENTICATED);
         }
-        String userName = authentication.getName();
-        User user = userRepository.findByUsername(userName)
+        String username = authentication.getName();
+        return username;
+    }
+
+    public void updateMyInfoPartial(UpdateMyInfoRequest request) {
+
+        String username = getUsernameFromContextHolder();
+        User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
         if (request.getEmail() != null && !(request.getEmail().equals(user.getEmail()))) {
@@ -239,17 +245,13 @@ public class UserService {
     }
 
     public void updateMyPasswordPartial(UpdateMyPasswordRequest request) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = getUsernameFromContextHolder();
 
-        if (authentication == null || !authentication.isAuthenticated()) {
-            throw new AppException(ErrorCode.UNAUTHENTICATED);
-        }
-        String userName = authentication.getName();
-        User user = userRepository.findByUsername(userName)
+        User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
         PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
         if (!passwordEncoder.matches(request.getOld_password(), user.getPassword())) {
-             throw new AppException(ErrorCode.INVALID_PASSWORD);
+            throw new AppException(ErrorCode.INVALID_PASSWORD);
         }
 
         user.setPassword(passwordEncoder.encode(request.getNew_password()));
@@ -257,4 +259,6 @@ public class UserService {
         userRepository.save(user);
 
     }
+
+    
 }

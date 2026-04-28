@@ -36,6 +36,10 @@ public enum ErrorCode {
     INVALID_DATA("INVALID_DATA", "Dữ liệu không hợp lệ", HttpStatus.UNPROCESSABLE_ENTITY),
     VOUCHER_NOT_FOUND("VOUCHER_NOT_FOUND", "Voucher không tồn tại", HttpStatus.NOT_FOUND),
     INVALID_PASSWORD("INVALID_PASSWORD", "Mật khẩu không chính xác", HttpStatus.UNAUTHORIZED),
+    VARIANT_NOT_FOUND("VARIANT_NOT_FOUND", "Biến thể sản phẩm không tồn tại", HttpStatus.NOT_FOUND),
+    PRODUCT_NOT_PURCHASED("PRODUCT_NOT_PURCHASED" , "Bạn chưa sản phẩm này", HttpStatus.FORBIDDEN),
+    REVIEW_ALREADY_EXISTED("REVIEW_ALREADY_EXISTED", "Bạn đã đánh giá sản phẩm này rồi", HttpStatus.CONFLICT)
+
     ;
 
     private final String code;
