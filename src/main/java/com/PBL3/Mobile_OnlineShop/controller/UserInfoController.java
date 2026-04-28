@@ -3,6 +3,7 @@ package com.PBL3.Mobile_OnlineShop.controller;
 
 import java.util.Map;
 
+import com.PBL3.Mobile_OnlineShop.dto.response.MessageResponse;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,7 +27,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 @RequestMapping("/api/me")
 @FieldDefaults(level = AccessLevel.PRIVATE , makeFinal = true)
 @RequiredArgsConstructor
-@PreAuthorize("hasAuthority('CUSTOMER')")
+@PreAuthorize("isAuthenticated()")
 public class UserInfoController {
 
     UserService userService;
@@ -39,14 +40,14 @@ public class UserInfoController {
     }
 
     @PatchMapping
-    public ResponseEntity<String> updateMyInfoPartial(@Valid @RequestBody UpdateMyInfoRequest request){
+    public ResponseEntity<MessageResponse> updateMyInfoPartial(@Valid @RequestBody UpdateMyInfoRequest request){
         userService.updateMyInfoPartial(request);
-        return ResponseEntity.ok("Cập nhật thông tin thành công");
+        return ResponseEntity.ok(MessageResponse.builder().message("Cập nhật thông tin thành công").build());
     }
 
     @PatchMapping("/password")
-    public ResponseEntity<String> updateMyPasswordPartial(@Valid @RequestBody UpdateMyPasswordRequest UpdateMyPasswordRequest){
+    public ResponseEntity<MessageResponse> updateMyPasswordPartial(@Valid @RequestBody UpdateMyPasswordRequest UpdateMyPasswordRequest){
         userService.updateMyPasswordPartial(UpdateMyPasswordRequest);
-        return ResponseEntity.ok("Cập nhật mật khẩu thành công");
+        return ResponseEntity.ok(MessageResponse.builder().message("Cập nhật mật khẩu thành công").build());
     }
 }

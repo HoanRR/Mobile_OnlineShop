@@ -3,6 +3,7 @@ package com.PBL3.Mobile_OnlineShop.Config;
 import com.PBL3.Mobile_OnlineShop.Exeption.AppException;
 import com.PBL3.Mobile_OnlineShop.Exeption.ErrorCode;
 import com.PBL3.Mobile_OnlineShop.Repository.InvalidatedTokenRepository;
+import com.PBL3.Mobile_OnlineShop.Repository.UserRepository;
 import com.nimbusds.jose.*;
 import com.nimbusds.jose.crypto.MACSigner;
 import com.nimbusds.jose.crypto.MACVerifier;
@@ -29,6 +30,7 @@ public class JwtTokenProvider {
     protected String SIGNER_KEY;
 
     private final InvalidatedTokenRepository invalidatedTokenRepository;
+    private final UserRepository userRepository;
 
     private static final long ACCESS_TOKEN_EXPIRY_HOURS = 2;
 
@@ -78,6 +80,18 @@ public class JwtTokenProvider {
         if (invalidatedTokenRepository
                 .existsById(signedJWT.getJWTClaimsSet().getJWTID()))
             throw new AppException(ErrorCode.UNAUTHENTICATED);
+
+        // Kiểm tra xem token này có được phát hành trước khi người dùng đổi mật khẩu gần nhất không
+        String username = signedJWT.getJWTClaimsSet().getSubject();
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new AppException(ErrorCode.UNAUTHENTICATED));
+
+        Date issueTime = signedJWT.getJWTClaimsSet().getIssueTime();
+        if (user.getPasswordChangedAt() != null && issueTime != null) {
+            if (issueTime.before(user.getPasswordChangedAt())) {
+                throw new AppException(ErrorCode.UNAUTHENTICATED);
+            }
+        }
 
         return signedJWT;
     }

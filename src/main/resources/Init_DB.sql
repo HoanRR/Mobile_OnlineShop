@@ -29,6 +29,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   `password`     VARCHAR(255) NOT NULL,
   `phone_number` VARCHAR(20)  NOT NULL,
   `role`         VARCHAR(20)  NOT NULL,
+  `password_changed_at` DATETIME(6) DEFAULT NULL,
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `uq_user_email`        (`email`),
   UNIQUE KEY `uq_user_phone`        (`phone_number`),
