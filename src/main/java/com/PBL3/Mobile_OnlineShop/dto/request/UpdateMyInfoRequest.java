@@ -19,6 +19,7 @@ public class UpdateMyInfoRequest {
 
     String fullName;
 
+    @JsonProperty("phone_number")
     @Pattern(regexp = "^(0|\\+84)[0-9]{9}$", message = "Số điện thoại không hợp lệ")
     String phoneNumber;
 }
