@@ -12,6 +12,7 @@ import com.PBL3.Mobile_OnlineShop.entity.Order;
 import com.PBL3.Mobile_OnlineShop.entity.User;
 import com.PBL3.Mobile_OnlineShop.enums.Role;
 import com.PBL3.Mobile_OnlineShop.mapper.UserMapper;
+import com.PBL3.Mobile_OnlineShop.Config.SecurityConfig;
 
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
@@ -195,6 +196,7 @@ public class UserService {
 
         if (request.getPassword() != null && !request.getPassword().trim().isEmpty()) {
             user.setPassword(passwordEncoder.encode(request.getPassword()));
+            user.setPasswordChangedAt(new java.util.Date());
         }
     }
 
@@ -249,12 +251,13 @@ public class UserService {
 
         User user = userRepository.findByUsername(username)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
-        PasswordEncoder passwordEncoder = new BCryptPasswordEncoder(10);
+
         if (!passwordEncoder.matches(request.getOld_password(), user.getPassword())) {
-            throw new AppException(ErrorCode.INVALID_PASSWORD);
+            throw new AppException(ErrorCode.INVALID_PASSWORD, "Mật khẩu cũ không chính xác");
         }
 
         user.setPassword(passwordEncoder.encode(request.getNew_password()));
+        user.setPasswordChangedAt(new java.util.Date());
 
         userRepository.save(user);
 
