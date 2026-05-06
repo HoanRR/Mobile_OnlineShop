@@ -1,7 +1,7 @@
 package com.PBL3.Mobile_OnlineShop.dto.response;
 
-
-import com.PBL3.Mobile_OnlineShop.enums.Role;
+import java.util.List;
+import java.util.Map;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -12,14 +12,13 @@ import lombok.experimental.FieldDefaults;
 
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class MyInfoResponse {
-    Long userId;
-    String username;
-    String name;
-    String email;
-    String phoneNumber;
-    Role role;
+public class ReviewListResponse {
+    Double avg_rating;
+    Long total_reviews;
+    Map<String, Long> distribution;
+    List<ReviewResponse> reviews;
+    PaginatedResponse.PaginationMeta pagination;
 }

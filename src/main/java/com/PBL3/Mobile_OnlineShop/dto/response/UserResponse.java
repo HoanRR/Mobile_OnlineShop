@@ -5,6 +5,8 @@ import lombok.experimental.FieldDefaults;
 
 import java.util.logging.Level;
 
+import javax.management.relation.Role;
+
 @Data
 @Builder
 @AllArgsConstructor

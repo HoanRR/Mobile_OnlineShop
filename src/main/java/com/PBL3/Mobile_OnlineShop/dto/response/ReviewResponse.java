@@ -1,6 +1,8 @@
 package com.PBL3.Mobile_OnlineShop.dto.response;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
+
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -9,9 +11,11 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class ReviewResponse {
     Long product_review_id;
     Long user_id;
+    Long product_id;
     String username;
     Integer rating;
     String comment;

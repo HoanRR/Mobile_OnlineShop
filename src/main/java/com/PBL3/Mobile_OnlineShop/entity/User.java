@@ -9,6 +9,7 @@ import lombok.*;
 import java.util.List;
 import com.PBL3.Mobile_OnlineShop.enums.Role;
 import lombok.experimental.FieldDefaults;
+import java.util.Date;
 
 @Entity
 @Table(name = "user")
@@ -35,7 +36,7 @@ public class User {
     String email;
 
     @NotBlank(message = "Họ và tên không được để trống")
-    String FullName;
+    String fullName;
 
     @NotBlank(message = "Số điện thoại không được để trống")
     @Pattern(regexp = "^(0|\\+84)[0-9]{9}$", message = "Số điện thoại không hợp lệ")
@@ -50,6 +51,9 @@ public class User {
     @Enumerated(EnumType.STRING)
     @Column(length = 20, nullable = false)
     Role role;
+
+    @Column(name = "password_changed_at")
+    Date passwordChangedAt;
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     Cart cart;

@@ -23,11 +23,11 @@
 -- ============================================================
 LOCK TABLES `user` WRITE;
 INSERT IGNORE INTO `user` (user_id, username, full_name, email, password, phone_number, role) VALUES
-(1, 'admin',      'Nguyễn Quản Trị', 'admin@shop.vn',   '$2a$10$gFd2tfwrmXW2mJw0koh2j.ulKFlTYcohJvj8Gg.6lkWS7d/H1qphu.', '0900000001', 'ADMIN'),
-(2, 'nguyenvana', 'Nguyễn Văn A',    'vana@gmail.com',  '$2a$10$IbnH.08t4XwIGJBi4nEyeO7Dmgoi5r.qSR9B9LwpvbvIWMy5O51gi',  '0911111111', 'EMPLOYEE'),
-(3, 'tranthib',   'Trần Thị B',      'thib@gmail.com',  '$2a$10$gFd2tfwrmXW2mJw0koh2j.ulKFlTYcohJvj8Gg.6lkWS7d/H1qphu',  '0922222222', 'CUSTOMER'),
-(4, 'levanc',     'Lê Văn C',        'vanc@gmail.com',  '$2a$10$sf/R07qS5J7f424ybNR4A.W1IYBkJxwXB3IQl/45fC2D0v7fG1buG',  '0933333333', 'CUSTOMER'),
-(5, 'phamthid',   'Phạm Thị D',      'thid@gmail.com',  '$2a$10$sf/R07qS5J7f424ybNR4A.W1IYBkJxwXB3IQl/45fC2D0v7fG1buG',  '0944444444', 'CUSTOMER');
+(1, 'admin',      'Nguyễn Quản Trị', 'admin@shop.vn',   '$2a$10$MMqFGHLLIhe9n0RADDeunen/ZyzJxP.295hFtvD80sxO86Q3hB7h.', '0900000001', 'ADMIN'),
+(2, 'nguyenvana', 'Nguyễn Văn A',    'vana@gmail.com',  '$2a$10$mkDfb12TosqJG76khrp31.XN/p5PGpAU/apc8mK0kXGZcEV9VTMOq',  '0911111111', 'EMPLOYEE'),
+(3, 'tranthib',   'Trần Thị B',      'thib@gmail.com',  '$2a$10$Kcwb7yCLH9J.ZhTwAjrBL.Ahahooykdb6HlG.30avlkQT.LcFQhv2',  '0922222222', 'CUSTOMER'),
+(4, 'levanc',     'Lê Văn C',        'vanc@gmail.com',  '$2a$10$pOz27OjdceuwAiySzioXqOzvdNMby1SbXcwGsIjmjcijxlP/kyr32',  '0933333333', 'CUSTOMER'),
+(5, 'phamthid',   'Phạm Thị D',      'thid@gmail.com',  '$2a$10$mjbxgq.K0bnVpH9SZgKY.ul3ffTvRwyPcWnyEPWjD5PMf0F9AR3ZO',  '0944444444', 'CUSTOMER');
 UNLOCK TABLES;
 
 -- ============================================================
@@ -142,9 +142,9 @@ LOCK TABLES `orders` WRITE;
 INSERT IGNORE INTO `orders` VALUES
 (1, 2, 1, 'Nguyễn Văn A', '0911111111', '123 Lê Lợi, Q1, TP.HCM',   34990000,  3499000, 'COD',           'DELIVERED', b'1', '2025-03-10 09:00:00.000000'),
 (2, 3, 2, 'Trần Thị B',   '0922222222', '45 Nguyễn Huệ, Q1, TP.HCM', 33990000,  6798000, 'BANK_TRANSFER', 'DELIVERED', b'1', '2025-03-15 14:30:00.000000'),
-(3, 4, NULL,'Lê Văn C',   '0933333333', '78 Trần Phú, Đà Nẵng',       29990000,     NULL, 'COD',           'SHIPPING',  b'0', '2025-04-01 10:00:00.000000'),
-(4, 2, 3, 'Nguyễn Văn A', '0911111111', '123 Lê Lợi, Q1, TP.HCM',   38990000, 19495000, 'MOMO',          'PENDING',   b'0', '2025-04-05 16:00:00.000000'),
-(5, 5, 4, 'Phạm Thị D',   '0944444444', '99 Hoàng Diệu, Hải Phòng',  24990000,  3748500, 'BANK_TRANSFER', 'DELIVERED', b'1', '2025-03-20 08:00:00.000000');
+(3, 4, NULL,'Lê Văn C',   '0933333333', '78 Trần Phú, Đà Nẵng',       29990000,     NULL, 'COD',           'WAIT',  b'0', '2025-04-01 10:00:00.000000'),
+(4, 2, 3, 'Nguyễn Văn A', '0911111111', '123 Lê Lợi, Q1, TP.HCM',   38990000, 19495000, 'MOMO',          'PROCESSING',   b'0', '2025-04-05 16:00:00.000000'),
+(5, 5, 4, 'Phạm Thị D',   '0944444444', '99 Hoàng Diệu, Hải Phòng',  24990000,  3748500, 'BANK_TRANSFER', 'CANCELLED', b'1', '2025-03-20 08:00:00.000000');
 UNLOCK TABLES;
 
 -- ============================================================
