@@ -1,3 +1,24 @@
-/* Products page specific styles */
+/* CSS RIÊNG CHO TRANG SẢN PHẨM */
+.filter-bar {
+    display: flex; gap: 15px; margin-bottom: 24px;
+    background: var(--surface); padding: 20px; 
+    border-radius: 14px; border: 1px solid var(--border);
+}
+.filter-bar input {
+    flex: 1; max-width: 400px; padding: 10px 14px; background: var(--bg); color: var(--text);
+    border: 1px solid var(--border); border-radius: 8px; outline: none;
+}
+.filter-bar input:focus { border-color: var(--red); }
+.filter-bar button {
+    padding: 10px 24px; background: var(--red); color: white;
+    border: none; border-radius: 8px; cursor: pointer; font-weight: 600;
+    transition: var(--transition);
+}
+.filter-bar button:hover { background: var(--red-dark); box-shadow: 0 4px 12px var(--red-glow); }
 
-/* Optional: Add any product-specific styling here */
+.data-table-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: 14px; padding: 20px; overflow-x: auto; }
+.data-table { width: 100%; border-collapse: collapse; }
+.data-table th { padding: 12px 15px; text-align: left; color: var(--muted); font-size: 12px; text-transform: uppercase; border-bottom: 1px solid var(--border); font-weight: 600; }
+.data-table td { padding: 16px 15px; color: var(--text); font-size: 14px; border-bottom: 1px solid var(--border); }
+.data-table tbody tr { transition: var(--transition); }
+.data-table tbody tr:hover { background: rgba(255,255,255,0.02); }

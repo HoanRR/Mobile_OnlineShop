@@ -1,6 +1,18 @@
-<header class="content-header">
-    <div style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
-        <h2 style="margin: 0; color: white;">Quản lý Chung</h2>
-        <div style="color: #aaa; font-weight: bold;"><i class="fa-regular fa-user"></i> Xin chào, Nhân Viên</div>
-    </div>
-</header>
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<body>
+    <!-- Fragment topbar -->
+    <header th:fragment="topbar" class="topbar">
+        <!-- Tên trang sẽ thay đổi linh hoạt tùy trang -->
+        <div class="topbar-title"><span>HT</span> Mobile — <span th:text="${pageTitle}">Tiêu đề trang</span></div>
+        
+        <div class="topbar-right">
+            <div class="topbar-date" id="currentDate"></div>
+            <div class="topbar-user">
+                <div class="avatar">NV</div> 
+                Xin chào, <strong th:text="${session.userName != null ? session.userName : 'Nhân Viên'}">Nhân Viên</strong>
+            </div>
+        </div>
+    </header>
+</body>
+</html>
