@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Giỏ hàng - Cửa hàng HT</title>
+    <link rel="stylesheet" href="../static/css/base.css">
+    <link rel="stylesheet" href="../static/css/header.css">
+    <link rel="stylesheet" href="../static/css/cart.css">
+</head>
+
+<body>
+    <div id="header-placeholder"></div>
+
+    <main class="noi-dung">
+        <div class="cart-container">
+            <h2 class="tieu-de-phan">Giỏ hàng của bạn</h2>
+
+            <div class="cart-wrapper">
+                <div class="cart-left-section">
+                    <div class="cart-header">
+                        <input type="checkbox" id="select-all" onchange="toggleSelectAll()">
+                        <label for="select-all">Chọn tất cả</label>
+                    </div>
+
+                    <div class="cart-items" id="cart-items-list">
+                    </div>
+                </div>
+
+                <div class="cart-summary">
+                    <h3>Tóm tắt đơn hàng</h3>
+                    <div class="summary-line">
+                        <span>Tạm tính:</span>
+                        <span id="temp-total">0đ</span>
+                    </div>
+                    <div class="discount-section">
+                        <div class="input-group">
+                            <input type="text" id="coupon-code" placeholder="Nhập mã giảm giá">
+                            <button id="btn-apply-coupon" onclick="applyDiscount()">Áp dụng</button>
+                        </div>
+                        <p id="discount-message"></p>
+                    </div>
+
+                    <div class="summary-line discount-line" style="display: none;">
+                        <span>Giảm giá:</span>
+                        <span id="discount-amount">-0đ</span>
+                    </div>
+                    <div class="summary-line total-line">
+                        <span>Tổng tiền:</span>
+                        <span id="final-total">0đ</span>
+                    </div>
+
+                    <a href="checkout.html"><button class="btn-mua-ngay" id="btn-checkout">Tiến hành thanh
+                            toán</button></a>
+                    <a href="index.html" class="btn-continue">Tiếp tục mua sắm</a>
+                </div>
+            </div>
+        </div>
+    </main>
+    <div id="footer-placeholder"></div>
+
+    <script src="../static/js/common.js"></script>
+    <script src="../static/js/cart.js"></script>
+</body>
+
+</html>

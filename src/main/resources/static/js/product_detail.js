@@ -1,98 +1,192 @@
 
-const danhSachDienThoai = [
-    {
-        id: 1,
-        ten: "iPhone 15 Pro Max",
-        giaHienTai: "29.990.000đ",
-        giaCu: "34.990.000đ",
-        anh: "https://tse3.mm.bing.net/th/id/OIP.v2gZ9YqRjr841Ch31Q18GAHaHa?rs=1&pid=ImgDetMain&o=7&rm=3", 
-        thongSo: {
-            Chip : "A17Pro", Ram : "8GB", boNho : "256GB", manHinh : "Super Retina XDR", camera : "48MP + 12MP + 12MP",
-            pin : "4.422 mAh", sac : "27W", heDieuHanh : "iOS 17", NamG : true
-        },
-        moTa: "Xiaomi Redmi Note 15 5G là sản phẩm điện thoại thuộc phân khúc tầm trung của Xiaomi, tập trung vào cấu hình cân bằng và công nghệ hiển thị hiện đại. Thiết bị sở hữu màn hình AMOLED 6.77 inch độ phân giải Full HD+ với tần số quét 120Hz, mang lại độ mượt cao. Bên trong là vi xử lý Snapdragon 6 Gen 3, RAM 6GB và bộ nhớ trong 128GB đáp ứng tốt nhu cầu đa nhiệm. Cụm camera chính 108MP kết hợp pin dung lượng khoảng 5520mAh hỗ trợ sạc nhanh 45W, tối ưu cho sử dụng dài ngày."
-        
-    },
-    {
-        id: 2,
-        ten: "Samsung Galaxy S24 Ultra",
-        giaHienTai: "27.490.000đ",
-        giaCu: "31.990.000đ",
-        anh: "https://tse3.mm.bing.net/th/id/OIP.v2gZ9YqRjr841Ch31Q18GAHaHa?rs=1&pid=ImgDetMain&o=7&rm=3",
-        thongSo: {
-            Chip : "A17Pro", Ram : "8GB", boNho : "256GB", manHinh : "Super Retina XDR", camera : "48MP + 12MP + 12MP",
-            pin : "4.422 mAh", sac : "27W", heDieuHanh : "iOS 17", NamG : true
-        },
-        moTa: "Xiaomi Redmi Note 15 5G là sản phẩm điện thoại thuộc phân khúc tầm trung của Xiaomi, tập trung vào cấu hình cân bằng và công nghệ hiển thị hiện đại. Thiết bị sở hữu màn hình AMOLED 6.77 inch độ phân giải Full HD+ với tần số quét 120Hz, mang lại độ mượt cao. Bên trong là vi xử lý Snapdragon 6 Gen 3, RAM 6GB và bộ nhớ trong 128GB đáp ứng tốt nhu cầu đa nhiệm. Cụm camera chính 108MP kết hợp pin dung lượng khoảng 5520mAh hỗ trợ sạc nhanh 45W, tối ưu cho sử dụng dài ngày."
-    }
-];  
-  
-  
-  //Hien thi trang chi tiet san pham
-    const trangChiTiet = document.querySelector(".wrapper-product-detail")
+//Hien thi trang chi tiet san pham
 
-    if (trangChiTiet){
-        const urlParams = new URLSearchParams(window.location.search);
-        const idCanTim = parseInt(urlParams.get("id"));
+const API_URL = 'http://localhost:8080/api/products/:product_id';
+const trangChiTiet = document.querySelector(".wrapper-product-detail")
+const urlParams = new URLSearchParams(window.location.search);
+const productId = parseInt(urlParams.get("id"));
+let activateVariant = null
+let currentProduct = null
 
-        const sanPham = danhSachDienThoai.find(sp => sp.id === idCanTim);
-        
-        if (sanPham){
-            document.querySelector('.image-product-detail img').src = sanPham.anh;
-            document.querySelector('.inform-product-detail h2').innerText = sanPham.ten;
-            document.querySelector('.price-product-detail h2').innerText = sanPham.giaHienTai;
-            document.querySelector('.price-product-detail #old-price').innerText = sanPham.giaCu; 
-        }
-        else{
-            document.body.innerHTML = "<h2>Không tìm thấy sản phẩm</h2>";
-        }
-    
-        let thongSo = document.querySelector(".thong-so-ky-thuat");
-        if (thongSo && sanPham){
-            const htmlCard = `
-                  <tr><td>Chip</td><td>${sanPham.thongSo["Chip"]}</td></tr>
-                    <tr><td>Ram</td><td>${sanPham.thongSo["Ram"]}</td></tr>
-                    <tr><td>Bộ nhớ</td><td>${sanPham.thongSo["boNho"]}</td></tr>
-                    <tr><td>Màn hình</td><td>${sanPham.thongSo["manHinh"]}</td></tr>
-                    <tr><td>Camera</td><td>${sanPham.thongSo["camera"]}</td></tr>
-                    <tr><td>Pin</td><td>${sanPham.thongSo["pin"]}</td></tr>
-                    <tr><td>Sạc</td><td>${sanPham.thongSo["sac"]}</td></tr>
-                    <tr><td>Hệ điều hành</td><td>${sanPham.thongSo["heDieuHanh"]}</td></tr>
-                    <tr><td>5G</td><td>${sanPham.thongSo["NamG"] === true ? "Có" : "Không"}</td></tr>
-            `
-            thongSo.innerHTML = htmlCard;
-        }
-
-        let danhGiaChiTiet = document.querySelector(".noi-dung-mo-ta");
-        if (danhGiaChiTiet && sanPham){
-            const htmlCard = `
-                <p>${sanPham.moTa}</p>
-            `
-            danhGiaChiTiet.innerHTML = htmlCard;
-        }
-
-        const nutThemVaoGio = document.querySelector('.btn-them-gio-hang');
-        if (nutThemVaoGio && sanPham) {
-            nutThemVaoGio.addEventListener('click', function() {
-                let gioHang = JSON.parse(localStorage.getItem('cart')) || [];
-                
-                const sanPhamDaCo = gioHang.find(item => item.id === sanPham.id);
-
-                if (sanPhamDaCo) {
-                    sanPhamDaCo.quantity += 1;
-                } else {
-                    gioHang.push({
-                        id: sanPham.id,
-                        ten: sanPham.ten,
-                        giaHienTai: sanPham.giaHienTai,
-                        anh: sanPham.anh,
-                        quantity: 1
-                    });
-                }
-
-                localStorage.setItem('cart', JSON.stringify(gioHang));
-                alert(`Đã thêm ${sanPham.ten} vào giỏ hàng!`);
-            });
-        }
+async function loadProductDetail() {
+    if (!productId) {
+        alert("Không tìm thấy mã sản phẩm!");
+        return;
     }
 
+    const API_URL = `http://localhost:8080/api/products/${productId}`;
+
+    try {
+        const response = await fetch(API_URL);
+
+        if (!response.ok) {
+            throw new Error("Lỗi khi tải dữ liệu sản phẩm");
+        }
+
+        const productDetail = await response.json();
+
+        renderProductDetailToHTML(productDetail);
+
+    } catch (error) {
+        console.error("Lỗi:", error);
+    }
+}
+
+function renderProductDetailToHTML(data) {
+    currentProduct = data
+    activateVariant = data.variant[0]
+    document.getElementById('product-name').innerText = data.product_name;
+    document.getElementById('label-detail').innerText = data.brand;
+    document.getElementById('header-danh-gia').innerText = `Hỏi đáp & đánh giá ${data.product_name} chính hãng`;
+    renderVariantButtons(data.variant);
+    renderReviews(data.review);
+    updateDynamicUI();
+
+
+}
+
+function renderVariantButtons(variants) {
+    const container = document.getElementById("variant-options")
+    container.innerHTML = '';
+
+    variants.forEach(v => {
+        const btn = document.createElement('button');
+        btn.innerText = `${v.color} - ${v.storageCapacity}GB`;
+        btn.className = 'variant-btn';
+
+        if (v.productVariantId === activateVariant.productVariantId) {
+            btn.classList.add('active');
+        }
+
+        btn.onclick = () => {
+            activateVariant = v;
+            renderVariantButtons(variants);
+            updateDynamicUI();
+        };
+        container.appendChild(btn);
+    });
+
+
+}
+
+
+function updateDynamicUI() {
+    document.getElementById('product-price').innerText = activateVariant.price.toLocaleString('vi-VN') + 'đ';
+
+    document.getElementById('main-image').src = activateVariant.variantImageLink || currentProduct.product_image_link;
+    if (activateVariant.totalAvailable <= 0) {
+        document.getElementById("available").innerText = "Hết hàng";
+
+    }
+    else {
+        document.getElementById("available").innerText = "Còn hàng";
+
+    }
+
+    let thongSo = document.querySelector(".thong-so-ky-thuat");
+    if (thongSo && activateVariant) {
+        const htmlCard = `
+                  <tr><td>Chip</td><td>${activateVariant.chip}</td></tr>
+                    <tr><td>Ram</td><td>${activateVariant.ram}</td></tr>
+                    <tr><td>Bộ nhớ</td><td>${activateVariant.storageCapacity}</td></tr>
+                    <tr><td>Pin</td><td>${activateVariant.batteryCapacity}</td></tr>
+            `
+        thongSo.innerHTML = htmlCard;
+    }
+
+
+
+}
+
+
+
+function renderReviews(reviews) {
+    const container = document.querySelector('.danh-sach-binh-luan-mc');
+    container.innerHTML = '';
+
+    if (!reviews || reviews.length === 0) {
+        container.innerHTML = '<div style="padding: 20px; text-align: center;">Chưa có đánh giá nào cho sản phẩm này.</div>';
+        return;
+    }
+
+    reviews.forEach(review => {
+        const stars = '⭐'.repeat(review.rating);
+
+        const dateObj = new Date(review.review_date);
+        const timeString = `${dateObj.getHours()}:${dateObj.getMinutes().toString().padStart(2, '0')} ${dateObj.getDate()}/${dateObj.getMonth() + 1}/${dateObj.getFullYear()}`;
+
+        let purchasedTag = '';
+        if (review.is_purchased) {
+            purchasedTag = `<span style="color: #28a745; font-size: 13px; margin-left: 10px; font-weight: bold;">
+                ✓ Đã mua: ${review.variant.color} - ${review.variant.storage_capacity}GB
+            </span>`;
+        }
+
+        const userName = `Khách hàng #${review.user_id}`;
+
+        const container = document.querySelector('.danh-sach-binh-luan-mc');
+        container.innerHTML = '';
+
+        if (!reviews || reviews.length === 0) {
+            container.innerHTML = '<div style="padding: 20px; text-align: center;">Chưa có đánh giá nào cho sản phẩm này.</div>';
+            return;
+        }
+
+        const htmlItem = `
+            <div class="item-binh-luan-mc">
+                <div class="noi-dung-chinh">
+                    <div class="header-user">
+                        <span class="ten" style="font-weight: bold;">${userName}</span>
+                        ${purchasedTag}
+                    </div>
+                    <div class="sao-danh-gia" style="margin: 5px 0;">${stars}</div>
+                    <div class="text-binh-luan">${review.comment}</div>
+                    <div class="action-binh-luan" style="margin-top: 10px; font-size: 13px; color: #666;">
+                        <button class="btn-thich" style="cursor: pointer; border: none; background: none; color: #007bff;">👍 Hữu ích</button>
+                        <span class="thoi-gian" style="margin-left: 15px;">${timeString}</span>
+                    </div>
+                </div>
+            </div>
+        `;
+
+        container.insertAdjacentHTML('beforeend', htmlItem);
+    });
+}
+
+
+// if (trangChiTiet) {
+
+//     let danhGiaChiTiet = document.querySelector(".noi-dung-mo-ta");
+//     if (danhGiaChiTiet && sanPham) {
+//         const htmlCard = `
+//                 <p>${sanPham.moTa}</p>
+//             `
+//         danhGiaChiTiet.innerHTML = htmlCard;
+//     }
+
+//     const nutThemVaoGio = document.querySelector('.btn-them-gio-hang');
+//     if (nutThemVaoGio && sanPham) {
+//         nutThemVaoGio.addEventListener('click', function () {
+//             let gioHang = JSON.parse(localStorage.getItem('cart')) || [];
+
+//             const sanPhamDaCo = gioHang.find(item => item.id === sanPham.id);
+
+//             if (sanPhamDaCo) {
+//                 sanPhamDaCo.quantity += 1;
+//             } else {
+//                 gioHang.push({
+//                     id: sanPham.id,
+//                     ten: sanPham.ten,
+//                     giaHienTai: sanPham.giaHienTai,
+//                     anh: sanPham.anh,
+//                     quantity: 1
+//                 });
+//             }
+
+//             localStorage.setItem('cart', JSON.stringify(gioHang));
+//             alert(`Đã thêm ${sanPham.ten} vào giỏ hàng!`);
+//         });
+//     }
+// }
+
+window.addEventListener("DOMContentLoaded", loadProductDetail())

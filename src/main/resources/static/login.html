@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="vi">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,32 +9,9 @@
     <link rel="stylesheet" href="css/header.css">
     <link rel="stylesheet" href="css/login.css">
 </head>
+
 <body>
-    <header class="thanh-nav">
-        <a href="index.html">
-            <div class="logo">HT Mobile</div>
-        </a>
-        <div class="tim-kiem">
-            <input type="text" placeholder="Bạn cần tìm điện thoại gì?">
-        </div>
-        <div class="nut-bam-header">
-            <div class="tra-cuu-don-hang">
-                <button>
-                    <h3>Tra cứu đơn hàng</h3>
-                </button>
-            </div>
-            <div class="Dang-nhap">
-                <a href="login.html" class="btn-header">
-                    <h3>Đăng nhập</h3>
-                </a>
-            </div>
-            <div class="gio-hang">
-                <a href="cart.html">
-                    <h3>Giỏ hàng</h3>
-                </a>
-            </div>
-        </div>
-    </header>
+    <div id="header-placeholder"></div>
 
     <main id="khu-vuc-dang-nhap" class="noi-dung">
         <div>
@@ -55,11 +33,13 @@
         <div id="error-message" style="color: red; text-align: center; margin-top: 10px; display: none;"></div>
 
         <br>
-        <button id="button-dang-nhap">
+        <button id="button-dang-nhap" onclick="xuLyDangNhap(event)">
             Đăng nhập
         </button>
     </main>
 
+    <script src="js/common.js"></script>
     <script src="js/login.js"></script>
 </body>
+
 </html>

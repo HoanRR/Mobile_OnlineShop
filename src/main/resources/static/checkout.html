@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Thanh toán - Cửa hàng HT</title>
+    <link rel="stylesheet" href="../static/css/base.css">
+    <link rel="stylesheet" href="../static/css/header.css">
+    <link rel="stylesheet" href="../static/css/checkout.css">
+</head>
+
+<body>
+    <div id="header-placeholder"></div>
+
+    <main class="noi-dung">
+        <h2 class="tieu-de-phan">Tiến hành thanh toán</h2>
+
+        <form id="form-thanh-toan" class="checkout-wrapper">
+            <div class="checkout-left">
+                <div class="checkout-section">
+                    <h3>1. Thông tin người nhận</h3>
+                    <div class="form-group row">
+                        <div class="input-box">
+                            <label>Họ và tên *</label>
+                            <input type="text" id="ho-ten" placeholder="Nhập họ và tên" required>
+                        </div>
+                        <div class="input-box">
+                            <label>Số điện thoại *</label>
+                            <input type="tel" id="so-dien-thoai" placeholder="Nhập số điện thoại" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Địa chỉ nhận hàng (Số nhà, Tên đường, Xã/Phường, Quận/Huyện, Tỉnh/TP) *</label>
+                        <input type="text" id="dia-chi"
+                            placeholder="Ví dụ: 54 Nguyễn Lương Bằng, Hòa Khánh Bắc, Liên Chiểu, Đà Nẵng" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Ghi chú đơn hàng (Tùy chọn)</label>
+                        <textarea id="ghi-chu" rows="3"
+                            placeholder="Ghi chú thêm về thời gian giao, địa điểm..."></textarea>
+                    </div>
+                </div>
+
+                <div class="checkout-section">
+                    <h3>2. Phương thức thanh toán</h3>
+                    <div class="payment-methods">
+                        <label class="payment-option">
+                            <input type="radio" name="payment" value="COD" checked>
+                            <span class="custom-radio"></span>
+                            Thanh toán khi nhận hàng (COD)
+                        </label>
+                        <label class="payment-option">
+                            <input type="radio" name="payment" value="BANK">
+                            <span class="custom-radio"></span>
+                            Chuyển khoản ngân hàng (VNPAY/Momo)
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="checkout-right">
+                <div class="order-summary">
+                    <h3>Tóm tắt đơn hàng</h3>
+                    <div class="order-items-list" id="checkout-items-list">
+                    </div>
+
+                    <div class="summary-line">
+                        <span>Tạm tính:</span>
+                        <span id="checkout-subtotal">0đ</span>
+                    </div>
+                    <div class="summary-line">
+                        <span>Phí giao hàng:</span>
+                        <span>Miễn phí</span>
+                    </div>
+                    <div class="summary-line total-line">
+                        <span>Tổng thanh toán:</span>
+                        <span id="checkout-total">0đ</span>
+                    </div>
+
+                    <button type="submit" class="btn-mua-ngay btn-xac-nhan">Xác nhận đặt hàng</button>
+                </div>
+            </div>
+        </form>
+    </main>
+
+    <div id="footer-placeholder"></div>
+    
+    <script src="../static/js/common.js"></script>
+    <script src="../static/js/checkout.js"></script>
+</body>
+
+</html>
