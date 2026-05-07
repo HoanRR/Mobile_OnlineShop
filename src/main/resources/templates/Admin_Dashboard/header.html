@@ -1,4 +1,18 @@
-<header class="content-header">
-    <h2>Quản lý</h2>
-    <div style="color: #aaa;"><i class="fa-regular fa-calendar"></i> Hôm nay: 06/04/2026</div>
-</header>
+<!DOCTYPE html>
+<html lang="vi" xmlns:th="http://www.thymeleaf.org">
+<body>
+    <!-- Khai báo Fragment cho Header -->
+    <header class="topbar" th:fragment="topbar">
+        <div class="topbar-title">
+            <span>HT</span> Mobile — Admin Panel
+        </div>
+        <div class="topbar-right">
+            <div class="topbar-date" id="currentDate"></div>
+            <div class="topbar-user">
+                <div class="avatar">AD</div>
+                Xin chào, <strong>Admin</strong>
+            </div>
+        </div>
+    </header>
+</body>
+</html>

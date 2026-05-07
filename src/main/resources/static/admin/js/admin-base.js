@@ -35,7 +35,8 @@ function setupLogout() {
         logoutBtn.href = '#';
         logoutBtn.onclick = function(e) {
             e.preventDefault();
-            localStorage.removeItem('currentUser');
+            localStorage.removeItem('jwt_token');
+            localStorage.removeItem('user_role');
             window.location.href = '../login.html';
         };
     }

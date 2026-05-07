@@ -1,10 +1,53 @@
-// Vouchers page script
+/**
+ * Vouchers page script
+ * Handles voucher list and management
+ */
+
+// ========== SIDEBAR & COMMON ==========
+function initCommonUI() {
+  const sidebar = document.getElementById('sidebar');
+  const mainContent = document.getElementById('mainContent');
+  const toggleBtn = document.getElementById('sidebarToggle');
+
+  if (sidebar && mainContent && toggleBtn) {
+    const COLLAPSED_KEY = 'ht_sidebar_collapsed';
+    if (localStorage.getItem(COLLAPSED_KEY) === '1') {
+      sidebar.classList.add('collapsed');
+      mainContent.classList.add('expanded');
+    }
+    toggleBtn.addEventListener('click', () => {
+      const isC = sidebar.classList.toggle('collapsed');
+      mainContent.classList.toggle('expanded', isC);
+      localStorage.setItem(COLLAPSED_KEY, isC ? '1' : '0');
+    });
+  }
+
+  const dateEl = document.getElementById('currentDate');
+  if (dateEl) {
+    const now = new Date();
+    dateEl.textContent = now.toLocaleDateString('vi-VN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
+  }
+
+  const logoutBtn = document.querySelector('.logout a');
+  if (logoutBtn) {
+    logoutBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      localStorage.removeItem('jwt_token');
+      localStorage.removeItem('user_role');
+      window.location.href = '../login.html';
+    });
+  }
+}
+
+// ========== MOCK DATA ==========
 const mockVouchers = [
     { code: "GIAM200K", discount_type: "fixed", discount_value: 200000, min_order_value: 5000000, max_uses: 100, current_uses: 50, expires_at: "2026-04-30" },
     { code: "SIEUSALE", discount_type: "percent", discount_value: 10, min_order_value: 10000000, max_uses: 50, current_uses: 10, expires_at: "2026-05-15" }
 ];
 
 document.addEventListener("DOMContentLoaded", () => {
+    initCommonUI();
+    
     const tableBody = document.querySelector('.admin-table tbody');
     if (!tableBody) return;
 
@@ -38,9 +81,23 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function openVoucherModal() {
-    document.getElementById('voucherModal').style.display = 'flex';
+    const modal = document.getElementById('voucherModal');
+    if (modal) {
+      modal.style.display = 'flex';
+    }
 }
 
 function closeModal() {
-    document.getElementById('voucherModal').style.display = 'none';
+    const modal = document.getElementById('voucherModal');
+    if (modal) {
+      modal.style.display = 'none';
+    }
+}
+
+function formatCurrency(amount) {
+  return new Intl.NumberFormat('vi-VN', {
+    style: 'currency',
+    currency: 'VND',
+    minimumFractionDigits: 0
+  }).format(amount);
 }

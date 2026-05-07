@@ -1,12 +1,14 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
     <title>Sản phẩm - HT Mobile Staff</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <!-- Link 2 CSS -->
-    <link rel="stylesheet" href="../../static/staff/css/dashboard.css">
-    <link rel="stylesheet" href="../../static/staff/css/products.css">
+<link rel="stylesheet" href="../../static/staff/css/staff-base.css">
+<link rel="stylesheet" href="../../static/staff/css/products.css">
+    <script src="../../static/staff/js/common.js"></script>
+    <script src="../../static/staff/js/products.js"></script>
 </head>
 <body>
 <div class="app-wrapper">
@@ -20,8 +22,8 @@
         <nav class="sidebar-nav">
             <ul>
                 <li class="nav-item" data-label="Tổng quan"><a href="dashboard.html"><span class="nav-icon"><i class="fa-solid fa-chart-line"></i></span><span class="nav-label">Tổng quan</span></a></li>
-                <li class="nav-item" data-label="Bán hàng (POS)"><a href="pos.html"><span class="nav-icon"><i class="fa-solid fa-cash-register"></i></span><span class="nav-label">Bán hàng (POS)</span></a></li>
-                <li class="nav-item" data-label="Quản lý Đơn hàng"><a href="orders.html"><span class="nav-icon"><i class="fa-solid fa-cart-shopping"></i></span><span class="nav-label">Quản lý Đơn hàng</span></a></li>
+                <li class="nav-item" data-label="Bán Hàng (POS)"><a href="pos.html"><span class="nav-icon"><i class="fa-solid fa-cash-register"></i></span><span class="nav-label">Bán Hàng (POS)</span></a></li>
+                <li class="nav-item" data-label="Quản lý Đơn Hàng"><a href="orders.html"><span class="nav-icon"><i class="fa-solid fa-cart-shopping"></i></span><span class="nav-label">Quản lý Đơn Hàng</span></a></li>
                 <li class="nav-item active" data-label="Tra cứu Sản phẩm"><a href="products.html"><span class="nav-icon"><i class="fa-solid fa-mobile-screen"></i></span><span class="nav-label">Tra cứu Sản phẩm</span></a></li>
                 <div class="nav-divider"></div>
                 <li class="nav-item logout" data-label="Đăng xuất"><a href="#"><span class="nav-icon"><i class="fa-solid fa-right-from-bracket"></i></span><span class="nav-label">Đăng xuất</span></a></li>
@@ -32,7 +34,7 @@
     <!-- MAIN -->
     <div class="main-content" id="mainContent">
         <header class="topbar">
-            <div class="topbar-title"><span>HT</span> Mobile — Kho Sản Phẩm</div>
+            <div class="topbar-title"><span>HT</span> Mobile – Kho Sản phẩm</div>
             <div class="topbar-right">
                 <div class="topbar-date" id="currentDate"></div>
                 <div class="topbar-user"><div class="avatar">NV</div> Xin chào, <strong>Nhân Viên</strong></div>
@@ -43,7 +45,7 @@
             <h2 style="margin: 0 0 20px 0; font-size: 20px; font-weight: 600;">Danh sách Sản phẩm</h2>
 
             <div class="filter-bar">
-                <input type="text" placeholder="Nhập tên sản phẩm hoặc mã vạch cần tìm...">
+                <input type="text" placeholder="Nhập tên Sản phẩm hoặc mã vạch cần tìm...">
                 <button><i class="fa-solid fa-search"></i> Tra cứu</button>
             </div>
 
@@ -52,7 +54,7 @@
                     <thead>
                         <tr>
                             <th>ID</th>
-                            <th>Tên sản phẩm</th>
+                            <th>Tên Sản phẩm</th>
                             <th>Danh mục</th>
                             <th>Giá bán</th>
                             <th>Tồn kho</th>
@@ -60,25 +62,25 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td style="color: var(--muted);">#SP001</td>
+                            <td class="cell-muted">#SP001</td>
                             <td><strong>iPhone 15 Plus 256GB</strong></td>
-                            <td><span style="background: rgba(255,255,255,0.1); padding: 4px 10px; border-radius: 6px; font-size: 12px;">Apple</span></td>
-                            <td style="color: #FF3D00; font-weight: bold;">22.990.000 ₫</td>
-                            <td><span style="color: var(--green); font-weight: 600;">12</span> chiếc</td>
+                            <td><span class="category-badge">Apple</span></td>
+                            <td class="price-cell">22.990.000 ₫</td>
+                            <td><span class="stock-available">12</span> chiếc</td>
                         </tr>
                         <tr>
-                            <td style="color: var(--muted);">#SP002</td>
+                            <td class="cell-muted">#SP002</td>
                             <td><strong>Samsung Galaxy S26 Ultra</strong></td>
-                            <td><span style="background: rgba(255,255,255,0.1); padding: 4px 10px; border-radius: 6px; font-size: 12px;">Samsung</span></td>
-                            <td style="color: #FF3D00; font-weight: bold;">31.990.000 ₫</td>
-                            <td><span style="color: var(--green); font-weight: 600;">8</span> chiếc</td>
+                            <td><span class="category-badge">Samsung</span></td>
+                            <td class="price-cell">31.990.000 ₫</td>
+                            <td><span class="stock-available">8</span> chiếc</td>
                         </tr>
                         <tr>
-                            <td style="color: var(--muted);">#SP003</td>
+                            <td class="cell-muted">#SP003</td>
                             <td><strong>iPhone 17 Pro Max</strong></td>
-                            <td><span style="background: rgba(255,255,255,0.1); padding: 4px 10px; border-radius: 6px; font-size: 12px;">Apple</span></td>
-                            <td style="color: #FF3D00; font-weight: bold;">34.500.000 ₫</td>
-                            <td><span style="color: var(--red); font-weight: 600;">Hết hàng</span></td>
+                            <td><span class="category-badge">Apple</span></td>
+                            <td class="price-cell">34.500.000 ₫</td>
+                            <td><span class="stock-outofstock">Hết hàng</span></td>
                         </tr>
                     </tbody>
                 </table>
@@ -87,10 +89,6 @@
     </div>
 </div>
 
-<script>
-    const sidebar = document.getElementById('sidebar'); const mainContent = document.getElementById('mainContent'); const toggleBtn = document.getElementById('sidebarToggle');
-    if (localStorage.getItem('ht_sidebar_collapsed') === '1') { sidebar.classList.add('collapsed'); mainContent.classList.add('expanded'); }
-    toggleBtn.addEventListener('click', () => { const isC = sidebar.classList.toggle('collapsed'); mainContent.classList.toggle('expanded', isC); localStorage.setItem('ht_sidebar_collapsed', isC ? '1' : '0'); });
-</script>
 </body>
 </html>
+

@@ -1,181 +1,100 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <title>Người dùng - HT Mobile Admin</title>
-    <link rel="stylesheet" href="../../static/admin/css/admin-base.css">
-    <link rel="stylesheet" href="../../static/admin/css/users.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        /* CSS cho phần Lọc và Bảng */
-        .filter-bar {
-            display: flex; gap: 15px; margin-bottom: 20px;
-            background-color: #222; padding: 15px; border-radius: 10px;
-        }
-        .filter-bar input, .filter-bar select {
-            padding: 10px; background-color: #333; color: white;
-            border: 1px solid #444; border-radius: 5px; outline: none;
-        }
-        .filter-bar button {
-            padding: 10px 20px; background-color: #e50000; color: white;
-            border: none; border-radius: 5px; cursor: pointer; font-weight: bold;
-        }
-
-        /* Badge Vai trò & Trạng thái */
-        .badge { padding: 4px 8px; border-radius: 5px; font-size: 12px; font-weight: bold; }
-        .role-admin { background-color: #9c27b0; color: white; }
-        .role-staff { background-color: #2196f3; color: white; }
-        .role-customer { background-color: #607d8b; color: white; }
-        
-        .status-active { color: #4caf50; font-weight: bold; }
-        .status-banned { color: #f44336; font-weight: bold; }
-
-        /* Nút Khóa tài khoản */
-        .btn-ban { background-color: #333; color: #f44336; border: 1px solid #555; padding: 6px 12px; border-radius: 5px; cursor: pointer; transition: 0.3s; }
-        .btn-ban:hover { background-color: #f44336; color: white; border-color: #f44336; }
-
-        /* --- CSS CHO MODAL THÊM NHÂN VIÊN --- */
-        .modal-overlay {
-            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background-color: rgba(0,0,0,0.7); display: none; 
-            justify-content: center; align-items: center; z-index: 1000;
-        }
-        .modal-content {
-            background-color: #222; padding: 25px; border-radius: 12px;
-            width: 450px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border: 1px solid #444;
-        }
-        .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #444; padding-bottom: 10px; margin-bottom: 20px; }
-        .modal-header h3 { color: #e50000; margin: 0; }
-        .close-modal { color: #aaa; font-size: 24px; cursor: pointer; background: none; border: none; }
-        .close-modal:hover { color: white; }
-        
-        .modal-form-group { margin-bottom: 15px; }
-        .modal-form-group label { display: block; color: #ccc; margin-bottom: 5px; font-size: 14px; font-weight: bold; }
-        .modal-form-group input, .modal-form-group select {
-            width: 100%; padding: 10px; background-color: #333; color: white;
-            border: 1px solid #444; border-radius: 5px; outline: none; box-sizing: border-box;
-        }
-        .modal-form-group input:focus, .modal-form-group select:focus { border-color: #e50000; }
-    </style>
+  <meta charset="UTF-8">
+  <title>Người dùng - HT Mobile Admin</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../../static/admin/css/admin-base.css">
+  <link rel="stylesheet" href="../../static/admin/css/users.css">
+  <script src="../../static/admin/js/users.js"></script>
 </head>
 <body>
-    <div class="admin-wrapper">
-        <div id="sidebar-container"></div>
+<div class="app-wrapper">
+  <nav class="sidebar" id="sidebar">
+    <button class="sidebar-toggle" id="sidebarToggle"><i class="fa-solid fa-chevron-left"></i></button>
+    <div class="sidebar-logo"><span class="logo-icon"><i class="fa-solid fa-mobile-screen"></i></span><span class="logo-text">HT Mobile Admin</span></div>
+    <nav class="sidebar-nav">
+      <ul>
+        <li class="nav-item" data-label="Tổng quan"><a href="dashboard.html"><span class="nav-icon"><i class="fa-solid fa-chart-line"></i></span><span class="nav-label">Tổng quan</span></a></li>
+        <li class="nav-item" data-label="Quản lý Sản phẩm"><a href="products.html"><span class="nav-icon"><i class="fa-solid fa-mobile-screen"></i></span><span class="nav-label">Quản lý Sản phẩm</span></a></li>
+        <li class="nav-item" data-label="Quản lý Đơn hàng"><a href="orders.html"><span class="nav-icon"><i class="fa-solid fa-cart-shopping"></i></span><span class="nav-label">Quản lý Đơn hàng</span></a></li>
+        <li class="nav-item" data-label="Mã giảm giá"><a href="vouchers.html"><span class="nav-icon"><i class="fa-solid fa-ticket"></i></span><span class="nav-label">Mã giảm giá</span></a></li>
+        <li class="nav-item active" data-label="Quản lý Người dùng"><a href="users.html"><span class="nav-icon"><i class="fa-solid fa-users"></i></span><span class="nav-label">Quản lý Người dùng</span></a></li>
+        <div class="nav-divider"></div>
+        <li class="nav-item logout"><a href="#"><span class="nav-icon"><i class="fa-solid fa-right-from-bracket"></i></span><span class="nav-label">Đăng xuất</span></a></li>
+      </ul>
+    </nav>
+  </nav>
 
-        <main class="admin-content">
-            <div id="header-container"></div>
+  <div class="main-content" id="mainContent">
+    <header class="topbar">
+      <div class="topbar-title"><span>HT</span> Mobile – Người Dùng</div>
+      <div class="topbar-right">
+        <div class="topbar-date" id="currentDate"></div>
+        <div class="topbar-user"><div class="avatar">AD</div> Xin chào, <strong>Admin</strong></div>
+      </div>
+    </header>
 
-            <div class="filter-bar">
-                <input type="text" placeholder="Tìm tên, email, SĐT..." style="width: 250px;">
-                <select>
-                    <option value="">Tất cả vai trò</option>
-                    <option value="admin">Admin</option>
-                    <option value="staff">Nhân viên</option>
-                    <option value="customer">Khách hàng</option>
-                </select>
-                <select>
-                    <option value="">Trạng thái</option>
-                    <option value="active">Hoạt động</option>
-                    <option value="banned">Bị cấm</option>
-                </select>
-                <button><i class="fa-solid fa-magnifying-glass"></i> Tìm kiếm</button>
-            </div>
+    <div class="page-body">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+        <h2 style="margin: 0; font-size: 20px; font-weight: 600;">Quản lý Người Dùng</h2>
+        <button onclick="document.getElementById('staffModal').style.display='flex';" class="btn-add"><i class="fa-solid fa-user-plus"></i> Thêm nhân viên</button>
+      </div>
+      
+      <div class="filter-bar">
+        <input type="text" placeholder="Tìm tên, email, SĐT..." style="width: 250px;">
+        <select><option value="">Tất cả vai trò</option><option>Admin</option><option>Nhân viên</option></select>
+        <button class="btn-add"><i class="fa-solid fa-magnifying-glass"></i> Lọc</button>
+      </div>
 
-            <div class="table-container">
-                <table class="admin-table">
-                    <thead>
-                        <tr>
-                            <th>Họ và Tên</th>
-                            <th>Email / SĐT</th>
-                            <th>Vai trò</th>
-                            <th>Trạng thái</th>
-                            <th>Thao tác</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><strong>Trần Thị ...</strong></td>
-                            <td>dieu@htmobile.com</td>
-                            <td><span class="badge role-admin">Admin</span></td>
-                            <td class="status-active">Hoạt động</td>
-                            <td>
-                                <button class="btn-edit">Sửa</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td><strong>Huỳnh Trương Thảo Duyên</strong></td>
-                            <td>tai.nv@htmobile.com</td>
-                            <td><span class="badge role-staff">Nhân viên</span></td>
-                            <td class="status-active">Hoạt động</td>
-                            <td>
-                                <button class="btn-edit">Sửa</button>
-                                <button class="btn-ban"><i class="fa-solid fa-lock"></i> Khóa</button>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>Lê Thị Hồng Hạnh</td>
-                            <td>0987654321</td>
-                            <td><span class="badge role-customer">Khách hàng</span></td>
-                            <td class="status-banned">Bị cấm vĩnh viễn</td>
-                            <td>
-                                <button class="btn-edit" style="background-color: #333; color: white; border: 1px solid #555;">Mở khóa</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-            </div>
-        </main>
+      <div class="panel">
+        <table class="admin-table">
+          <thead><tr><th>Họ và Tên</th><th>Email / SĐT</th><th>Vai trò</th><th>Trạng thái</th><th>Thao tác</th></tr></thead>
+          <tbody>
+            <tr>
+              <td style="color:var(--text); font-weight:500;">Nguyễn Phúc Vinh </td>
+              <td style="color:var(--muted)">thuy.npv@htmobile.com</td>
+              <td><span style="background:rgba(156, 39, 176, 0.2); color:#e040fb; padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600;">Admin</span></td>
+              <td><span style="color: var(--green); font-weight: 600;">Hoạt động</span></td>
+              <td><button class="btn-edit">Sửa</button></td>
+            </tr>
+            <tr>
+              <td style="color:var(--text); font-weight:500;">Huỳnh Trương Thảo Duyên</td>
+              <td style="color:var(--muted)">duyen.htt@htmobile.com</td>
+              <td><span style="background:rgba(59,130,246,0.18); color:var(--blue); padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600;">Nhân viên</span></td>
+              <td><span style="color: var(--green); font-weight: 600;">Hoạt động</span></td>
+              <td><div class="action-btns"><button class="btn-edit">Sửa</button><button class="btn-delete"><i class="fa-solid fa-lock"></i> Khóa</button></div></td>
+            </tr>
+            <tr>
+              <td style="color:var(--text); font-weight:500;">Lê Thị Hồng Hạnh</td>
+              <td style="color:var(--muted)">0987654321</td>
+              <td><span style="background:rgba(255,255,255,0.1); color:var(--text); padding: 4px 10px; border-radius: 6px; font-size: 12px; font-weight: 600;">Khách hàng</span></td>
+              <td><span style="color: #ef4444; font-weight: 600;">Bị cấm vĩnh viễn</span></td>
+              <td><button class="btn-edit" style="color:var(--green); border-color:var(--green);"><i class="fa-solid fa-unlock"></i> Mở khóa</button></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
+  </div>
 
-    <div class="modal-overlay" id="staffModal">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h3>Thêm Tài Khoản Nhân Viên</h3>
-                <button class="close-modal" onclick="closeModal()">&times;</button>
-            </div>
-            
-            <form action="#" method="POST">
-                <div class="modal-form-group">
-                    <label>Họ và tên</label>
-                    <input type="text" placeholder="Nhập tên nhân viên" required>
-                </div>
-
-                <div class="modal-form-group">
-                    <label>Email liên hệ</label>
-                    <input type="email" placeholder="VD: nhanvien@htmobile.com" required>
-                </div>
-
-                <div class="modal-form-group">
-                    <label>Mật khẩu khởi tạo</label>
-                    <input type="password" placeholder="Nhập mật khẩu" required>
-                </div>
-
-                <div class="modal-form-group" style="margin-bottom: 25px;">
-                    <label>Phân quyền chức vụ</label>
-                    <select required>
-                        <option value="staff">Nhân viên bán hàng (Xử lý đơn)</option>
-                        <option value="manager">Quản lý kho (Nhập/Xuất IMEI)</option>
-                    </select>
-                </div>
-                
-                <div style="text-align: right;">
-                    <button type="button" onclick="closeModal()" style="padding: 10px 15px; background: none; color: #aaa; border: none; cursor: pointer;">Hủy</button>
-                    <button type="submit" style="padding: 10px 20px; background-color: #e50000; color: white; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;">Tạo tài khoản</button>
-                </div>
-            </form>
+  <div class="modal-overlay" id="staffModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3>Thêm Nhân Viên</h3>
+        <button onclick="document.getElementById('staffModal').style.display='none'" style="background:none; border:none; color:var(--muted); font-size:24px; cursor:pointer;">&times;</button>
+      </div>
+      <form>
+        <div class="form-group"><label>Họ và tên</label><input type="text" required></div>
+        <div class="form-group"><label>Email</label><input type="email" required></div>
+        <div class="form-group" style="margin-bottom:25px;"><label>Phân quyền</label><select><option>Nhân viên bán hàng</option><option>Quản lý kho</option></select></div>
+        <div style="text-align: right; display:flex; justify-content:flex-end; gap:10px;">
+          <button type="button" class="btn-edit" onclick="document.getElementById('staffModal').style.display='none'">Hủy</button>
+          <button type="submit" class="btn-add">Tạo tài khoản</button>
         </div>
+      </form>
     </div>
-
-    <script>
-        function openStaffModal() {
-            document.getElementById('staffModal').style.display = 'flex';
-        }
-
-        function closeModal() {
-            document.getElementById('staffModal').style.display = 'none';
-        }
-    </script>
-    <script src="../../static/admin/js/admin-base.js"></script>
-    <script src="../../static/admin/js/users.js"></script>
+  </div>
+</div>
 </body>
 </html>

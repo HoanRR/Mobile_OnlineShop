@@ -22,3 +22,10 @@
 .data-table td { padding: 16px 15px; color: var(--text); font-size: 14px; border-bottom: 1px solid var(--border); }
 .data-table tbody tr { transition: var(--transition); }
 .data-table tbody tr:hover { background: rgba(255,255,255,0.02); }
+
+/* Table cell styles */
+.cell-muted { color: var(--muted); }
+.category-badge { background: rgba(255,255,255,0.1); padding: 4px 10px; border-radius: 6px; font-size: 12px; }
+.price-cell { color: #FF3D00; font-weight: bold; }
+.stock-available { color: var(--green); font-weight: 600; }
+.stock-outofstock { color: var(--red); font-weight: 600; }

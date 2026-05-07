@@ -1,3 +1,27 @@
 /* Products page specific styles */
 
-/* Optional: Add any product-specific styling here */
+/* Inline styles from products.html */
+.filter-bar {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 24px;
+  background: var(--surface);
+  padding: 20px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+}
+
+.filter-bar input {
+  flex: 1;
+  max-width: 400px;
+  padding: 12px 14px;
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  outline: none;
+}
+
+.filter-bar input:focus {
+  border-color: var(--red);
+}

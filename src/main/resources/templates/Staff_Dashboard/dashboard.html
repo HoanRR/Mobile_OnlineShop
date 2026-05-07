@@ -1,11 +1,14 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
     <title>Tổng quan - HT Mobile Staff</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="stylesheet" href="../../static/staff/css/dashboard.css">
+    <link rel="stylesheet" href="../../static/staff/css/staff-base.css">
+<link rel="stylesheet" href="../../static/staff/css/dashboard.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="../../static/staff/js/common.js"></script>
+    <script src="../../static/staff/js/dashboard.js"></script>
 </head>
 <body>
 
@@ -64,7 +67,7 @@
 
         <!-- Topbar -->
         <header class="topbar">
-            <div class="topbar-title"><span>HT</span> Mobile — Tổng quan</div>
+            <div class="topbar-title"><span>HT</span> Mobile – Tổng quan</div>
             <div class="topbar-right">
                 <div class="topbar-date" id="currentDate"></div>
                 <div class="topbar-user">
@@ -79,7 +82,7 @@
 
             <!-- KPI CARDS -->
             <div class="kpi-grid">
-                <div class="kpi-card" style="--card-accent:#22c55e;--card-bg-icon:rgba(34,197,94,0.12);">
+                <div class="kpi-card kpi-green">
                     <div class="kpi-top">
                         <div class="kpi-label">Tổng Doanh Thu</div>
                         <div class="kpi-icon-wrap"><i class="fa-solid fa-sack-dollar"></i></div>
@@ -88,7 +91,7 @@
                     <div class="kpi-trend"><span class="up"><i class="fa-solid fa-arrow-trend-up"></i> +12.4%</span> so với tháng trước</div>
                 </div>
 
-                <div class="kpi-card" style="--card-accent:#e50000;--card-bg-icon:rgba(229,0,0,0.12);">
+                <div class="kpi-card kpi-red">
                     <div class="kpi-top">
                         <div class="kpi-label">Đơn Hàng Mới</div>
                         <div class="kpi-icon-wrap"><i class="fa-solid fa-boxes-packing"></i></div>
@@ -97,16 +100,16 @@
                     <div class="kpi-trend"><span class="up"><i class="fa-solid fa-arrow-trend-up"></i> +8</span> so với hôm qua</div>
                 </div>
 
-                <div class="kpi-card" style="--card-accent:#3b82f6;--card-bg-icon:rgba(59,130,246,0.12);">
+                <div class="kpi-card kpi-blue">
                     <div class="kpi-top">
-                        <div class="kpi-label">Sản Phẩm Đang Bán</div>
+                        <div class="kpi-label">Sản phẩm Đang Bán</div>
                         <div class="kpi-icon-wrap"><i class="fa-solid fa-mobile-screen"></i></div>
                     </div>
                     <div class="kpi-value">48</div>
                     <div class="kpi-trend"><span class="up"><i class="fa-solid fa-check"></i> 3 mới</span> trong tuần này</div>
                 </div>
 
-                <div class="kpi-card" style="--card-accent:#f59e0b;--card-bg-icon:rgba(245,158,11,0.12);">
+                <div class="kpi-card kpi-orange">
                     <div class="kpi-top">
                         <div class="kpi-label">Khách Hàng</div>
                         <div class="kpi-icon-wrap"><i class="fa-solid fa-users"></i></div>
@@ -178,7 +181,7 @@
                 <div class="panel">
                     <div class="panel-header">
                         <div class="panel-title">Đơn hàng <span>gần đây</span></div>
-                        <a href="orders.html" style="font-size:12px;color:var(--red);text-decoration:none;font-weight:600;">Xem tất cả →</a>
+                        <a href="orders.html">Xem tất cả →</a>
                     </div>
 
                     <div class="order-row">
@@ -218,31 +221,31 @@
                 <!-- Quick Stats -->
                 <div>
                     <div class="quick-stat">
-                        <div class="qs-icon" style="background:rgba(229,0,0,.12);color:#e50000;"><i class="fa-solid fa-fire-flame-curved"></i></div>
+                        <div class="qs-icon qs-red"><i class="fa-solid fa-fire-flame-curved"></i></div>
                         <div>
                             <div class="qs-label">Đơn cần xử lý</div>
                             <div class="qs-val" style="color:#e50000;">12</div>
                         </div>
                     </div>
                     <div class="quick-stat">
-                        <div class="qs-icon" style="background:rgba(59,130,246,.12);color:#3b82f6;"><i class="fa-solid fa-truck"></i></div>
+                        <div class="qs-icon qs-blue"><i class="fa-solid fa-truck"></i></div>
                         <div>
                             <div class="qs-label">Đang vận chuyển</div>
                             <div class="qs-val" style="color:#3b82f6;">27</div>
                         </div>
                     </div>
                     <div class="quick-stat">
-                        <div class="qs-icon" style="background:rgba(34,197,94,.12);color:#22c55e;"><i class="fa-solid fa-circle-check"></i></div>
+                        <div class="qs-icon qs-green"><i class="fa-solid fa-circle-check"></i></div>
                         <div>
                             <div class="qs-label">Hoàn thành hôm nay</div>
                             <div class="qs-val" style="color:#22c55e;">43</div>
                         </div>
                     </div>
                     <div class="quick-stat">
-                        <div class="qs-icon" style="background:rgba(245,158,11,.12);color:#f59e0b;"><i class="fa-solid fa-star"></i></div>
+                        <div class="qs-icon qs-orange"><i class="fa-solid fa-star"></i></div>
                         <div>
                             <div class="qs-label">Đánh giá TB</div>
-                            <div class="qs-val" style="color:#f59e0b;">4.8 ★</div>
+                            <div class="qs-val" style="color:#f59e0b;">4.8 ☆</div>
                         </div>
                     </div>
                 </div>
@@ -251,103 +254,6 @@
         </div><!-- end page-body -->
     </div><!-- end main-content -->
 </div><!-- end app-wrapper -->
-
-<script>
-    /* ---- Sidebar Collapse ---- */
-    const sidebar      = document.getElementById('sidebar');
-    const mainContent  = document.getElementById('mainContent');
-    const toggleBtn    = document.getElementById('sidebarToggle');
-
-    const COLLAPSED_KEY = 'ht_sidebar_collapsed';
-    if (localStorage.getItem(COLLAPSED_KEY) === '1') {
-        sidebar.classList.add('collapsed');
-        mainContent.classList.add('expanded');
-    }
-
-    toggleBtn.addEventListener('click', () => {
-        const isCollapsed = sidebar.classList.toggle('collapsed');
-        mainContent.classList.toggle('expanded', isCollapsed);
-        localStorage.setItem(COLLAPSED_KEY, isCollapsed ? '1' : '0');
-    });
-
-    /* ---- Active sidebar link ---- */
-    const currentFile = window.location.pathname.split('/').pop() || 'dashboard.html';
-    document.querySelectorAll('.nav-item').forEach(item => {
-        const link = item.querySelector('a');
-        if (link && link.getAttribute('href') === currentFile) {
-            document.querySelectorAll('.nav-item').forEach(i => i.classList.remove('active'));
-            item.classList.add('active');
-        }
-    });
-
-    /* ---- Current date ---- */
-    const dateEl = document.getElementById('currentDate');
-    if (dateEl) {
-        const now = new Date();
-        dateEl.textContent = now.toLocaleDateString('vi-VN', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
-    }
-
-    /* ---- Revenue Chart ---- */
-    const ctx = document.getElementById('revenueChart').getContext('2d');
-    new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: ['Thứ 2', 'Thứ 3', 'Thứ 4', 'Thứ 5', 'Thứ 6', 'Thứ 7', 'CN'],
-            datasets: [
-                {
-                    label: 'Doanh thu',
-                    data: [120, 190, 150, 220, 180, 250, 300],
-                    backgroundColor: (ctx) => {
-                        const g = ctx.chart.ctx.createLinearGradient(0, 0, 0, 260);
-                        g.addColorStop(0, 'rgba(229,0,0,0.85)');
-                        g.addColorStop(1, 'rgba(229,0,0,0.25)');
-                        return g;
-                    },
-                    borderRadius: 6,
-                    borderSkipped: false,
-                    maxBarThickness: 40,
-                },
-                {
-                    label: 'Tuần trước',
-                    data: [100, 160, 130, 190, 160, 210, 270],
-                    backgroundColor: 'rgba(255,255,255,0.06)',
-                    borderRadius: 6,
-                    borderSkipped: false,
-                    maxBarThickness: 40,
-                }
-            ]
-        },
-        options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    labels: { color: '#888', font: { size: 12 }, boxWidth: 12, padding: 20 }
-                },
-                tooltip: {
-                    backgroundColor: '#1c1e22',
-                    borderColor: '#2e3035',
-                    borderWidth: 1,
-                    titleColor: '#f0f0f2',
-                    bodyColor: '#9a9ba3',
-                    callbacks: {
-                        label: ctx => ` ${ctx.parsed.y}M ₫`
-                    }
-                }
-            },
-            scales: {
-                y: {
-                    beginAtZero: true,
-                    grid: { color: 'rgba(255,255,255,0.05)' },
-                    ticks: { color: '#666', callback: v => v + 'M' }
-                },
-                x: {
-                    grid: { display: false },
-                    ticks: { color: '#666' }
-                }
-            }
-        }
-    });
-</script>
 </body>
 </html>
+

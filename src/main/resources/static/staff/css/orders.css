@@ -106,3 +106,30 @@
 .close-modal:hover { 
     color: var(--text); 
 }
+
+/* Status badge styles */
+.status-badge { padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600; }
+.status-pending { background: rgba(245,158,11,0.18); color: #f59e0b; }
+.status-shipping { background: rgba(59,130,246,0.18); color: #3b82f6; }
+.status-success { background: rgba(34,197,94,0.18); color: #22c55e; }
+.status-cancelled { background: rgba(244,67,54,0.18); color: #ef5350; }
+
+/* Table cell styles */
+.price-cell { color: #FF3D00; font-weight: bold; }
+
+/* Modal form styles */
+.modal-form-info { margin-bottom: 24px; }
+.modal-info-text { color: var(--muted); margin-bottom: 12px; font-size: 14px; }
+.modal-info-text strong { color: var(--text); font-size: 16px; }
+
+.modal-form-group { margin-bottom: 16px; }
+.modal-label { color: var(--muted); display: block; margin-bottom: 8px; font-size: 13px; font-weight: 600; }
+.modal-select { width: 100%; padding: 12px; background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: 8px; font-family: inherit; outline: none; }
+.modal-select:focus { border-color: var(--red); }
+
+/* Modal action buttons */
+.modal-actions { text-align: right; display: flex; gap: 10px; justify-content: flex-end; }
+.btn-cancel { padding: 10px 18px; background: var(--surface2); color: var(--text); border: 1px solid var(--border); border-radius: 8px; cursor: pointer; transition: var(--transition); }
+.btn-cancel:hover { background: var(--surface2); border-color: var(--red); }
+.btn-save { padding: 10px 24px; background: var(--red); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; transition: var(--transition); }
+.btn-save:hover { background: var(--red-dark); box-shadow: 0 4px 12px var(--red-glow); }

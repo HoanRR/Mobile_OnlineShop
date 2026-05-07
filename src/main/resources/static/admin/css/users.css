@@ -1,12 +1,96 @@
 /* Users page specific styles */
+.status-active { background: rgba(34,197,94,0.18); color: var(--green); padding: 8px 12px; border-radius: 5px; }
+.status-banned { background: rgba(239,68,68,0.18); color: #ef4444; padding: 8px 12px; border-radius: 5px; }
+.role-staff { background: rgba(59,130,246,0.18); color: var(--blue); padding: 6px 12px; border-radius: 20px; font-size: 12px; font-weight: bold; }
+.btn-ban { background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); padding: 8px 12px; border-radius: 6px; cursor: pointer; transition: var(--transition); font-weight: 600; font-size: 13px;}
+.btn-ban:hover { background: #ef4444; color: white; }
 
-/* User status badge styles */
-.status-active { 
-    background: #4caf50; 
-    color: white; 
+/* Inline styles from users.html */
+.filter-bar {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 24px;
+  background: var(--surface);
+  padding: 20px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
 }
 
-.status-banned { 
-    background: #f44336; 
-    color: white; 
+.filter-bar input,
+.filter-bar select {
+  padding: 10px 14px;
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  outline: none;
+}
+
+.filter-bar input:focus,
+.filter-bar select:focus {
+  border-color: var(--red);
+}
+
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: none;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.modal-content {
+  background: var(--surface);
+  padding: 30px;
+  border-radius: 16px;
+  width: 450px;
+  border: 1px solid var(--border);
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border);
+  padding-bottom: 15px;
+  margin-bottom: 20px;
+}
+
+.modal-header h3 {
+  color: var(--red);
+  margin: 0;
+  font-size: 18px;
+}
+
+.form-group {
+  margin-bottom: 15px;
+}
+
+.form-group label {
+  display: block;
+  color: var(--muted);
+  margin-bottom: 8px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 12px;
+  background: var(--bg);
+  color: var(--text);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  outline: none;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+  border-color: var(--red);
 }
