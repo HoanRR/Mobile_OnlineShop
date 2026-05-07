@@ -1,0 +1,130 @@
+﻿<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Đơn hàng - HT Mobile Staff</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Link 2 CSS -->
+    <link rel="stylesheet" href="../../static/staff/css/dashboard.css">
+    <link rel="stylesheet" href="../../static/staff/css/orders.css">
+</head>
+<body>
+<div class="app-wrapper">
+    <!-- SIDEBAR -->
+    <nav class="sidebar" id="sidebar">
+        <button class="sidebar-toggle" id="sidebarToggle"><i class="fa-solid fa-chevron-left"></i></button>
+        <div class="sidebar-logo">
+            <span class="logo-icon"><i class="fa-solid fa-mobile-screen"></i></span>
+            <span class="logo-text">HT Mobile Staff</span>
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li class="nav-item" data-label="Tổng quan"><a href="dashboard.html"><span class="nav-icon"><i class="fa-solid fa-chart-line"></i></span><span class="nav-label">Tổng quan</span></a></li>
+                <li class="nav-item" data-label="Bán hàng (POS)"><a href="pos.html"><span class="nav-icon"><i class="fa-solid fa-cash-register"></i></span><span class="nav-label">Bán hàng (POS)</span></a></li>
+                <li class="nav-item active" data-label="Quản lý Đơn hàng"><a href="orders.html"><span class="nav-icon"><i class="fa-solid fa-cart-shopping"></i></span><span class="nav-label">Quản lý Đơn hàng</span></a></li>
+                <li class="nav-item" data-label="Tra cứu Sản phẩm"><a href="products.html"><span class="nav-icon"><i class="fa-solid fa-mobile-screen"></i></span><span class="nav-label">Tra cứu Sản phẩm</span></a></li>
+                <div class="nav-divider"></div>
+                <li class="nav-item logout" data-label="Đăng xuất"><a href="#"><span class="nav-icon"><i class="fa-solid fa-right-from-bracket"></i></span><span class="nav-label">Đăng xuất</span></a></li>
+            </ul>
+        </nav>
+    </nav>
+
+    <!-- MAIN -->
+    <div class="main-content" id="mainContent">
+        <header class="topbar">
+            <div class="topbar-title"><span>HT</span> Mobile — Đơn hàng</div>
+            <div class="topbar-right">
+                <div class="topbar-date" id="currentDate"></div>
+                <div class="topbar-user"><div class="avatar">NV</div> Xin chào, <strong>Nhân Viên</strong></div>
+            </div>
+        </header>
+
+        <div class="page-body">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 style="margin: 0; font-size: 20px; font-weight: 600;">Danh sách Đơn hàng</h2>
+                <a href="pos.html"><button class="btn-add"><i class="fa-solid fa-plus"></i> Thêm đơn hàng mới</button></a>
+            </div>
+
+            <div class="filter-bar">
+                <input type="text" placeholder="Nhập mã đơn hoặc tên khách..." style="width: 280px;">
+                <input type="date">
+                <select>
+                    <option value="">Tất cả trạng thái</option>
+                    <option value="pending">Chờ xác nhận</option>
+                    <option value="shipping">Đang giao hàng</option>
+                    <option value="success">Đã hoàn thành</option>
+                </select>
+                <button><i class="fa-solid fa-filter"></i> Lọc</button>
+            </div>
+
+            <div class="data-table-wrap">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Mã Đơn</th>
+                            <th>Khách hàng</th>
+                            <th>Ngày đặt</th>
+                            <th>Tổng tiền</th>
+                            <th>Trạng thái</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>#DH1001</strong></td>
+                            <td>Nguyễn Văn A</td>
+                            <td>06/04/2026</td>
+                            <td style="color: #FF3D00; font-weight: bold;">29.990.000 ₫</td>
+                            <td><span style="background: rgba(245,158,11,0.18); color: #f59e0b; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600;">Chờ xác nhận</span></td>
+                            <td><button class="btn-update-status" onclick="openModal('DH1001')">Cập nhật</button></td>
+                        </tr>
+                        <tr>
+                            <td><strong>#DH1002</strong></td>
+                            <td>Trần Thị B</td>
+                            <td>05/04/2026</td>
+                            <td style="color: #FF3D00; font-weight: bold;">15.500.000 ₫</td>
+                            <td><span style="background: rgba(59,130,246,0.18); color: #3b82f6; padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 600;">Đang giao</span></td>
+                            <td><button class="btn-update-status" onclick="openModal('DH1002')">Cập nhật</button></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal cập nhật trạng thái -->
+<div class="modal-overlay" id="statusModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Cập nhật trạng thái</h3>
+            <button class="close-modal" onclick="closeModal()">&times;</button>
+        </div>
+        <div style="margin-bottom: 24px;">
+            <p style="color: var(--muted); margin-bottom: 12px; font-size: 14px;">Mã đơn hàng: <strong id="modalOrderId" style="color: var(--text); font-size: 16px;">---</strong></p>
+            <label style="color: var(--muted); display: block; margin-bottom: 8px; font-size: 13px;">Chọn trạng thái mới:</label>
+            <select id="newStatus" style="width: 100%; padding: 12px; background: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: 8px; font-family: inherit;">
+                <option value="pending">Chờ xác nhận</option>
+                <option value="shipping">Đang giao hàng</option>
+                <option value="success">Giao thành công</option>
+                <option value="cancelled">Hủy đơn hàng</option>
+            </select>
+        </div>
+        <div style="text-align: right; display: flex; gap: 10px; justify-content: flex-end;">
+            <button onclick="closeModal()" style="padding: 10px 18px; background: var(--surface2); color: var(--text); border: 1px solid var(--border); border-radius: 8px; cursor: pointer;">Hủy bỏ</button>
+            <button onclick="saveStatus()" style="padding: 10px 24px; background: var(--red); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600;">Lưu thay đổi</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const sidebar = document.getElementById('sidebar'); const mainContent = document.getElementById('mainContent'); const toggleBtn = document.getElementById('sidebarToggle');
+    if (localStorage.getItem('ht_sidebar_collapsed') === '1') { sidebar.classList.add('collapsed'); mainContent.classList.add('expanded'); }
+    toggleBtn.addEventListener('click', () => { const isC = sidebar.classList.toggle('collapsed'); mainContent.classList.toggle('expanded', isC); localStorage.setItem('ht_sidebar_collapsed', isC ? '1' : '0'); });
+
+    function openModal(orderId) { document.getElementById('modalOrderId').innerText = '#' + orderId; document.getElementById('statusModal').style.display = 'flex'; }
+    function closeModal() { document.getElementById('statusModal').style.display = 'none'; }
+    function saveStatus() { alert('Đã cập nhật trạng thái thành công cho đơn ' + document.getElementById('modalOrderId').innerText); closeModal(); }
+</script>
+</body>
+</html>

@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Sản phẩm - HT Mobile Admin</title>
+    <link rel="stylesheet" href="../../static/admin/css/admin-base.css">
+    <link rel="stylesheet" href="../../static/admin/css/products.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="admin-wrapper">
+        <div id="sidebar-container"></div>
+
+        <main class="admin-content">
+            <div id="header-container"></div>            
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 style="margin: 0; color: #fff;">Danh sách Sản phẩm</h2>
+                <button onclick="window.location.href='add-product.html'" style="background: #e50000; color: white; padding: 10px 20px; border: none; border-radius: 5px; cursor: pointer; font-weight: bold;"><i class="fa-solid fa-plus"></i> Thêm sản phẩm mới</button>
+            </div>
+
+            <div class="table-container">
+                <table class="admin-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Tên sản phẩm</th>
+                            <th>Danh mục</th>
+                            <th>Giá bán</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>#001</td>
+                            <td><strong>iPhone 15 Pro Max 256GB</strong></td>
+                            <td>Apple</td>
+                            <td style="color: #FF3D00; font-weight: bold;">29.990.000 ₫</td>
+                            <td>
+                                <div class="action-btns">
+                                    <button class="btn-edit">Sửa</button>
+                                    <button class="btn-delete">Xóa</button>
+                                </div>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </main>
+    </div>
+    <script src="../../static/admin/js/admin-base.js"></script>
+    <script src="../../static/admin/js/products.js"></script>
+</body>
+</html>

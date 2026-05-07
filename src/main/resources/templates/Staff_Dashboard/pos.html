@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>POS Bán Hàng - HT Mobile</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Gọi khung chung -->
+    <link rel="stylesheet" href="../../static/staff/css/dashboard.css">
+    <!-- Gọi CSS riêng của trang POS -->
+    <link rel="stylesheet" href="../../static/staff/css/pos.css">
+</head>
+<body>
+<div class="app-wrapper">
+    <!-- SIDEBAR -->
+    <nav class="sidebar" id="sidebar">
+        <button class="sidebar-toggle" id="sidebarToggle"><i class="fa-solid fa-chevron-left"></i></button>
+        <div class="sidebar-logo">
+            <span class="logo-icon"><i class="fa-solid fa-mobile-screen"></i></span>
+            <span class="logo-text">HT Mobile Staff</span>
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li class="nav-item" data-label="Tổng quan"><a href="dashboard.html"><span class="nav-icon"><i class="fa-solid fa-chart-line"></i></span><span class="nav-label">Tổng quan</span></a></li>
+                <li class="nav-item active" data-label="Bán hàng (POS)"><a href="pos.html"><span class="nav-icon"><i class="fa-solid fa-cash-register"></i></span><span class="nav-label">Bán hàng (POS)</span></a></li>
+                <li class="nav-item" data-label="Quản lý Đơn hàng"><a href="orders.html"><span class="nav-icon"><i class="fa-solid fa-cart-shopping"></i></span><span class="nav-label">Quản lý Đơn hàng</span></a></li>
+                <li class="nav-item" data-label="Tra cứu Sản phẩm"><a href="products.html"><span class="nav-icon"><i class="fa-solid fa-mobile-screen"></i></span><span class="nav-label">Tra cứu Sản phẩm</span></a></li>
+                <div class="nav-divider"></div>
+                <li class="nav-item logout" data-label="Đăng xuất"><a href="#"><span class="nav-icon"><i class="fa-solid fa-right-from-bracket"></i></span><span class="nav-label">Đăng xuất</span></a></li>
+            </ul>
+        </nav>
+    </nav>
+
+    <!-- MAIN -->
+    <div class="main-content" id="mainContent">
+        <!-- TOPBAR -->
+        <header class="topbar">
+            <div class="topbar-title"><span>HT</span> Mobile — POS Bán Hàng</div>
+            <div class="topbar-right">
+                <div class="topbar-date" id="currentDate"></div>
+                <div class="topbar-user"><div class="avatar">NV</div> Xin chào, <strong>Nhân Viên</strong></div>
+            </div>
+        </header>
+
+        <div class="page-body" style="padding-bottom: 0;">
+            <div class="pos-container">
+                <!-- Danh sách sản phẩm -->
+                <div class="pos-products">
+                    <div class="pos-search">
+                        <input type="text" placeholder="Quét mã vạch hoặc nhập tên sản phẩm...">
+                        <button><i class="fa-solid fa-search"></i> Tìm kiếm</button>
+                    </div>
+                    
+                    <div class="product-grid">
+                        <!-- Sản phẩm 1: Ảnh iPhone 15 Plus -->
+                        <div class="pos-item" onclick="addToCart('iPhone 15 Plus', 22990000)">
+                            <img src="../../static/staff/img/iphone-15-plus_1__1.webp" alt="iPhone 15 Plus">
+                            <h4>iPhone 15 Plus 256GB</h4>
+                            <p>22.990.000 ₫</p>
+                        </div>
+                        
+                        <!-- Sản phẩm 2: Ảnh Samsung S26 Ultra (Đoán tên file từ hình chụp) -->
+                        <div class="pos-item" onclick="addToCart('Samsung Galaxy S26 Ultra', 31990000)">
+                            <!-- Lưu ý: Nếu ảnh không hiện, chú sửa lại tên file chỗ này cho chính xác 100% giống tên trong thư mục nhé -->
+                            <img src="../../static/staff/img/samsung-galaxy-s26-ultra-1.webp" alt="S26 Ultra">
+                            <h4>Samsung Galaxy S26 Ultra</h4>
+                            <p>31.990.000 ₫</p>
+                        </div>
+                        
+                        <!-- Sản phẩm 3: Ảnh iPhone 17 Pro Max -->
+                        <div class="pos-item" onclick="addToCart('iPhone 17 Pro Max', 34500000)">
+                            <img src="../../static/staff/img/iphone-17-pro-max_3.webp" alt="iPhone 17">
+                            <h4>iPhone 17 Pro Max</h4>
+                            <p>34.500.000 ₫</p>
+                        </div>
+                        
+                        <!-- Sản phẩm 4: Ảnh iPhone Air 3 -->
+                        <div class="pos-item" onclick="addToCart('iPhone Air 3', 18990000)">
+                            <img src="../../static/staff/img/iphone_air-3_2.webp" alt="iPhone Air 3">
+                            <h4>iPhone Air 3</h4>
+                            <p>18.990.000 ₫</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Giỏ hàng -->
+                <div class="pos-cart">
+                    <h3 class="cart-header"><i class="fa-solid fa-basket-shopping" style="color:var(--red); margin-right:8px;"></i> Đơn hàng hiện tại</h3>
+                    <div class="cart-items" id="cart-items">
+                        <div style="color: var(--muted); text-align: center; margin-top: 60px;">
+                            <i class="fa-solid fa-cart-arrow-down" style="font-size: 48px; margin-bottom: 16px; opacity: 0.5;"></i>
+                            <p>Chưa có sản phẩm nào</p>
+                        </div>
+                    </div>
+                    <div class="cart-summary">
+                        <div class="summary-row">
+                            <span>Tạm tính (<span id="total-qty">0</span> SP)</span>
+                            <span id="subtotal">0 ₫</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Chiết khấu/Giảm giá</span>
+                            <span style="color:var(--green)">0 ₫</span>
+                        </div>
+                        <div class="summary-row total">
+                            <span>THÀNH TIỀN</span>
+                            <span id="total-price">0 ₫</span>
+                        </div>
+                        <button class="btn-checkout" onclick="checkout()"><i class="fa-solid fa-money-bill-wave"></i> THANH TOÁN NGAY</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    /* Chức năng thu gọn Sidebar */
+    const sidebar = document.getElementById('sidebar');
+    const mainContent = document.getElementById('mainContent');
+    const toggleBtn = document.getElementById('sidebarToggle');
+    if (localStorage.getItem('ht_sidebar_collapsed') === '1') { sidebar.classList.add('collapsed'); mainContent.classList.add('expanded'); }
+    toggleBtn.addEventListener('click', () => {
+        const isC = sidebar.classList.toggle('collapsed');
+        mainContent.classList.toggle('expanded', isC);
+        localStorage.setItem('ht_sidebar_collapsed', isC ? '1' : '0');
+    });
+
+    /* Logic Giỏ hàng */
+    let cart = [];
+    function formatCurrency(number) { return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(number); }
+    function addToCart(name, price) {
+        let item = cart.find(i => i.name === name);
+        if(item) { item.qty++; } else { cart.push({ name: name, price: price, qty: 1 }); }
+        renderCart();
+    }
+    function removeCart(index) { cart.splice(index, 1); renderCart(); }
+    function updateQty(index, newQty) {
+        if(newQty > 0) { cart[index].qty = parseInt(newQty); } else { cart[index].qty = 1; }
+        renderCart();
+    }
+    function renderCart() {
+        let cartHtml = ''; let totalQty = 0; let totalPrice = 0;
+        if(cart.length === 0) {
+            document.getElementById('cart-items').innerHTML = `<div style="color: var(--muted); text-align: center; margin-top: 60px;"><i class="fa-solid fa-cart-arrow-down" style="font-size: 48px; margin-bottom: 16px; opacity: 0.5;"></i><p>Chưa có sản phẩm nào</p></div>`;
+            document.getElementById('total-qty').innerText = "0";
+            document.getElementById('subtotal').innerText = "0 ₫";
+            document.getElementById('total-price').innerText = "0 ₫";
+            return;
+        }
+        cart.forEach((item, index) => {
+            totalQty += item.qty; totalPrice += (item.qty * item.price);
+            cartHtml += `<div class="cart-item"><div class="cart-item-info"><div class="cart-item-name">${item.name}</div><div class="cart-item-price">${formatCurrency(item.price)}</div></div><div class="cart-item-qty"><input type="number" min="1" value="${item.qty}" onchange="updateQty(${index}, this.value)"><button class="btn-remove" onclick="removeCart(${index})"><i class="fa-solid fa-trash"></i></button></div></div>`;
+        });
+        document.getElementById('cart-items').innerHTML = cartHtml;
+        document.getElementById('total-qty').innerText = totalQty;
+        document.getElementById('subtotal').innerText = formatCurrency(totalPrice);
+        document.getElementById('total-price').innerText = formatCurrency(totalPrice);
+    }
+    function checkout() {
+        if(cart.length === 0) { alert("Giỏ hàng đang trống!"); return; }
+        if(confirm("Xác nhận thanh toán và in hóa đơn cho: " + formatCurrency(cart.reduce((a,b)=>a+(b.price*b.qty), 0)) + "?")) {
+            alert("Đã lưu đơn hàng thành công trên hệ thống ảo. Ráp Back-end sẽ gọi API đoạn này!");
+            cart = []; renderCart();
+        }
+    }
+</script>
+</body>
+</html>
