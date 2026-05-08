@@ -1,0 +1,155 @@
+/* ========== ADMIN BADGE ========== */
+.admin-badge {
+    background-color: #ef4444;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: bold;
+    display: inline-block;
+    margin-bottom: 10px;
+}
+
+/* ========== INFORM PRODUCT FIX ========== */
+.inform-product-detail {
+    display: flex;
+    flex-direction: column;
+}
+
+.inform-product-detail > .admin-actions {
+    order: 10;
+    margin-top: auto;
+    padding-top: 15px;
+    border-top: 1px solid #e5e7eb;
+}
+
+/* ========== ADMIN ACTIONS ========== */
+.admin-actions {
+    margin-top: 15px;
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.btn-edit, .btn-hide {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.btn-edit {
+    background: #3b82f6;
+    color: white;
+}
+
+.btn-edit:hover {
+    background: #2563eb;
+    transform: translateY(-2px);
+}
+
+.btn-hide {
+    background: #6b7280;
+    color: white;
+}
+
+.btn-hide:hover {
+    background: #4b5563;
+    transform: translateY(-2px);
+}
+
+/* ========== STAFF REPLY SECTION ========== */
+.staff-reply-section {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px dashed #ccc;
+}
+
+.staff-reply-box {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.staff-reply-box textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #d1d5db;
+    border-radius: 4px;
+    resize: vertical;
+    min-height: 60px;
+    font-family: inherit;
+    font-size: 14px;
+}
+
+.staff-reply-box textarea:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.btn-submit-reply {
+    align-self: flex-end;
+    padding: 6px 12px;
+    background: #22c55e;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 13px;
+    transition: all 0.3s ease;
+}
+
+.btn-submit-reply:hover {
+    background: #16a34a;
+    transform: translateY(-2px);
+}
+
+.btn-submit-reply:active {
+    transform: translateY(0);
+}
+
+/* ========== REPLIED CONTENT ========== */
+.replied-content {
+    background: #f3f4f6;
+    padding: 10px;
+    border-radius: 6px;
+    border-left: 3px solid #3b82f6;
+    margin-top: 10px;
+}
+
+.replied-content strong {
+    color: #1e3a8a;
+    font-size: 13px;
+    display: block;
+    margin-bottom: 4px;
+}
+
+.replied-content p {
+    margin: 4px 0 0;
+    font-size: 14px;
+    color: #374151;
+}
+
+/* ========== RESPONSIVE ========== */
+@media (max-width: 768px) {
+    .admin-actions {
+        flex-direction: column;
+    }
+
+    .btn-edit, .btn-hide {
+        width: 100%;
+    }
+
+    .staff-reply-box {
+        gap: 6px;
+    }
+
+    .btn-submit-reply {
+        align-self: stretch;
+    }
+}
