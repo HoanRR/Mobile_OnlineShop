@@ -8,6 +8,45 @@
     font-weight: bold;
     display: inline-block;
     margin-bottom: 10px;
+    width: fit-content;
+}
+
+/* ========== LAYOUT FIX ========== */
+.wrapper-product-detail {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 30px;
+    padding: 20px;
+}
+
+.left-column {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.image-product-detail {
+    width: 100%;
+    height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f9f9f9;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.image-product-detail img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    max-height: 500px;
+}
+
+.right-column {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
 }
 
 /* ========== INFORM PRODUCT FIX ========== */
