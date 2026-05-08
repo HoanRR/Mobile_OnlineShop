@@ -25,6 +25,7 @@ async function xuLyDangNhap(event) {
 
             
             window.location.href = 'index.html'; 
+            
         } else {
             alert('Sai tên đăng nhập hoặc mật khẩu!');
         }
