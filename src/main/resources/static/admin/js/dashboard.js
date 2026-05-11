@@ -39,6 +39,58 @@ function initCommonUI() {
   }
 }
 
+// ========== QUICK STATS CLICK HANDLERS ==========
+function initQuickStatsClickHandlers() {
+  const quickStats = document.querySelectorAll('.quick-stat');
+  
+  quickStats.forEach(stat => {
+    stat.style.cursor = 'pointer';
+    stat.addEventListener('click', () => {
+      const label = stat.querySelector('.qs-label').textContent.trim();
+      
+      if (label.includes('Đơn cần xử lý') || label.includes('Đang vận chuyển') || label.includes('Hoàn thành')) {
+        window.location.href = 'orders.html';
+      } else if (label.includes('Đánh giá')) {
+        window.location.href = 'admin-reviews.html';
+      }
+    });
+  });
+}
+
+// ========== KPI CARD CLICK HANDLERS ==========
+function initKPIClickHandlers() {
+  const kpiCards = document.querySelectorAll('.kpi-card');
+  
+  kpiCards.forEach(card => {
+    card.style.cursor = 'pointer';
+    card.addEventListener('click', () => {
+      const label = card.querySelector('.kpi-label').textContent.trim();
+      
+      if (label.includes('Doanh Thu') || label.includes('Đơn Hàng')) {
+        window.location.href = 'orders.html';
+      } else if (label.includes('Sản phẩm')) {
+        window.location.href = 'products.html';
+      } else if (label.includes('Khách Hàng')) {
+        window.location.href = 'users.html';
+      }
+    });
+  });
+}
+
+// ========== TOP PRODUCTS CLICK HANDLERS ==========
+function initTopProductsClickHandlers() {
+  const topTable = document.querySelector('.top-table tbody');
+  if (!topTable) return;
+  
+  const rows = topTable.querySelectorAll('tr');
+  rows.forEach(row => {
+    row.style.cursor = 'pointer';
+    row.addEventListener('click', () => {
+      window.location.href = 'products.html';
+    });
+  });
+}
+
 // ========== REVENUE CHART INITIALIZATION ==========
 function initRevenueChart() {
   const ctx = document.getElementById('revenueChart');
@@ -111,5 +163,8 @@ function initRevenueChart() {
 document.addEventListener("DOMContentLoaded", () => {
   initCommonUI();
   initRevenueChart();
+  initKPIClickHandlers();
+  initTopProductsClickHandlers();
+  initQuickStatsClickHandlers();
   console.log('Dashboard loaded');
 });

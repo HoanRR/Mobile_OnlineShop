@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Quản lý Đánh giá - HT Mobile Staff</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../../static/staff/css/staff-base.css">
+  <link rel="stylesheet" href="../../static/staff/css/reviews.css">
+  <script src="../../static/staff/js/common.js"></script>
+  <script src="../../static/staff/js/reviews.js"></script>
+</head>
+<body>
+<div class="app-wrapper">
+  
+  <nav class="sidebar" id="sidebar">
+    <button class="sidebar-toggle" id="sidebarToggle"><i class="fa-solid fa-chevron-left"></i></button>
+    <div class="sidebar-logo"><span class="logo-icon"><i class="fa-solid fa-mobile-screen"></i></span><span class="logo-text">HT Mobile Staff</span></div>
+    <nav class="sidebar-nav">
+      <ul>
+        <li class="nav-item" data-label="Tổng quan"><a href="dashboard.html"><span class="nav-icon"><i class="fa-solid fa-chart-line"></i></span><span class="nav-label">Tổng quan</span></a></li>
+        <li class="nav-item" data-label="Bán hàng (POS)"><a href="pos.html"><span class="nav-icon"><i class="fa-solid fa-cash-register"></i></span><span class="nav-label">Bán hàng (POS)</span></a></li>
+        <li class="nav-item" data-label="Quản lý Đơn hàng"><a href="orders.html"><span class="nav-icon"><i class="fa-solid fa-cart-shopping"></i></span><span class="nav-label">Quản lý Đơn hàng</span></a></li>
+        <li class="nav-item" data-label="Tra cứu Sản phẩm"><a href="products.html"><span class="nav-icon"><i class="fa-solid fa-mobile-screen"></i></span><span class="nav-label">Tra cứu Sản phẩm</span></a></li>
+        <li class="nav-item active" data-label="Quản lý Đánh giá"><a href="reviews.html"><span class="nav-icon"><i class="fa-solid fa-star"></i></span><span class="nav-label">Quản lý Đánh giá</span></a></li>
+        <div class="nav-divider"></div>
+        <li class="nav-item logout"><a href="#"><span class="nav-icon"><i class="fa-solid fa-right-from-bracket"></i></span><span class="nav-label">Đăng xuất</span></a></li>
+      </ul>
+    </nav>
+  </nav>
+
+  <div class="main-content" id="mainContent">
+    <header class="topbar">
+      <div class="topbar-title"><span>HT</span> Mobile – Quản lý Đánh giá</div>
+      <div class="topbar-right">
+        <div class="topbar-date" id="currentDate"></div>
+        <div class="topbar-user"><div class="avatar">NV</div> Xin chào, <strong>Nhân Viên</strong></div>
+      </div>
+    </header>
+
+    <div class="page-body">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+        <h2 style="margin: 0; font-size: 20px; font-weight: 600;">Tổng hợp Đánh giá Sản phẩm</h2>
+      </div>
+
+      <div class="filter-bar">
+        <input type="text" placeholder="Tìm tên sản phẩm cần xem đánh giá..." style="width: 300px;">
+        <select>
+            <option value="">Lọc theo số sao TB</option>
+            <option>Dưới 3 sao (Cần chú ý)</option>
+            <option>Từ 4 sao trở lên</option>
+        </select>
+        <button class="btn-add"><i class="fa-solid fa-filter"></i> Lọc</button>
+      </div>
+
+      <div class="panel">
+        <table class="admin-table">
+          <thead>
+            <tr>
+                <th>ID</th>
+                <th>TÊN SẢN PHẨM</th>
+                <th>ĐIỂM TRUNG BÌNH</th>
+                <th>TỔNG SỐ ĐÁNH GIÁ</th>
+                <th>ĐÁNH GIÁ MỚI NHẤT</th>
+                <th>THAO TÁC</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td style="color: var(--muted);">#SP005</td>
+              <td style="color: var(--text); font-weight: 500;">Samsung Galaxy A06 5G Chính hãng</td>
+              <td><span style="color: #f59e0b; font-weight: bold;">5.0 <i class="fa-solid fa-star"></i></span></td>
+              <td style="color: var(--text);">73 lượt</td>
+              <td style="color: var(--muted); font-size: 13px;">Hôm nay, 19:42</td>
+              <td><a href="review-detail.html" class="btn-edit" style="text-decoration: none; display: inline-block;">Xem chi tiết</a></td>
+            </tr>
+            <tr>
+              <td style="color: var(--muted);">#SP001</td>
+              <td style="color: var(--text); font-weight: 500;">iPhone 15 Plus 256GB</td>
+              <td><span style="color: #f59e0b; font-weight: bold;">4.8 <i class="fa-solid fa-star"></i></span></td>
+              <td style="color: var(--text);">45 lượt</td>
+              <td style="color: var(--muted); font-size: 13px;">Hôm qua, 14:30</td>
+              <td><a href="review-detail.html" class="btn-edit" style="text-decoration: none; display: inline-block;">Xem chi tiết</a></td>
+            </tr>
+            <tr>
+              <td style="color: var(--muted);">#SP002</td>
+              <td style="color: var(--text); font-weight: 500;">Samsung Galaxy S26 Ultra</td>
+              <td><span style="color: #f59e0b; font-weight: bold;">4.6 <i class="fa-solid fa-star"></i></span></td>
+              <td style="color: var(--text);">38 lượt</td>
+              <td style="color: var(--muted); font-size: 13px;">2 ngày trước, 10:15</td>
+              <td><a href="review-detail.html" class="btn-edit" style="text-decoration: none; display: inline-block;">Xem chi tiết</a></td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

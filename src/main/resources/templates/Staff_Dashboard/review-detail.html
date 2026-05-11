@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chi tiết Đánh giá - HT Mobile Staff</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../static/staff/css/staff-base.css">
+    <link rel="stylesheet" href="../../static/staff/css/reviews.css">
+    <script src="../../static/staff/js/common.js"></script>
+    <script src="../../static/staff/js/reviews.js"></script>
+</head>
+<body>
+<div class="app-wrapper">
+    <nav class="sidebar" id="sidebar">
+        <button class="sidebar-toggle" id="sidebarToggle"><i class="fa-solid fa-chevron-left"></i></button>
+        <div class="sidebar-logo"><span class="logo-icon"><i class="fa-solid fa-mobile-screen"></i></span><span class="logo-text">HT Mobile Staff</span></div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li class="nav-item" data-label="Tổng quan"><a href="dashboard.html"><span class="nav-icon"><i class="fa-solid fa-chart-line"></i></span><span class="nav-label">Tổng quan</span></a></li>
+                <li class="nav-item" data-label="Bán hàng (POS)"><a href="pos.html"><span class="nav-icon"><i class="fa-solid fa-cash-register"></i></span><span class="nav-label">Bán hàng (POS)</span></a></li>
+                <li class="nav-item" data-label="Quản lý Đơn hàng"><a href="orders.html"><span class="nav-icon"><i class="fa-solid fa-cart-shopping"></i></span><span class="nav-label">Quản lý Đơn hàng</span></a></li>
+                <li class="nav-item" data-label="Tra cứu Sản phẩm"><a href="products.html"><span class="nav-icon"><i class="fa-solid fa-mobile-screen"></i></span><span class="nav-label">Tra cứu Sản phẩm</span></a></li>
+                <li class="nav-item active" data-label="Quản lý Đánh giá"><a href="reviews.html"><span class="nav-icon"><i class="fa-solid fa-star"></i></span><span class="nav-label">Quản lý Đánh giá</span></a></li>
+                <div class="nav-divider"></div>
+                <li class="nav-item logout"><a href="#"><span class="nav-icon"><i class="fa-solid fa-right-from-bracket"></i></span><span class="nav-label">Đăng xuất</span></a></li>
+            </ul>
+        </nav>
+    </nav>
+
+    <div class="main-content" id="mainContent">
+        <header class="topbar">
+            <div class="topbar-title"><span>HT</span> Mobile – Chi tiết Đánh giá</div>
+            <div class="topbar-right">
+                <div class="topbar-date" id="currentDate"></div>
+                <div class="topbar-user"><div class="avatar">NV</div> Xin chào, <strong>Nhân Viên</strong></div>
+            </div>
+        </header>
+
+        <div class="page-body">
+            <a href="reviews.html" style="color: var(--muted); text-decoration: none; font-size: 14px; margin-bottom: 20px; display: inline-block;"><i class="fa-solid fa-arrow-left"></i> Quay lại Danh sách</a>
+            
+            <div class="panel product-info-panel">
+                <h2>Samsung Galaxy A06 5G Chính hãng</h2>
+                <div class="product-rating">
+                    <span class="product-rating-stars">⭐⭐⭐⭐⭐</span>
+                    <span class="product-rating-count">(73 đánh giá)</span>
+                </div>
+                <div class="product-price">3.190.000đ</div>
+                <div class="product-stock">Tồn kho: 45 máy</div>
+            </div>
+
+            <div class="panel reviews-section">
+                <div class="reviews-header">
+                    <h3>Danh sách Đánh giá & Phản hồi</h3>
+                </div>
+
+                <div class="reviews-list">
+                    <!-- Review Item 1 -->
+                    <div class="review-item">
+                        <div class="review-item-header">
+                            <div class="review-item-user">
+                                <div class="review-item-name">Sơn</div>
+                                <div class="review-item-phone">08875921xx</div>
+                            </div>
+                            <span class="review-item-rating">⭐⭐⭐⭐⭐</span>
+                        </div>
+                        <div class="review-item-content">Qua dang cap lun</div>
+                        <div class="review-item-time">19:42 05/11/2025</div>
+
+                        <!-- Existing Reply -->
+                        <div class="replied-content">
+                            <div class="replied-content-header">HT Mobile (Nhân Viên) - 20:15 05/11/2025</div>
+                            <p class="replied-content-text">Dạ cửa hàng cảm ơn anh Sơn đã tin tưởng và ủng hộ ạ!</p>
+                        </div>
+                    </div>
+
+                    <!-- Review Item 2 (Without reply) -->
+                    <div class="review-item">
+                        <div class="review-item-header">
+                            <div class="review-item-user">
+                                <div class="review-item-name">Andrew</div>
+                                <div class="review-item-phone">03379662xx</div>
+                            </div>
+                            <span class="review-item-rating">⭐⭐⭐⭐⭐</span>
+                        </div>
+                        <div class="review-item-content">Máy có giao tới Huế ko ạ?</div>
+                        <div class="review-item-time">09:00 01/10/2025</div>
+
+                        <!-- Reply Section -->
+                        <div class="reply-section">
+                            <div class="reply-box">
+                                <textarea placeholder="Nhập câu trả lời cho khách hàng Andrew..."></textarea>
+                                <button class="btn-submit-reply" onclick="submitReply(this)">Gửi phản hồi</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Review Item 3 -->
+                    <div class="review-item">
+                        <div class="review-item-header">
+                            <div class="review-item-user">
+                                <div class="review-item-name">Linh</div>
+                                <div class="review-item-phone">09234567xx</div>
+                            </div>
+                            <span class="review-item-rating">⭐⭐⭐</span>
+                        </div>
+                        <div class="review-item-content">Chất lượng được nhưng pin hơi yếu. Mong cửa hàng cải thiện vấn đề giao hàng nhanh hơn.</div>
+                        <div class="review-item-time">15:30 03/10/2025</div>
+
+                        <!-- Reply Section -->
+                        <div class="reply-section">
+                            <div class="reply-box">
+                                <textarea placeholder="Nhập câu trả lời cho khách hàng Linh..."></textarea>
+                                <button class="btn-submit-reply" onclick="submitReply(this)">Gửi phản hồi</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

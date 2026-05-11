@@ -174,21 +174,174 @@
     color: #374151;
 }
 
-/* ========== RESPONSIVE ========== */
-@media (max-width: 768px) {
-    .admin-actions {
-        flex-direction: column;
-    }
+/* ========== EDIT PRODUCT HANDLER ==========*/
+.btn-edit:not(:hover) {
+    color: white;
+}
 
-    .btn-edit, .btn-hide {
-        width: 100%;
-    }
+.btn-edit {
+    background: #3b82f6;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 14px;
+    transition: all var(--transition);
+}
 
-    .staff-reply-box {
-        gap: 6px;
-    }
+.btn-edit:hover {
+    background: #2563eb;
+    transform: translateY(-2px);
+}
 
-    .btn-submit-reply {
-        align-self: stretch;
-    }
+.btn-hide {
+    background: #6b7280;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 14px;
+    transition: all var(--transition);
+}
+
+.btn-hide:hover {
+    background: #4b5563;
+    transform: translateY(-2px);
+}
+
+/* ========== REVIEWS SECTION ========== */
+.khu-vuc-danh-gia {
+    margin-top: 30px;
+}
+
+.header-danh-gia {
+    margin-bottom: 20px;
+}
+
+.header-danh-gia h2 {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.danh-sach-binh-luan-mc {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.item-binh-luan-mc {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 16px;
+    background: var(--surface);
+    transition: all var(--transition);
+}
+
+.item-binh-luan-mc:hover {
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.noi-dung-chinh {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.header-user {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.header-user .ten {
+    font-weight: 600;
+    color: var(--text);
+}
+
+.header-user .sdt {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.header-user .sao-danh-gia {
+    color: #f59e0b;
+    font-size: 14px;
+}
+
+.text-binh-luan {
+    color: var(--text);
+    line-height: 1.5;
+}
+
+.action-binh-luan {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+.action-binh-luan .thoi-gian {
+    color: var(--muted);
+    font-size: 12px;
+}
+
+/* ========== STAFF REPLY SECTION ========== */
+.staff-reply-section {
+    margin-top: 12px;
+    padding-top: 12px;
+    border-top: 1px dashed var(--border);
+}
+
+.staff-reply-box {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.staff-reply-box textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--text);
+    border-radius: 4px;
+    resize: vertical;
+    min-height: 60px;
+    font-family: inherit;
+    font-size: 14px;
+    transition: border-color var(--transition), box-shadow var(--transition);
+}
+
+.staff-reply-box textarea:focus {
+    outline: none;
+    border-color: var(--red);
+    box-shadow: 0 0 0 3px rgba(229, 0, 0, 0.1);
+}
+
+.btn-submit-reply {
+    align-self: flex-end;
+    padding: 6px 12px;
+    background: var(--red);
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 13px;
+    transition: all var(--transition);
+}
+
+.btn-submit-reply:hover {
+    background: #b00000;
+    transform: translateY(-2px);
+}
+
+.btn-submit-reply:active {
+    transform: translateY(0);
 }
