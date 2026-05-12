@@ -12,6 +12,7 @@ public class ProductViewResponse {
     Long product_id;
     String product_name;
     String brand;
+    String description;
     String product_image_link;
     Double min_price;
     Double avg_rating;

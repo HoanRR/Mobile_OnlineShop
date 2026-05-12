@@ -24,6 +24,9 @@ public class Product {
     @Column(length = 255)
     private String brand;
 
+    @Column(columnDefinition = "TEXT")
+    private String description;
+
     @Column(length = 500)
     private String productImageLink;
 

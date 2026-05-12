@@ -23,6 +23,7 @@ public interface ProductRepository  extends JpaRepository<Product, Long> {
                 p.product_id         AS product_id,
                 p.product_name       AS product_name,
                 p.brand              AS brand,
+                p.description        AS description,
                 p.product_image_link AS product_image_link,
                 MIN(pv.price)                        AS min_price,
                 ROUND(AVG(pr.rating), 1)             AS avg_rating
@@ -33,7 +34,7 @@ public interface ProductRepository  extends JpaRepository<Product, Long> {
                 (:brand   IS NULL OR p.brand        LIKE CONCAT('%', :brand,   '%'))
             AND (:keyword IS NULL OR p.product_name LIKE CONCAT('%', :keyword, '%'))
             GROUP BY 
-                p.product_id, p.product_name, p.brand, p.product_image_link
+                p.product_id, p.product_name, p.brand, p.description, p.product_image_link
             ORDER BY :sortColumn :sortOrder
             LIMIT :limit OFFSET :offset
             """, nativeQuery = true)

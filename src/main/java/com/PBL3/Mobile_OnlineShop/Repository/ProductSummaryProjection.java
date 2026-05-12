@@ -4,6 +4,7 @@ public interface ProductSummaryProjection {
     Long   getProduct_id();
     String getProduct_name();
     String getBrand();
+    String getDescription();
     String getProduct_image_link();
     Double getMin_price();
     Double getAvg_rating();

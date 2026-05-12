@@ -117,6 +117,7 @@ public class ProductService {
             Product product = Product.builder()
                     .productName(request.getProduct_name())
                     .brand(request.getBrand())
+                    .description(request.getDescription())
                     .productImageLink(request.getProduct_image_link())
                     .build();
             productRepository.save(product);
@@ -185,6 +186,7 @@ public class ProductService {
                         .product_id(p.getProduct_id())
                         .product_name(p.getProduct_name())
                         .brand(p.getBrand())
+                        .description(p.getDescription())
                         .product_image_link(p.getProduct_image_link())
                         .min_price(p.getMin_price())
                         .avg_rating(p.getAvg_rating())
@@ -211,6 +213,11 @@ public class ProductService {
                         .variantImageLink(pv.getVariantImageLink())
                         .batteryCapacity(pv.getBatteryCapacity())
                         .storageCapacity(pv.getStorageCapacity())
+                        .resolution(pv.getResolution())
+                        .screenSize(pv.getScreenSize())
+                        .frontCamera(pv.getFrontCamera())
+                        .rearCamera(pv.getRearCamera())
+                        .simCard(pv.getSimCard())
                         .totalAvailable(pv.getTotalAvailable())
                         .color(pv.getColor())
                         .build()).toList();
@@ -238,6 +245,7 @@ public class ProductService {
                 .product_id(product.getProductId())
                 .brand(product.getBrand())
                 .product_name(product.getProductName())
+                .description(product.getDescription())
                 .product_image_link(product.getProductImageLink())
                 .variant(variants)
                 .review(reviews)
