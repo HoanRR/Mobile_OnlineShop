@@ -18,13 +18,35 @@
     letter-spacing: -1px;
 }
 
+.thanh-nav a {
+    text-decoration: none;
+    color: white;
+}
+
+.tim-kiem {
+    display: flex;
+    align-items: center;
+    background: white;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
 .tim-kiem input {
-    width: 450px;
+    width: 400px;
     height: 38px;
     border: none;
     padding-left: 15px;
-    border-radius: 8px; 
     outline: none;
+}
+
+#search-btn {
+    background: white;
+    border: none;
+    padding: 0 10px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .nut-bam-header {
@@ -32,11 +54,40 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    gap: 20px;
+    gap: 15px;
 }
 
-.thanh-nav button {
-    background-color: #e50000;
-    cursor: pointer;
+.nut-bam-header > div > button,
+.nut-bam-header > div > a,
+.btn-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 8px 15px;
+    border-radius: 8px;
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
+    transition: background 0.3s ease;
     border: none;
+    cursor: pointer;
+}
+
+.nut-bam-header > div > button:hover,
+.nut-bam-header > div > a:hover,
+.btn-header:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.nut-bam-header h3 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.nut-bam-header img {
+    width: 20px;
+    height: 20px;
+    filter: brightness(0) invert(1);
 }

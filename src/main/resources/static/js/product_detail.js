@@ -1,6 +1,8 @@
 
 //Hien thi trang chi tiet san pham
 
+import { addToCart } from "./cart.js";
+
 const API_URL = 'http://localhost:8080/api/products/:product_id';
 const trangChiTiet = document.querySelector(".wrapper-product-detail")
 const urlParams = new URLSearchParams(window.location.search);
@@ -93,9 +95,6 @@ function updateDynamicUI() {
             `
         thongSo.innerHTML = htmlCard;
     }
-
-
-
 }
 
 
@@ -153,6 +152,101 @@ function renderReviews(reviews) {
     });
 }
 
+window.addEventListener("DOMContentLoaded", () => {
+    loadProductDetail();
+
+    // Nút Thêm vào giỏ hàng
+    const btn_gio_hang = document.querySelector('.btn-them-gio-hang');
+    if (btn_gio_hang) {
+        btn_gio_hang.addEventListener('click', () => {
+            const quantity = parseInt(document.getElementById('product-quantity').value) || 1;
+            addToCart(activateVariant.productVariantId, quantity);
+        });
+    }
+
+    // Nút Mua ngay → thêm vào giỏ + chuyển thẳng sang checkout
+    const btn_mua_ngay = document.querySelector('.btn-mua-ngay');
+    if (btn_mua_ngay) {
+        btn_mua_ngay.addEventListener('click', async () => {
+            const token = localStorage.getItem('accessToken');
+            if (!token) {
+                showToast('Vui lòng đăng nhập để mua hàng!', 'warning');
+                window.location.href = 'login.html';
+                return;
+            }
+
+            const quantity = parseInt(document.getElementById('product-quantity').value) || 1;
+
+            // Disable nút để tránh click nhiều lần
+            btn_mua_ngay.disabled = true;
+            btn_mua_ngay.innerText = 'Đang xử lý...';
+
+            try {
+                // 1. Thêm vào giỏ hàng
+                const addRes = await fetch('http://localhost:8080/api/cart/items', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${token}`
+                    },
+                    body: JSON.stringify({
+                        product_variant_id: activateVariant.productVariantId,
+                        quantity: quantity
+                    })
+                });
+
+                if (!addRes.ok) {
+                    const err = await addRes.json();
+                    showToast(err.message || 'Không thể thêm vào giỏ hàng', 'error');
+                    return;
+                }
+
+                const addedItem = await addRes.json(); // { cart_detail_id, ... }
+
+                // 2. Lấy cart để tìm cart_detail_id của item vừa thêm
+                const cartRes = await fetch('http://localhost:8080/api/cart', {
+                    headers: { 'Authorization': `Bearer ${token}` }
+                });
+
+                if (!cartRes.ok) {
+                    showToast('Lỗi khi tải giỏ hàng', 'error');
+                    return;
+                }
+
+                const cartData = await cartRes.json();
+
+                // Tìm item có variant_id = activateVariant.productVariantId (item mới nhất)
+                const matchingItems = cartData.items.filter(
+                    it => it.variant && it.variant.product_variant_id === activateVariant.productVariantId
+                );
+
+                if (matchingItems.length === 0) {
+                    showToast('Không tìm thấy sản phẩm trong giỏ hàng', 'error');
+                    return;
+                }
+
+                // Lấy item mới nhất (cart_detail_id lớn nhất)
+                const targetItem = matchingItems.reduce((a, b) =>
+                    a.cart_detail_id > b.cart_detail_id ? a : b
+                );
+
+                // 3. Lưu item đã chọn vào localStorage rồi chuyển sang checkout
+                localStorage.setItem('selectedCheckoutItems', JSON.stringify([String(targetItem.cart_detail_id)]));
+                localStorage.removeItem('appliedVoucher');
+
+                window.location.href = 'checkout.html';
+
+            } catch (error) {
+                console.error('Lỗi Mua ngay:', error);
+                showToast('Lỗi kết nối. Vui lòng thử lại!', 'error');
+            } finally {
+                btn_mua_ngay.disabled = false;
+                btn_mua_ngay.innerText = 'Mua ngay';
+            }
+        });
+    }
+});
+
 
 // if (trangChiTiet) {
 
@@ -189,4 +283,3 @@ function renderReviews(reviews) {
 //     }
 // }
 
-window.addEventListener("DOMContentLoaded", loadProductDetail())

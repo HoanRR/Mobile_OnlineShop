@@ -1,0 +1,142 @@
+.profile-container {
+    display: flex;
+    max-width: 1200px;
+    margin: 30px auto;
+    gap: 30px;
+    padding: 0 20px;
+}
+
+.profile-sidebar {
+    width: 250px;
+    background: white;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+    height: fit-content;
+}
+
+.profile-avatar {
+    text-align: center;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #eee;
+    margin-bottom: 20px;
+}
+
+.profile-avatar img {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    background: #f0f0f0;
+    padding: 10px;
+    margin-bottom: 10px;
+}
+
+.profile-avatar h3 {
+    font-size: 16px;
+    color: #333;
+}
+
+.profile-menu {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.profile-menu li {
+    margin-bottom: 10px;
+}
+
+.profile-menu a {
+    display: block;
+    padding: 10px 15px;
+    color: #555;
+    text-decoration: none;
+    border-radius: 8px;
+    transition: 0.3s;
+}
+
+.profile-menu li.active a,
+.profile-menu a:hover {
+    background: #fff0f0;
+    color: #d70018;
+    font-weight: 500;
+}
+
+.profile-content {
+    flex: 1;
+    background: white;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.profile-content .tieu-de-phan {
+    margin-top: 0;
+    margin-bottom: 10px;
+    text-align: left;
+}
+
+.profile-content p {
+    color: #666;
+    margin-bottom: 20px;
+}
+
+.profile-content hr {
+    border: none;
+    border-top: 1px solid #eee;
+    margin-bottom: 30px;
+}
+
+.profile-form {
+    max-width: 600px;
+}
+
+.form-group {
+    display: flex;
+    margin-bottom: 20px;
+    align-items: center;
+}
+
+.form-group label {
+    width: 150px;
+    color: #555;
+    font-weight: 500;
+    flex-shrink: 0;
+}
+
+.form-group input,
+.form-group textarea {
+    flex: 1;
+    padding: 10px 15px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    outline: none;
+    font-family: inherit;
+}
+
+.form-group input:disabled {
+    background: #f5f5f5;
+    color: #888;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    border-color: #d70018;
+}
+
+.btn-save {
+    background: #d70018;
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 8px;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+    margin-left: 150px;
+    transition: background 0.3s;
+}
+
+.btn-save:hover {
+    background: #b00014;
+}

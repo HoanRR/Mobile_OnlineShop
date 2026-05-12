@@ -218,8 +218,8 @@ public class OrderService {
                 .map(OD -> OrderDetailItemResponse.builder()
                         .order_detail_id(OD.getOrderDetailId())
                         .variant_id(OD.getProductVariant().getProductVariantId())
-                        .device_id(OD.getDevice().getDeviceId())
-                        .imei(OD.getDevice().getImei())
+                        .device_id(OD.getDevice() != null ? OD.getDevice().getDeviceId() : null)
+                        .imei(OD.getDevice() != null ? OD.getDevice().getImei() : null)
                         .product_name(OD.getProductVariant().getProduct().getProductName())
                         .color(OD.getProductVariant().getColor())
                         .storage_capacity(OD.getProductVariant().getStorageCapacity())
@@ -281,7 +281,7 @@ public class OrderService {
         order.setUser(user);
         order.setReceiverName(request.getReceiver_name());
         order.setReceiverPhone(request.getReceiver_phone());
-        order.setShippingAddress(request.getReceiver_phone());
+        order.setShippingAddress(request.getShipping_address());
         order.setPaymentMethod(request.getPayment_method());
         order.setOrderDate(LocalDateTime.now());
         order.setOrderStatus(OrderStatus.WAIT);
@@ -290,17 +290,73 @@ public class OrderService {
             Voucher voucher = voucherRepository.findByVoucherCode(request.getVoucher_code())
                     .orElseThrow(() -> new AppException(ErrorCode.VOUCHER_NOT_FOUND));
 
-            Double discount = totalAmount * (voucher.getDiscountPercentage() / 100);
-            if (totalAmount > voucher.getApplyConditions().getMinValue() && voucher.getStartDate().isBefore(LocalDateTime.now()) && voucher.getEndDate().isBefore(LocalDateTime.now())){
-                order.setVoucher(voucher);
-                order.setDiscountAmount(discount);
+            LocalDateTime now = LocalDateTime.now();
+
+            // Kiểm tra thời hạn
+            if (voucher.getStartDate() != null && now.isBefore(voucher.getStartDate()))
+                throw new AppException(ErrorCode.VOUCHER_EXPIRED, "Voucher chưa bắt đầu");
+            if (voucher.getEndDate() != null && now.isAfter(voucher.getEndDate()))
+                throw new AppException(ErrorCode.VOUCHER_EXPIRED, "Voucher đã hết hạn");
+
+            // Kiểm tra còn lượt sử dụng
+            if (voucher.getUsageLimit() != null && voucher.getUsageLimit() <= 0)
+                throw new AppException(ErrorCode.VOUCHER_INVALID, "Voucher đã hết lượt sử dụng");
+
+            // Kiểm tra giá trị đơn tối thiểu
+            ApplyCondition condition = voucher.getApplyConditions();
+            if (condition != null && condition.getMinValue() != null
+                    && totalAmount < condition.getMinValue()) {
+                throw new AppException(ErrorCode.VOUCHER_INVALID_MIN_VALUE,
+                        "Đơn hàng tối thiểu " + condition.getMinValue() + " VNĐ để sử dụng voucher này");
             }
-            else {
-                throw new AppException(ErrorCode.VOUCHER_INVALID);
+
+            // Kiểm tra voucher có áp dụng cho sản phẩm trong đơn không
+            // (dựa vào bảng apply_condition_variant – nếu rỗng thì áp dụng cho tất cả)
+            if (condition != null
+                    && condition.getProductVariants() != null
+                    && !condition.getProductVariants().isEmpty()) {
+
+                List<Long> allowedIds = condition.getProductVariants().stream()
+                        .map(ProductVariant::getProductVariantId)
+                        .collect(Collectors.toList());
+
+                boolean hasMatch = selectedItems.stream()
+                        .anyMatch(cd -> allowedIds.contains(cd.getProductVariant().getProductVariantId()));
+
+                if (!hasMatch) {
+                    throw new AppException(ErrorCode.VOUCHER_INVALID,
+                            "Voucher này không áp dụng cho các sản phẩm trong đơn hàng của bạn");
+                }
+            }
+
+            // Áp dụng giảm giá
+            Double discount = totalAmount * (voucher.getDiscountPercentage() / 100);
+            order.setVoucher(voucher);
+            order.setDiscountAmount(discount);
+
+            // Trừ lượt sử dụng
+            if (voucher.getUsageLimit() != null) {
+                voucher.setUsageLimit(voucher.getUsageLimit() - 1);
+                voucherRepository.save(voucher);
             }
         }
 
+
         order.setTotalAmount(totalAmount - (order.getDiscountAmount() != null ? order.getDiscountAmount() : 0));
+
+        // Create OrderDetail for each selected item
+        List<OrderDetail> orderDetails = new ArrayList<>();
+        for (CartDetail cd : selectedItems) {
+            for (int i = 0; i < cd.getQuantity(); i++) {
+                OrderDetail detail = new OrderDetail();
+                detail.setOrder(order);
+                detail.setProductVariant(cd.getProductVariant());
+                detail.setPriceAtPurchase(cd.getProductVariant().getPrice());
+                // device is null until staff allocates it
+                orderDetails.add(detail);
+            }
+        }
+        order.setOrderDetails(orderDetails);
 
         Order savedOrder = orderRepository.save(order);
 

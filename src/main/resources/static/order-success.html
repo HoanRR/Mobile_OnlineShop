@@ -12,54 +12,127 @@
 </head>
 
 <body>
-    <!-- Header Placeholder (Tái sử dụng header.html) -->
     <div id="header-placeholder"></div>
 
     <main class="noi-dung">
         <div class="success-container">
             <div class="icon-success">
-                <i class="fa-solid fa-check-circle"></i>
+                <i class="fa-solid fa-circle-check"></i>
             </div>
-            
+
             <h1 class="success-title">Đặt hàng thành công!</h1>
-            <p class="success-subtitle">Cảm ơn bạn đã mua sắm tại phân hệ HT Mobile.</p>
-            
+            <p class="success-subtitle">Cảm ơn bạn đã mua sắm tại HT Mobile. Chúng tôi sẽ liên hệ xác nhận sớm nhất!</p>
+
             <div class="order-info-card">
                 <h3>Thông tin đơn hàng</h3>
+
                 <div class="order-detail-row">
                     <span>Mã đơn hàng:</span>
-                    <span class="highlight">#HTM-9824X</span>
+                    <span class="highlight" id="order-id">--</span>
                 </div>
                 <div class="order-detail-row">
                     <span>Ngày đặt:</span>
-                    <span id="current-date"></span>
+                    <span id="order-date">--</span>
+                </div>
+                <div class="order-detail-row">
+                    <span>Trạng thái:</span>
+                    <span id="order-status" class="status-badge">--</span>
                 </div>
                 <div class="order-detail-row">
                     <span>Phương thức thanh toán:</span>
-                    <span>Thanh toán khi nhận hàng (COD)</span>
+                    <span id="order-payment">--</span>
+                </div>
+                <div class="order-detail-row" id="discount-row" style="display:none; color: #28a745;">
+                    <span>Giảm giá voucher:</span>
+                    <span id="order-discount">--</span>
                 </div>
                 <div class="order-detail-row total-row">
                     <span>Tổng thanh toán:</span>
-                    <span class="price-total">Dự kiến tính theo giỏ</span>
+                    <span class="price-total" id="order-total">--</span>
                 </div>
             </div>
 
             <div class="success-actions">
-                <a href="index.html" class="btn-primary"><i class="fa-solid fa-cart-shopping"></i> Tiếp tục mua sắm</a>
-                <a href="#" class="btn-secondary" onclick="alert('Tính năng tra cứu đơn hàng bằng số điện thoại đang cập nhật!')"><i class="fa-solid fa-truck-fast"></i> Tra cứu trạng thái</a>
+                <a href="index.html" class="btn-primary">
+                    <i class="fa-solid fa-cart-shopping"></i> Tiếp tục mua sắm
+                </a>
+                <a href="order-history.html" class="btn-secondary">
+                    <i class="fa-solid fa-clock-rotate-left"></i> Xem lịch sử đơn hàng
+                </a>
             </div>
         </div>
     </main>
 
-    <!-- Footer Placeholder (Tái sử dụng footer.html) -->
     <div id="footer-placeholder"></div>
 
     <script src="../static/js/common.js"></script>
     <script>
-        // Set dynamic date
-        const today = new Date();
-        const dateString = today.toLocaleDateString('vi-VN', { day: '2-digit', month: '2-digit', year: 'numeric' }) + ' ' + today.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
-        document.getElementById('current-date').innerText = dateString;
+        const PAYMENT_LABELS = {
+            'COD':           'Thanh toán khi nhận hàng (COD)',
+            'BANK_TRANSFER': 'Chuyển khoản ngân hàng',
+            'MOMO':          'Ví MoMo',
+            'BANK':          'Chuyển khoản ngân hàng'
+        };
+        const STATUS_LABELS = {
+            'WAIT':       'Chờ xác nhận',
+            'PROCESSING': 'Đang xử lý',
+            'DELIVERED':  'Đã giao hàng',
+            'CANCELLED':  'Đã huỷ'
+        };
+
+        document.addEventListener('DOMContentLoaded', function () {
+            const orderStr = localStorage.getItem('lastOrder');
+
+            if (!orderStr) {
+                // Không có dữ liệu đơn hàng → chỉ hiện ngày hiện tại
+                document.getElementById('order-id').innerText    = 'N/A';
+                document.getElementById('order-date').innerText  = new Date().toLocaleString('vi-VN');
+                document.getElementById('order-status').innerText  = 'Chờ xác nhận';
+                document.getElementById('order-payment').innerText = '--';
+                document.getElementById('order-total').innerText   = '--';
+                return;
+            }
+
+            const order = JSON.parse(orderStr);
+
+            // Mã đơn hàng
+            document.getElementById('order-id').innerText =
+                '#' + String(order.order_id || '').padStart(6, '0');
+
+            // Ngày đặt
+            if (order.order_date) {
+                const d = new Date(order.order_date);
+                document.getElementById('order-date').innerText =
+                    d.toLocaleString('vi-VN', {
+                        day: '2-digit', month: '2-digit', year: 'numeric',
+                        hour: '2-digit', minute: '2-digit'
+                    });
+            } else {
+                document.getElementById('order-date').innerText =
+                    new Date().toLocaleString('vi-VN');
+            }
+
+            // Trạng thái
+            const statusKey = order.order_status || 'WAIT';
+            const statusEl  = document.getElementById('order-status');
+            statusEl.innerText = STATUS_LABELS[statusKey] || statusKey;
+            statusEl.className = 'status-badge status-' + statusKey.toLowerCase();
+
+            // Phương thức thanh toán
+            document.getElementById('order-payment').innerText =
+                PAYMENT_LABELS[order.payment_method] || order.payment_method || '--';
+
+            // Giảm giá (nếu có)
+            if (order.discount_amount && order.discount_amount > 0) {
+                document.getElementById('discount-row').style.display = 'flex';
+                document.getElementById('order-discount').innerText =
+                    '-' + Number(order.discount_amount).toLocaleString('vi-VN') + 'đ';
+            }
+
+            // Tổng tiền
+            document.getElementById('order-total').innerText =
+                Number(order.total_amount).toLocaleString('vi-VN') + 'đ';
+        });
     </script>
 </body>
 

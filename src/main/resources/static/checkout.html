@@ -63,6 +63,14 @@
                 <div class="order-summary">
                     <h3>Tóm tắt đơn hàng</h3>
                     <div class="order-items-list" id="checkout-items-list">
+                        </div>
+
+                    <div class="discount-section" style="margin: 15px 0; border-top: 1px solid #eee; padding-top: 15px;">
+                        <div class="input-group" style="display: flex; gap: 10px;">
+                            <input type="text" id="checkout-coupon-code" placeholder="Nhập mã giảm giá" style="flex: 1; padding: 8px; border: 1px solid #ccc; border-radius: 4px;">
+                            <button type="button" onclick="applyDiscountCheckout()" style="padding: 8px 15px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer;">Áp dụng</button>
+                        </div>
+                        <p id="checkout-discount-message" style="margin-top: 5px; font-size: 13px;"></p>
                     </div>
 
                     <div class="summary-line">
@@ -73,6 +81,12 @@
                         <span>Phí giao hàng:</span>
                         <span>Miễn phí</span>
                     </div>
+                    
+                    <div class="summary-line" id="checkout-discount-row" style="display: none; color: #d70018;">
+                        <span>Giảm giá:</span>
+                        <span id="checkout-discount-amount">-0đ</span>
+                    </div>
+
                     <div class="summary-line total-line">
                         <span>Tổng thanh toán:</span>
                         <span id="checkout-total">0đ</span>

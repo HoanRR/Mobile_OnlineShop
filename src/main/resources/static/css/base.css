@@ -188,3 +188,61 @@ a {
     color: #666;
     border-top: 1px solid #eee;
 }
+
+
+/* CSS cho thanh thong bao */
+/* Container chứa các thông báo, đặt cố định ở góc trên bên phải */
+#toast-container {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 9999;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Kiểu dáng chung cho một dòng thông báo */
+.toast-msg {
+    min-width: 250px;
+    padding: 15px 20px;
+    border-radius: 8px;
+    color: #fff;
+    font-size: 15px;
+    font-family: Arial, sans-serif;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    /* Hiệu ứng trượt vào từ phải qua */
+    animation: slideInRight 0.4s ease forwards; 
+}
+
+/* Các trạng thái màu sắc khác nhau */
+.toast-msg.success {
+    background-color: #4CAF50; /* Màu xanh lá */
+}
+
+.toast-msg.error {
+    background-color: #f44336; /* Màu đỏ */
+}
+
+.toast-msg.warning {
+    background-color: #ff9800; /* Màu cam */
+}
+
+/* Hiệu ứng mờ dần khi ẩn đi */
+.toast-msg.fade-out {
+    animation: fadeOut 0.4s ease forwards;
+}
+
+/* Định nghĩa hiệu ứng */
+@keyframes slideInRight {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes fadeOut {
+    from { transform: translateX(0); opacity: 1; }
+    to { transform: translateX(100%); opacity: 0; }
+}
