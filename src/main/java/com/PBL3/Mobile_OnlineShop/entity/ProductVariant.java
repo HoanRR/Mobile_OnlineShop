@@ -41,6 +41,14 @@ public class ProductVariant {
     @Column(length = 100)
     private String ram;
 
+    private String screenSize;
+
+    private String frontCamera;
+
+    private String rearCamera;
+
+    private String simCard;
+
     @Min(value = 0, message = "Giá sản phẩm phải lớn hơn hoặc bằng 0")
     @Column(nullable = false)
     private Double price;

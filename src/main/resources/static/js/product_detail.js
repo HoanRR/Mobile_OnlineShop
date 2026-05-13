@@ -42,6 +42,13 @@ function renderProductDetailToHTML(data) {
     document.getElementById('header-danh-gia').innerText = `Hỏi đáp & đánh giá ${data.product_name} chính hãng`;
     renderVariantButtons(data.variant);
     renderReviews(data.review);
+    
+    // Hiển thị mô tả sản phẩm
+    const moTaContainer = document.querySelector(".noi-dung-mo-ta");
+    if (moTaContainer) {
+        moTaContainer.innerHTML = data.description ? `<p>${data.description}</p>` : '<p>Chưa có mô tả chi tiết cho sản phẩm này.</p>';
+    }
+
     updateDynamicUI();
 
 
@@ -88,10 +95,14 @@ function updateDynamicUI() {
     let thongSo = document.querySelector(".thong-so-ky-thuat");
     if (thongSo && activateVariant) {
         const htmlCard = `
-                  <tr><td>Chip</td><td>${activateVariant.chip}</td></tr>
-                    <tr><td>Ram</td><td>${activateVariant.ram}</td></tr>
-                    <tr><td>Bộ nhớ</td><td>${activateVariant.storageCapacity}</td></tr>
-                    <tr><td>Pin</td><td>${activateVariant.batteryCapacity}</td></tr>
+                  <tr><td>Màn hình</td><td>${activateVariant.screenSize || 'N/A'}</td></tr>
+                  <tr><td>Chip</td><td>${activateVariant.chip || 'N/A'}</td></tr>
+                  <tr><td>Ram</td><td>${activateVariant.ram || 'N/A'}</td></tr>
+                  <tr><td>Bộ nhớ</td><td>${activateVariant.storageCapacity || 'N/A'}</td></tr>
+                  <tr><td>Camera trước</td><td>${activateVariant.frontCamera || 'N/A'}</td></tr>
+                  <tr><td>Camera sau</td><td>${activateVariant.rearCamera || 'N/A'}</td></tr>
+                  <tr><td>Sim</td><td>${activateVariant.simCard || 'N/A'}</td></tr>
+                  <tr><td>Pin</td><td>${activateVariant.batteryCapacity || 'N/A'}</td></tr>
             `
         thongSo.innerHTML = htmlCard;
     }

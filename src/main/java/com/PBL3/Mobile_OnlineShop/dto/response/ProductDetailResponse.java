@@ -15,6 +15,7 @@ public class ProductDetailResponse {
     String product_name;
     String brand;
     String product_image_link;
+    String description;
     List<ProductVariantResponse> variant;
     List<ReviewResponse> review;
 }

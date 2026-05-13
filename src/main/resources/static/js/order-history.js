@@ -81,15 +81,15 @@ function renderOrders(orders) {
             <div class="order-item">
                 <div class="order-header">
                     <div>
-                        <span class="order-id">Ma don: #${order.order_id}</span>
-                        <span class="order-date">Ngay dat: ${dateStr}</span>
+                        <span class="order-id">Mã đơn: #${order.order_id}</span>
+                        <span class="order-date">Ngày đặt: ${dateStr}</span>
                     </div>
                     <span class="order-status status-${order.order_status}">${statusText}</span>
                 </div>
                 <div class="order-body">
                     <div class="order-info">
-                        <div>Phuong thuc: <b>${paymentMap[order.payment_method] || order.payment_method}</b></div>
-                        <div>Tong tien: <span class="order-total">${formattedTotal}</span></div>
+                        <div>Phương thức: <b>${paymentMap[order.payment_method] || order.payment_method}</b></div>
+                        <div>Tổng tiền: <span class="order-total">${formattedTotal}</span></div>
                     </div>
                     <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;">
                         <button class="btn-view-detail" onclick="openOrderDetail(${order.order_id})">Xem chi tiết</button>
@@ -167,7 +167,7 @@ function renderOrderDetail(order) {
                         <div class="detail-product-price">${itemPrice}</div>
                         ${isDone ? `
                             <button class="btn-review-small" onclick="moFormDanhGia(${order.order_id}, ${item.variant_id}, '${item.product_name}')">Đánh giá</button>
-                            <button class="btn-review-small" style="background:#28a745;" onclick="window.location.href='product-detail.html?id=${item.product_id}'">Mua lại</button>
+                            <button class="btn-review-small" onclick="window.location.href='product-detail.html?id=${item.product_id}'">Mua lại</button>
                         ` : ''}
                     </div>
                 </div>
@@ -179,23 +179,23 @@ function renderOrderDetail(order) {
 
     modalBody.innerHTML = `
         <div class="detail-section">
-            <div class="detail-section-title">Thong tin don hang</div>
-            <div class="detail-row"><span>Ma don:</span><b>#${order.order_id}</b></div>
-            <div class="detail-row"><span>Ngay dat:</span><span>${dateStr}</span></div>
-            <div class="detail-row"><span>Trang thai:</span>
+            <div class="detail-section-title">Thông tin đơn hàng</div>
+            <div class="detail-row"><span>Mã đơn:</span><b>#${order.order_id}</b></div>
+            <div class="detail-row"><span>Ngày đặt:</span><span>${dateStr}</span></div>
+            <div class="detail-row"><span>Trạng thái:</span>
                 <span class="order-status status-${order.order_status}">${statusText}</span>
             </div>
-            <div class="detail-row"><span>Thanh toan:</span><span>${paymentMap[order.payment_method] || order.payment_method}</span></div>
-            <div class="detail-row"><span>Da thanh toan:</span><span>${order.is_paid ? 'Co' : 'Chua'}</span></div>
+            <div class="detail-row"><span>Thanh toán:</span><span>${paymentMap[order.payment_method] || order.payment_method}</span></div>
+            <div class="detail-row"><span>Đã thanh toán:</span><span>${order.is_paid ? 'Co' : 'Chua'}</span></div>
         </div>
         <div class="detail-section">
-            <div class="detail-section-title">Dia chi giao hang</div>
-            <div class="detail-row"><span>Nguoi nhan:</span><b>${order.delivery?.receiver_name || '-'}</b></div>
-            <div class="detail-row"><span>So dien thoai:</span><span>${order.delivery?.receiver_phone || '-'}</span></div>
-            <div class="detail-row"><span>Dia chi:</span><span>${order.delivery?.shipping_address || '-'}</span></div>
+            <div class="detail-section-title">Địa chỉ giao hàng</div>
+            <div class="detail-row"><span>Người nhận:</span><b>${order.delivery?.receiver_name || '-'}</b></div>
+            <div class="detail-row"><span>Số điện thoại:</span><span>${order.delivery?.receiver_phone || '-'}</span></div>
+            <div class="detail-row"><span>Địa chỉ:</span><span>${order.delivery?.shipping_address || '-'}</span></div>
         </div>
         <div class="detail-section">
-            <div class="detail-section-title">San pham (${order.items?.length || 0} san pham)</div>
+            <div class="detail-section-title">Sản phẩm (${order.items?.length || 0} sản phẩm)</div>
             <div class="detail-product-list">${itemsHtml}</div>
         </div>
         <div class="detail-section detail-summary">
@@ -289,14 +289,14 @@ function moFormDanhGia(orderId, variantId, productName) {
     modal.innerHTML = `
         <div class="modal-box" style="max-width: 500px;">
             <div class="modal-header">
-                <h3>Danh gia san pham</h3>
+                <h3>Đánh giá sản phẩm</h3>
                 <button class="modal-close-btn" onclick="document.getElementById('review-modal').remove();">x</button>
             </div>
             <div class="modal-body">
                 <p style="color:#555; margin-bottom:15px; font-weight:500;">${productName}</p>
 
                 <div style="margin-bottom:18px;">
-                    <label style="font-weight:600; display:block; margin-bottom:8px;">So sao:</label>
+                    <label style="font-weight:600; display:block; margin-bottom:8px;">Số sao:</label>
                     <div id="star-selector" style="display:flex; gap:8px; font-size:28px; cursor:pointer;">
                         ${[1, 2, 3, 4, 5].map(n => `<span data-star="${n}" onclick="chonSao(${n})" style="color:#ccc; transition:0.2s;">&#9733;</span>`).join('')}
                     </div>
@@ -304,16 +304,16 @@ function moFormDanhGia(orderId, variantId, productName) {
                 </div>
 
                 <div style="margin-bottom:18px;">
-                    <label style="font-weight:600; display:block; margin-bottom:8px;">Noi dung danh gia:</label>
+                    <label style="font-weight:600; display:block; margin-bottom:8px;">Nội dung đánh giá:</label>
                     <textarea id="review-comment" rows="4" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px; outline:none; font-family:inherit; resize:vertical;"
-                        placeholder="Chia se trai nghiem cua ban ve san pham nay..."></textarea>
+                        placeholder="Chia sẻ trải nghiệm của bạn về sản phẩm này..."></textarea>
                 </div>
 
                 <p id="review-error" style="color:#d70018; font-size:13px; display:none; margin-bottom:10px;"></p>
 
                 <button onclick="guiDanhGia(${orderId}, ${variantId})"
                     style="background:#d70018; color:white; border:none; padding:12px; width:100%; border-radius:8px; font-size:15px; font-weight:600; cursor:pointer;">
-                    Gui danh gia
+                    Gửi đánh giá
                 </button>
             </div>
         </div>
@@ -335,12 +335,12 @@ async function guiDanhGia(orderId, variantId) {
     const errorEl = document.getElementById('review-error');
 
     if (!rating || rating < 1) {
-        errorEl.innerText = 'Vui long chon so sao!';
+        errorEl.innerText = 'Vui lòng chọn số sao!';
         errorEl.style.display = 'block';
         return;
     }
     if (!comment) {
-        errorEl.innerText = 'Vui long nhap noi dung danh gia!';
+        errorEl.innerText = 'Vui lòng nhập nội dung đánh giá!';
         errorEl.style.display = 'block';
         return;
     }

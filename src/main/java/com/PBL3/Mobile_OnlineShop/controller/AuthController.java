@@ -1,16 +1,19 @@
 package com.PBL3.Mobile_OnlineShop.controller;
 
 import com.PBL3.Mobile_OnlineShop.Service.AuthService;
+import com.PBL3.Mobile_OnlineShop.Service.PasswordService;
 import com.PBL3.Mobile_OnlineShop.dto.response.IntrospectResponse;
 import com.PBL3.Mobile_OnlineShop.dto.response.LoginResponse;
 import com.PBL3.Mobile_OnlineShop.dto.response.MessageResponse;
 import com.PBL3.Mobile_OnlineShop.dto.response.RefreshTokenResponse;
 import com.PBL3.Mobile_OnlineShop.dto.response.RegisterReponse;
+import com.PBL3.Mobile_OnlineShop.dto.request.ForgotPasswordRequest;
 import com.PBL3.Mobile_OnlineShop.dto.request.IntrospectRequest;
 import com.PBL3.Mobile_OnlineShop.dto.request.LoginRequest;
 import com.PBL3.Mobile_OnlineShop.dto.request.LogoutRequest;
 import com.PBL3.Mobile_OnlineShop.dto.request.RefreshTokenRequest;
 import com.PBL3.Mobile_OnlineShop.dto.request.RegisterCustomerRequest;
+import com.PBL3.Mobile_OnlineShop.dto.request.ResetPasswordRequest;
 import com.nimbusds.jose.JOSEException;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -34,7 +37,8 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request) throws ParseException, JOSEException {
+    public ResponseEntity<LoginResponse> login(@Valid @RequestBody LoginRequest request)
+            throws ParseException, JOSEException {
         LoginResponse response = authService.login(request);
         return ResponseEntity.ok(response);
     }
@@ -46,18 +50,33 @@ public class AuthController {
     }
 
     @PostMapping("/logout")
-    public ResponseEntity<MessageResponse> logout(@Valid @RequestBody LogoutRequest request) throws ParseException, JOSEException {
+    public ResponseEntity<MessageResponse> logout(@Valid @RequestBody LogoutRequest request)
+            throws ParseException, JOSEException {
         authService.logout(request);
         return ResponseEntity.ok(
                 MessageResponse.builder()
                         .message("Đăng xuất thành công")
-                        .build()
-        );
+                        .build());
     }
 
     @PostMapping("/introspect")
-    public ResponseEntity<IntrospectResponse> introspect(@Valid @RequestBody IntrospectRequest request) throws ParseException, JOSEException {
+    public ResponseEntity<IntrospectResponse> introspect(@Valid @RequestBody IntrospectRequest request)
+            throws ParseException, JOSEException {
         IntrospectResponse response = authService.introspect(request);
         return ResponseEntity.ok(response);
+    }
+
+    private final PasswordService passwordService;
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<MessageResponse> forgotPassword(@Valid @RequestBody ForgotPasswordRequest request) {
+        passwordService.requestForgotPassword(request);
+        return ResponseEntity.ok(MessageResponse.builder().message("Mã OTP đã được gửi về email của bạn").build());
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<MessageResponse> resetPassword(@Valid @RequestBody ResetPasswordRequest request) {
+        passwordService.resetPassword(request);
+        return ResponseEntity.ok(MessageResponse.builder().message("Đặt lại mật khẩu thành công").build());
     }
 }

@@ -17,5 +17,9 @@ public class ProductVariantResponse {
     String ram;
     Double price;
     String variantImageLink;
+    String screenSize;
+    String frontCamera;
+    String rearCamera;
+    String simCard;
     Long totalAvailable; // Để FE biết còn hàng hay không (Out of stock)
 }

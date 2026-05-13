@@ -15,5 +15,6 @@ public class AddProductRequest {
     String product_name;
     String brand;
     String product_image_link;
+    String description;
     List<VariantRequest> variants;
 }

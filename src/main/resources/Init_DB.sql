@@ -18,6 +18,24 @@
 
 
 -- ============================================================
+-- DROP TABLE theo thứ tự ngược lại để tránh lỗi FK
+-- ============================================================
+DROP TABLE IF EXISTS `warranty`;
+DROP TABLE IF EXISTS `product_review`;
+DROP TABLE IF EXISTS `order_detail`;
+DROP TABLE IF EXISTS `orders`;
+DROP TABLE IF EXISTS `cart_detail`;
+DROP TABLE IF EXISTS `cart`;
+DROP TABLE IF EXISTS `apply_condition_variant`;
+DROP TABLE IF EXISTS `apply_condition`;
+DROP TABLE IF EXISTS `voucher`;
+DROP TABLE IF EXISTS `device`;
+DROP TABLE IF EXISTS `product_variant`;
+DROP TABLE IF EXISTS `product`;
+DROP TABLE IF EXISTS `invalidated_token`;
+DROP TABLE IF EXISTS `user`;
+
+-- ============================================================
 -- CREATE TABLE IF NOT EXISTS theo thứ tự: cha trước, con sau
 -- ============================================================
 
@@ -50,6 +68,7 @@ CREATE TABLE IF NOT EXISTS `product` (
   `product_id`         BIGINT       NOT NULL AUTO_INCREMENT,
   `product_name`       VARCHAR(255) NOT NULL,
   `brand`              VARCHAR(255) DEFAULT NULL,
+  `description`        VARCHAR(1000) DEFAULT NULL,
   `product_image_link` VARCHAR(500) DEFAULT NULL,
   PRIMARY KEY (`product_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -65,6 +84,10 @@ CREATE TABLE IF NOT EXISTS `product_variant` (
   `chip`               VARCHAR(100) DEFAULT NULL,
   `battery_capacity`   BIGINT       DEFAULT NULL,
   `resolution`         VARCHAR(100) DEFAULT NULL,
+  `screen_size`        VARCHAR(100) DEFAULT NULL,
+  `front_camera`       VARCHAR(100) DEFAULT NULL,
+  `rear_camera`        VARCHAR(255) DEFAULT NULL,
+  `sim_card`           VARCHAR(100) DEFAULT NULL,
   `price`              DOUBLE       NOT NULL,
   `total_available`    BIGINT       NOT NULL,
   `variant_image_link` VARCHAR(500) DEFAULT NULL,

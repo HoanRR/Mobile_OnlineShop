@@ -14,4 +14,5 @@ public class UpdateProductRequest {
     String product_name;
     String brand;
     String product_image_link;
+    String description;
 }
