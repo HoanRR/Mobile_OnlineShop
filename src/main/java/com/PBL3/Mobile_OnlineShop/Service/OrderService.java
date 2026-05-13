@@ -176,7 +176,12 @@ public class OrderService {
         int pageNo = page > 0 ? page - 1 : 0;
         Pageable pageable = PageRequest.of(pageNo, limit);
 
-        Page<Order> orderPage = orderRepository.findByUserWithStatusFilter(user, status, pageable);
+        Page<Order> orderPage;
+        if (status == null) {
+            orderPage = orderRepository.findByUserOrderByOrderDateDesc(user, pageable);
+        } else {
+            orderPage = orderRepository.findByUserAndOrderStatusOrderByOrderDateDesc(user, status, pageable);
+        }
 
         List<OrderHistoryResponse> data = orderPage.getContent().stream()
                 .map(o -> OrderHistoryResponse.builder()
@@ -217,6 +222,7 @@ public class OrderService {
         List<OrderDetailItemResponse> items = order.getOrderDetails().stream()
                 .map(OD -> OrderDetailItemResponse.builder()
                         .order_detail_id(OD.getOrderDetailId())
+                        .product_id(OD.getProductVariant().getProduct().getProductId())
                         .variant_id(OD.getProductVariant().getProductVariantId())
                         .device_id(OD.getDevice() != null ? OD.getDevice().getDeviceId() : null)
                         .imei(OD.getDevice() != null ? OD.getDevice().getImei() : null)

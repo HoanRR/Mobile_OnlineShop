@@ -11,6 +11,8 @@ public class CorsConfig implements WebMvcConfigurer {
         registry.addMapping("/**") // Áp dụng cho mọi endpoint
                 .allowedOrigins("http://127.0.0.1:5501", 
                     "http://localhost:5501", 
+                    "http://127.0.0.1:5500",
+                    "http://localhost:5500",
                     "http://localhost:5050") // Cấp phép các yêu cầu từ nguồn này
                 .allowedMethods("GET", "POST", "PUT","PATCH", "DELETE", "OPTIONS")
                 .allowedHeaders("*")

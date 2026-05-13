@@ -335,3 +335,144 @@
     background: #f5a623;
     color: white;
 }
+
+/* Review Button Outline */
+.btn-review-outline {
+    background: white;
+    color: #d70018;
+    border: 1px solid #d70018;
+    padding: 8px 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-weight: 500;
+    transition: 0.3s;
+}
+
+.btn-review-outline:hover {
+    background: #fff0f0;
+    box-shadow: 0 0 5px rgba(215, 0, 24, 0.3);
+}
+
+/* Modal CSS */
+.modal-overlay {
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+}
+
+.modal-box {
+    background: white;
+    padding: 25px;
+    border-radius: 12px;
+    width: 90%;
+    max-width: 500px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+    position: relative;
+    animation: fadeIn 0.2s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #eee;
+    padding-bottom: 15px;
+    margin-bottom: 20px;
+}
+
+.modal-header h3 {
+    margin: 0;
+    color: #333;
+}
+
+.modal-close-btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    color: #999;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.modal-close-btn:hover {
+    color: #d70018;
+}
+
+/* Order Detail Modal Specific Styles */
+.detail-section {
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 1px dashed #eee;
+}
+
+.detail-section:last-child {
+    border-bottom: none;
+    margin-bottom: 0;
+    padding-bottom: 0;
+}
+
+.detail-section-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 12px;
+}
+
+.detail-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 14.5px;
+}
+
+.detail-row span:first-child {
+    color: #666;
+}
+
+.detail-product-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.detail-product-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    background: #f9f9f9;
+    padding: 12px;
+    border-radius: 8px;
+    border: 1px solid #eee;
+}
+
+.detail-product-info {
+    flex: 1;
+}
+
+.detail-product-name {
+    font-weight: bold;
+    color: #333;
+    margin-bottom: 4px;
+    font-size: 15px;
+}
+
+.detail-product-variant, .detail-product-imei {
+    font-size: 13px;
+    color: #666;
+    margin-bottom: 2px;
+}
+
+.detail-product-price {
+    font-weight: bold;
+    color: #d70018;
+    font-size: 15px;
+}

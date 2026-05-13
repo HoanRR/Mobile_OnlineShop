@@ -10,6 +10,7 @@ import lombok.experimental.FieldDefaults;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class OrderDetailItemResponse {
     Long order_detail_id;
+    Long product_id;
     Long variant_id;
     Long device_id;
     String imei;

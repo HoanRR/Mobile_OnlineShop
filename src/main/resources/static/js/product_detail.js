@@ -102,6 +102,47 @@ function updateDynamicUI() {
 function renderReviews(reviews) {
     const container = document.querySelector('.danh-sach-binh-luan-mc');
     container.innerHTML = '';
+    
+    // Thống kê đánh giá
+    let totalReviews = reviews ? reviews.length : 0;
+    let sumRating = 0;
+    let counts = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+    
+    if (totalReviews > 0) {
+        reviews.forEach(r => {
+            sumRating += r.rating;
+            counts[r.rating] = (counts[r.rating] || 0) + 1;
+        });
+    }
+    
+    let avgRating = totalReviews > 0 ? (sumRating / totalReviews).toFixed(1) : 0;
+    let roundedAvg = Math.round(avgRating) || 0;
+    let avgStars = '⭐'.repeat(roundedAvg) + '☆'.repeat(5 - roundedAvg);
+    
+    // Cập nhật thẻ hiển thị trên cùng
+    const ratingEl = document.getElementById('rating');
+    if (ratingEl) ratingEl.innerText = `${avgStars} (${totalReviews} đánh giá)`;
+    
+    // Cập nhật khu vực tổng quan đánh giá
+    const diemSoEl = document.querySelector('.diem-so');
+    if (diemSoEl) diemSoEl.innerText = `${avgRating}/5`;
+    const saoTongEl = document.querySelector('.sao-tong');
+    if (saoTongEl) saoTongEl.innerText = avgStars;
+    const tongSoDanhGiaEl = document.querySelector('.tong-so-danh-gia');
+    if (tongSoDanhGiaEl) tongSoDanhGiaEl.innerText = `${totalReviews} đánh giá`;
+    
+    const starBars = document.querySelectorAll('.cot-thanh-sao .dong-sao');
+    if (starBars.length === 5) {
+        for (let i = 5; i >= 1; i--) {
+            let row = starBars[5 - i]; // 5 sao ở index 0
+            let count = counts[i];
+            let percent = totalReviews > 0 ? (count / totalReviews * 100) : 0;
+            let phanTramEl = row.querySelector('.phan-tram');
+            if (phanTramEl) phanTramEl.style.width = `${percent}%`;
+            let countSpan = row.querySelectorAll('span')[1];
+            if (countSpan) countSpan.innerText = count;
+        }
+    }
 
     if (!reviews || reviews.length === 0) {
         container.innerHTML = '<div style="padding: 20px; text-align: center;">Chưa có đánh giá nào cho sản phẩm này.</div>';
@@ -122,14 +163,6 @@ function renderReviews(reviews) {
         }
 
         const userName = `Khách hàng #${review.user_id}`;
-
-        const container = document.querySelector('.danh-sach-binh-luan-mc');
-        container.innerHTML = '';
-
-        if (!reviews || reviews.length === 0) {
-            container.innerHTML = '<div style="padding: 20px; text-align: center;">Chưa có đánh giá nào cho sản phẩm này.</div>';
-            return;
-        }
 
         const htmlItem = `
             <div class="item-binh-luan-mc">

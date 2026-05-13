@@ -1,5 +1,5 @@
 const API_ORDERS_URL = 'http://localhost:8080/api/orders';
-const statusMap = { 'WAIT': 'Cho xac nhan', 'DELIVERING': 'Dang giao hang', 'DONE': 'Hoan thanh', 'CANCEL': 'Da huy' };
+const statusMap = { 'WAIT': 'Chờ xác nhận', 'PROCESSING': 'Đang giao hàng', 'DELIVERED': 'Hoàn thành', 'CANCELLED': 'Đã hủy' };
 const paymentMap = { 'COD': 'Thanh toan khi nhan hang (COD)', 'BANK': 'Chuyen khoan ngan hang' };
 
 document.addEventListener("DOMContentLoaded", function () {
@@ -22,9 +22,12 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // Close modal on overlay click
-    document.getElementById('order-detail-modal').addEventListener('click', function (e) {
-        if (e.target === this) closeModal();
-    });
+    const detailModal = document.getElementById('order-detail-modal');
+    if (detailModal) {
+        detailModal.addEventListener('click', function (e) {
+            if (e.target === this) closeModal();
+        });
+    }
 
     loadOrders('', 1);
 });
@@ -72,7 +75,7 @@ function renderOrders(orders) {
         const dateStr = new Date(order.order_date).toLocaleString('vi-VN');
         const statusText = statusMap[order.order_status] || order.order_status;
         const formattedTotal = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(order.total_amount);
-        const isDone = order.order_status === 'DONE';
+        const isDone = order.order_status === 'DELIVERED';
 
         html += `
             <div class="order-item">
@@ -89,8 +92,11 @@ function renderOrders(orders) {
                         <div>Tong tien: <span class="order-total">${formattedTotal}</span></div>
                     </div>
                     <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;">
-                        <button class="btn-view-detail" onclick="openOrderDetail(${order.order_id})">Xem chi tiet</button>
-                        ${isDone ? `<button class="btn-rebuy" onclick="muaLai(${order.order_id})">Mua lai</button>` : ''}
+                        <button class="btn-view-detail" onclick="openOrderDetail(${order.order_id})">Xem chi tiết</button>
+                        ${isDone ? `
+                            <button class="btn-review-outline" onclick="danhGiaOrder(${order.order_id})">Đánh giá</button>
+                            <button class="btn-rebuy" onclick="muaLai(${order.order_id})">Mua lại</button>
+                        ` : ''}
                     </div>
                 </div>
             </div>
@@ -144,7 +150,7 @@ function renderOrderDetail(order) {
         ? new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(order.discount_amount)
         : null;
     const dateStr = new Date(order.order_date).toLocaleString('vi-VN');
-    const isDone = order.order_status === 'DONE';
+    const isDone = order.order_status === 'DELIVERED';
 
     let itemsHtml = '';
     if (order.items && order.items.length > 0) {
@@ -159,7 +165,10 @@ function renderOrderDetail(order) {
                     </div>
                     <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
                         <div class="detail-product-price">${itemPrice}</div>
-                        ${isDone ? `<button class="btn-review-small" onclick="moFormDanhGia(${order.order_id}, ${item.variant_id}, '${item.product_name}')">Danh gia</button>` : ''}
+                        ${isDone ? `
+                            <button class="btn-review-small" onclick="moFormDanhGia(${order.order_id}, ${item.variant_id}, '${item.product_name}')">Đánh giá</button>
+                            <button class="btn-review-small" style="background:#28a745;" onclick="window.location.href='product-detail.html?id=${item.product_id}'">Mua lại</button>
+                        ` : ''}
                     </div>
                 </div>
             `;
@@ -193,10 +202,6 @@ function renderOrderDetail(order) {
             ${formattedDiscount ? `<div class="detail-row"><span>Giam gia (voucher):</span><span style="color:green;">- ${formattedDiscount}</span></div>` : ''}
             <div class="detail-row detail-total"><span>Tong thanh toan:</span><b>${formattedTotal}</b></div>
         </div>
-        ${isDone ? `
-        <div class="detail-section" style="border-top: 1px dashed #eee; padding-top: 20px; margin-top: 5px;">
-            <button class="btn-rebuy" onclick="muaLai(${order.order_id})" style="width:100%;">Mua lai toan bo don hang</button>
-        </div>` : ''}
     `;
 }
 
@@ -205,20 +210,75 @@ function closeModal() {
     document.body.style.overflow = '';
 }
 
+
 // ============================================================
-// Mua lai don hang (redirect sang cart)
+// Mua lai (tu ngoai danh sach don hang)
 // ============================================================
 async function muaLai(orderId) {
-    alert('Tinh nang Mua lai: De dat lai don hang, ban co the vao trang chi tiet san pham va them vao gio. Chuc nang tu dong them gio se co sau khi tich hop them API. Chuyen den trang gio hang...');
-    window.location.href = 'cart.html';
+    const accessToken = localStorage.getItem('accessToken');
+    if (!accessToken) return;
+
+    try {
+        const response = await fetch(`${API_ORDERS_URL}/${orderId}`, {
+            headers: { 'Authorization': `Bearer ${accessToken}`, 'Content-Type': 'application/json' }
+        });
+        
+        if (response.status === 401) {
+            alert('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
+            localStorage.removeItem('accessToken');
+            window.location.href = 'login.html';
+            return;
+        }
+        if (!response.ok) throw new Error("Khong the tai don hang");
+        const order = await response.json();
+        
+        if (order.items && order.items.length > 0) {
+            // Chuyển hướng đến sản phẩm đầu tiên trong đơn hàng
+            window.location.href = `product-detail.html?id=${order.items[0].product_id}`;
+        } else {
+            alert("Đơn hàng không có sản phẩm nào để mua lại!");
+        }
+    } catch (error) {
+        console.error("Lỗi mua lại:", error);
+    }
 }
 
 // ============================================================
-// Danh gia san pham (modal)
+// Danh gia tu ngoai danh sach
 // ============================================================
+async function danhGiaOrder(orderId) {
+    const accessToken = localStorage.getItem('accessToken');
+    if (!accessToken) return;
+
+    try {
+        const response = await fetch(`${API_ORDERS_URL}/${orderId}`, {
+            headers: { 'Authorization': `Bearer ${accessToken}`, 'Content-Type': 'application/json' }
+        });
+        
+        if (response.status === 401) {
+            alert('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
+            localStorage.removeItem('accessToken');
+            window.location.href = 'login.html';
+            return;
+        }
+        if (!response.ok) throw new Error("Khong the tai don hang");
+        const order = await response.json();
+        
+        if (order.items && order.items.length > 0) {
+            const firstItem = order.items[0];
+            moFormDanhGia(order.order_id, firstItem.variant_id, firstItem.product_name);
+        } else {
+            alert("Đơn hàng không có sản phẩm nào để đánh giá!");
+        }
+    } catch (error) {
+        console.error("Lỗi:", error);
+    }
+}
+
 function moFormDanhGia(orderId, variantId, productName) {
     // Dong modal chi tiet truoc
-    document.getElementById('order-detail-modal').style.display = 'none';
+    const detailModal = document.getElementById('order-detail-modal');
+    if (detailModal) detailModal.style.display = 'none';
 
     const existing = document.getElementById('review-modal');
     if (existing) existing.remove();
@@ -319,7 +379,7 @@ async function guiDanhGia(orderId, variantId) {
             document.getElementById('review-modal').remove();
             showToast('Cam on ban da danh gia san pham!', 'success');
         } else {
-            const err = await reviewRes.json();
+                const err = await reviewRes.json();
             errorEl.innerText = err.message || 'Gui danh gia that bai. Vui long thu lai!';
             errorEl.style.display = 'block';
         }
@@ -334,6 +394,7 @@ window.openOrderDetail = openOrderDetail;
 window.closeModal = closeModal;
 window.loadOrders = loadOrders;
 window.muaLai = muaLai;
+window.danhGiaOrder = danhGiaOrder;
 window.moFormDanhGia = moFormDanhGia;
 window.chonSao = chonSao;
 window.guiDanhGia = guiDanhGia;
