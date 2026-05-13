@@ -6,9 +6,6 @@ let selectedItemIds = [];
 let isFirstLoad = true;
 let cartData = null;
 
-// Trạng thái voucher hiện tại
-let appliedVoucher = null; // { voucher_code, discount_percentage, discount_amount, final_total }
-
 // --------------------------------------------------------
 // Khởi tạo
 // --------------------------------------------------------
@@ -153,110 +150,22 @@ function renderCart() {
 }
 
 // --------------------------------------------------------
-// Tính tổng tiền (dựa vào appliedVoucher nếu có)
+// Tính tổng tiền
 // --------------------------------------------------------
 function calculateTotal() {
-    let subtotal = 0;
+    let total = 0;
 
     if (cartData && cartData.items) {
         cartData.items.forEach(item => {
             if (selectedItemIds.includes(String(item.cart_detail_id))) {
-                subtotal += item.variant.price * item.quantity;
+                total += item.variant.price * item.quantity;
             }
         });
     }
 
-    document.getElementById('temp-total').innerText = subtotal.toLocaleString('vi-VN') + 'đ';
-
-    const discountRow = document.querySelector('.discount-line');
-    if (appliedVoucher && appliedVoucher.discount_amount > 0) {
-        const discountAmt = subtotal * (appliedVoucher.discount_percentage / 100);
-        const finalTotal = subtotal - discountAmt;
-
-        discountRow.style.display = 'flex';
-        document.getElementById('discount-amount').innerText = '-' + discountAmt.toLocaleString('vi-VN') + 'đ';
-        document.getElementById('final-total').innerText = (finalTotal < 0 ? 0 : finalTotal).toLocaleString('vi-VN') + 'đ';
-    } else {
-        discountRow.style.display = 'none';
-        document.getElementById('final-total').innerText = subtotal.toLocaleString('vi-VN') + 'đ';
-    }
+    document.getElementById('final-total').innerText = total.toLocaleString('vi-VN') + 'đ';
 }
 
-// --------------------------------------------------------
-// API: Áp dụng mã giảm giá (gọi backend /api/vouchers/validate)
-// --------------------------------------------------------
-async function applyDiscount() {
-    const code = document.getElementById('coupon-code').value.trim().toUpperCase();
-    const msg  = document.getElementById('discount-message');
-
-    if (!code) {
-        msg.style.color = '#d70018';
-        msg.innerText = 'Vui lòng nhập mã giảm giá.';
-        return;
-    }
-
-    // Tính subtotal của các item đang được chọn
-    let subtotal = 0;
-    if (cartData && cartData.items) {
-        cartData.items.forEach(item => {
-            if (selectedItemIds.includes(String(item.cart_detail_id))) {
-                subtotal += item.variant.price * item.quantity;
-            }
-        });
-    }
-
-    if (subtotal <= 0) {
-        msg.style.color = '#d70018';
-        msg.innerText = 'Vui lòng chọn ít nhất 1 sản phẩm để áp mã.';
-        return;
-    }
-
-    const token = localStorage.getItem('accessToken');
-    if (!token) {
-        window.location.href = 'login.html';
-        return;
-    }
-
-    // Nút loading
-    const btn = document.getElementById('btn-apply-coupon');
-    btn.disabled = true;
-    btn.innerText = 'Đang kiểm tra...';
-
-    try {
-        const response = await fetch('http://localhost:8080/api/vouchers/validate', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`
-            },
-            body: JSON.stringify({ voucher_code: code, order_total: subtotal })
-        });
-
-        const data = await response.json();
-
-        if (response.ok && data.valid) {
-            appliedVoucher = data; // Lưu toàn bộ kết quả
-            appliedVoucher.voucher_code = code;
-
-            msg.style.color = '#28a745';
-            msg.innerText = `✓ Áp dụng thành công! Giảm ${data.discount_percentage}% (−${data.discount_amount.toLocaleString('vi-VN')}đ)`;
-
-            calculateTotal();
-        } else {
-            appliedVoucher = null;
-            msg.style.color = '#d70018';
-            msg.innerText = data.message || 'Mã giảm giá không hợp lệ.';
-            calculateTotal();
-        }
-    } catch (error) {
-        console.error('Lỗi validate voucher:', error);
-        msg.style.color = '#d70018';
-        msg.innerText = 'Lỗi kết nối. Vui lòng thử lại!';
-    } finally {
-        btn.disabled = false;
-        btn.innerText = 'Áp dụng';
-    }
-}
 
 // --------------------------------------------------------
 // Tiến hành thanh toán → chuyển sang checkout.html
@@ -268,13 +177,7 @@ function proceedToCheckout() {
     }
 
     localStorage.setItem('selectedCheckoutItems', JSON.stringify(selectedItemIds));
-
-    // Lưu voucher (nếu đã áp dụng) để checkout.html dùng lại
-    if (appliedVoucher) {
-        localStorage.setItem('appliedVoucher', JSON.stringify(appliedVoucher));
-    } else {
-        localStorage.removeItem('appliedVoucher');
-    }
+    localStorage.removeItem('appliedVoucher');
 
     window.location.href = 'checkout.html';
 }
@@ -297,10 +200,6 @@ async function updateQuantity(cartDetailId, newQuantity) {
         });
 
         if (response.ok) {
-            // Reset voucher khi thay đổi số lượng
-            appliedVoucher = null;
-            document.getElementById('discount-message').innerText = '';
-            document.getElementById('coupon-code').value = '';
             await loadCartFromAPI();
         } else if (response.status === 401) {
             localStorage.removeItem('accessToken');
@@ -332,9 +231,6 @@ async function removeCartItem(cartDetailId) {
 
         if (response.ok) {
             selectedItemIds = selectedItemIds.filter(id => id !== String(cartDetailId));
-            appliedVoucher = null;
-            document.getElementById('discount-message').innerText = '';
-            document.getElementById('coupon-code').value = '';
             await loadCartFromAPI();
         } else if (response.status === 401) {
             localStorage.removeItem('accessToken');
@@ -359,10 +255,6 @@ function toggleItemSelection(cartDetailId, isSelected) {
     } else {
         selectedItemIds = selectedItemIds.filter(id => id !== idStr);
     }
-    // Reset voucher khi thay đổi lựa chọn
-    appliedVoucher = null;
-    document.getElementById('discount-message').innerText = '';
-    document.getElementById('coupon-code').value = '';
 
     calculateTotal();
 
@@ -379,10 +271,6 @@ function toggleSelectAll() {
     selectedItemIds = isChecked ? cartData.items.map(item => String(item.cart_detail_id)) : [];
     checkboxes.forEach(cb => cb.checked = isChecked);
 
-    appliedVoucher = null;
-    document.getElementById('discount-message').innerText = '';
-    document.getElementById('coupon-code').value = '';
-
     calculateTotal();
 }
 
@@ -390,8 +278,44 @@ function toggleSelectAll() {
 // Expose functions to global scope (HTML onclick)
 // --------------------------------------------------------
 window.proceedToCheckout   = proceedToCheckout;
-window.applyDiscount       = applyDiscount;
 window.updateQuantity      = updateQuantity;
 window.removeCartItem      = removeCartItem;
 window.toggleItemSelection = toggleItemSelection;
 window.toggleSelectAll     = toggleSelectAll;
+window.xoaToanBoGioHang    = xoaToanBoGioHang;
+
+// --------------------------------------------------------
+// Xoa toan bo gio hang
+// --------------------------------------------------------
+async function xoaToanBoGioHang() {
+    if (!cartData || !cartData.items || cartData.items.length === 0) {
+        showToast('Gio hang dang trong!', 'warning');
+        return;
+    }
+    if (!confirm(`Ban co chac chan muon xoa tat ca ${cartData.items.length} san pham khoi gio hang?`)) return;
+
+    const token = localStorage.getItem('accessToken');
+    let hasError = false;
+
+    // Xoa tung item (API khong co endpoint xoa tat ca)
+    for (const item of cartData.items) {
+        try {
+            const res = await fetch(`http://localhost:8080/api/cart/items/${item.cart_detail_id}`, {
+                method: 'DELETE',
+                headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }
+            });
+            if (!res.ok) hasError = true;
+        } catch (e) {
+            hasError = true;
+        }
+    }
+
+    selectedItemIds = [];
+    await loadCartFromAPI();
+
+    if (hasError) {
+        showToast('Mot so san pham khong the xoa. Vui long thu lai!', 'error');
+    } else {
+        showToast('Da xoa toan bo gio hang!', 'success');
+    }
+}

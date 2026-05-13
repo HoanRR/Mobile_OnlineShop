@@ -22,6 +22,7 @@
                     <div class="cart-header">
                         <input type="checkbox" id="select-all" onchange="toggleSelectAll()">
                         <label for="select-all">Chọn tất cả</label>
+                        <button id="btn-clear-cart" onclick="xoaToanBoGioHang()" title="Xoa toan bo gio hang">Xóa tất cả</button>
                     </div>
 
                     <div class="cart-items" id="cart-items-list">
@@ -30,22 +31,7 @@
 
                 <div class="cart-summary">
                     <h3>Tóm tắt đơn hàng</h3>
-                    <div class="summary-line">
-                        <span>Tạm tính:</span>
-                        <span id="temp-total">0đ</span>
-                    </div>
-                    <div class="discount-section">
-                        <div class="input-group">
-                            <input type="text" id="coupon-code" placeholder="Nhập mã giảm giá">
-                            <button id="btn-apply-coupon" onclick="applyDiscount()">Áp dụng</button>
-                        </div>
-                        <p id="discount-message"></p>
-                    </div>
 
-                    <div class="summary-line discount-line" style="display: none;">
-                        <span>Giảm giá:</span>
-                        <span id="discount-amount">-0đ</span>
-                    </div>
                     <div class="summary-line total-line">
                         <span>Tổng tiền:</span>
                         <span id="final-total">0đ</span>

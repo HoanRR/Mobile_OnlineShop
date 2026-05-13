@@ -50,7 +50,7 @@ async function loadProfile() {
         document.getElementById('phone').value = data.phoneNumber || '';
 
     } catch (error) {
-        console.error("Lỗi khi tải thông tin:", error);
+        console.error("Lỗi khi tải thông tin:", error); 
         showToast("Không thể tải thông tin cá nhân. Vui lòng thử lại sau.", "error");
     }
 }
@@ -89,7 +89,7 @@ async function updateProfile() {
             
             // Cập nhật lại localStorage để header thay đổi
             let userInfo = JSON.parse(localStorage.getItem('userInfo')) || {};
-            userInfo.username = fullName; // Giả sử tên hiển thị trên header lấy từ đây
+            userInfo.name = fullName; 
             localStorage.setItem('userInfo', JSON.stringify(userInfo));
             
             document.getElementById('sidebar-name').innerText = fullName;

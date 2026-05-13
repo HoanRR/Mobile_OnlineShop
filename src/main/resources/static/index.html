@@ -98,7 +98,45 @@
         </div>
 
         <div class="product-section">
-            <h2 class="section-title" id="product-section-title" style="text-align: center; margin: 30px 0 20px;">Sản phẩm mới nhất</h2>
+            <h2 class="section-title" id="product-section-title" style="text-align: center; margin: 30px 0 20px;">San pham moi nhat</h2>
+
+            <!-- Bo loc va sap xep -->
+            <div class="filter-bar" id="filter-bar">
+                <div class="filter-group">
+                    <label>Hang:</label>
+                    <select id="filter-brand" onchange="applyFilters()">
+                        <option value="">Tat ca</option>
+                        <option value="Apple">Apple</option>
+                        <option value="Samsung">Samsung</option>
+                        <option value="Xiaomi">Xiaomi</option>
+                        <option value="Oppo">Oppo</option>
+                        <option value="Vivo">Vivo</option>
+                        <option value="Realme">Realme</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Muc gia:</label>
+                    <select id="filter-price" onchange="applyFilters()">
+                        <option value="">Tat ca</option>
+                        <option value="0-5000000">Duoi 5 trieu</option>
+                        <option value="5000000-10000000">5 - 10 trieu</option>
+                        <option value="10000000-20000000">10 - 20 trieu</option>
+                        <option value="20000000-99999999">Tren 20 trieu</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label>Sap xep:</label>
+                    <select id="sort-by" onchange="applyFilters()">
+                        <option value="price-asc">Gia tang dan</option>
+                        <option value="price-desc">Gia giam dan</option>
+                        <option value="name-asc">Ten A-Z</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <button id="btn-reset-filter" onclick="resetFilters()">Xoa bo loc</button>
+                </div>
+            </div>
+
             <div class="danh-sach-san-pham" id="danh-sach-sp">
 
             </div>

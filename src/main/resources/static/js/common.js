@@ -10,7 +10,7 @@ function capNhatGiaoDienHeader() {
             <div class="user-menu" style="display: flex; align-items: center; gap: 10px;">
                 <a href="profile.html" class="btn-header" style="display: flex; align-items: center; gap: 5px;">
                     <img src="../static/img/user-interface.png" alt="User">
-                    <h3>Xin chào, ${userInfo.username || 'Bạn'}</h3>
+                    <h3>Xin chào, ${userInfo.name || userInfo.username || 'Bạn'}</h3>
                 </a>
                 <button onclick="xuLyDangXuat()" class="btn-logout" style="cursor: pointer; padding: 5px 10px; background-color: #f44336; color: white; border: none; border-radius: 5px;">
                     Đăng xuất
@@ -22,9 +22,9 @@ function capNhatGiaoDienHeader() {
     // Bind search functionality
     const searchBtn = document.getElementById('search-btn');
     const searchInput = document.getElementById('search-input');
-    
+
     if (searchBtn && searchInput) {
-        searchBtn.addEventListener('click', function() {
+        searchBtn.addEventListener('click', function () {
             const query = searchInput.value.trim();
             if (query) {
                 window.location.href = `index.html?search=${encodeURIComponent(query)}`;
@@ -32,13 +32,13 @@ function capNhatGiaoDienHeader() {
                 window.location.href = 'index.html';
             }
         });
-        
-        searchInput.addEventListener('keypress', function(e) {
+
+        searchInput.addEventListener('keypress', function (e) {
             if (e.key === 'Enter') {
                 searchBtn.click();
             }
         });
-        
+
         // Populate search input from URL if we are on a search result page
         const urlParams = new URLSearchParams(window.location.search);
         if (urlParams.has('search')) {
@@ -118,10 +118,10 @@ function showToast(message, type = 'success') {
     //  Tự động xóa thông báo sau 3 giây (3000 milliseconds)
     setTimeout(() => {
         toast.classList.add('fade-out'); // Thêm hiệu ứng mờ dần
-        
+
         // Đợi hiệu ứng mờ dần chạy xong (400ms) rồi mới xóa DOM
         setTimeout(() => {
             toast.remove();
-        }, 400); 
+        }, 400);
     }, 3000);
 }

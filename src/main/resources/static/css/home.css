@@ -2,9 +2,72 @@
     display: grid;
 }
 
+/* Thanh bo loc + sap xep */
+.filter-bar {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    flex-wrap: wrap;
+    max-width: 1250px;
+    margin: 0 auto 20px;
+    padding: 16px 50px;
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+}
+
+.filter-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.filter-group label {
+    font-size: 14px;
+    font-weight: 600;
+    color: #444;
+    white-space: nowrap;
+}
+
+.filter-group select {
+    padding: 8px 12px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    outline: none;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.filter-group select:focus {
+    border-color: #d70018;
+}
+
+#btn-reset-filter {
+    padding: 8px 16px;
+    background: #f0f0f0;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+#btn-reset-filter:hover {
+    background: #d70018;
+    color: white;
+    border-color: #d70018;
+}
+
+.search-result-title {
+    text-align: center;
+    margin: 20px 0;
+    font-size: 22px;
+    color: #333;
+}
+
 
 /* Style cho banner*/
-
 .slide {
     color: white;
     background: linear-gradient(135deg, #2b2b36 0%, #15151b 100%);
@@ -13,17 +76,17 @@
 .slider-wrapper {
     position: relative;
     width: 100%;
-    max-width: 800px;
-    margin-bottom: 20px;
-    border-radius: 12px;
+    max-width: 1250px;
+    margin: 20px auto 40px auto;
+    border-radius: 20px;
     overflow: hidden;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
 }
 
 .slider-track {
     display: flex;
     width: 100%;
 }
-
 
 .slider-track img {
     width: 100%;
@@ -36,51 +99,56 @@
     position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    width: 40px;
-    height: 40px;
+    width: 45px;
+    height: 45px;
     display: flex;
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    background: rgba(0, 0, 0, 0.3);
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(5px);
     color: white;
     border: none;
-    padding: 15px 20px;
+    padding: 0;
     cursor: pointer;
-    font-size: 16px;
+    font-size: 18px;
+    transition: 0.3s ease;
 }
 
 .btn-slider:hover {
-    background: rgba(0, 0, 0, 0.8);
+    background: rgba(255, 255, 255, 0.8);
+    color: #333;
 }
 
 .btn-prev {
-    left: 10px;
+    left: 20px;
 }
 
 .btn-next {
-    right: 10px;
+    right: 20px;
 }
 
 .slider-dots {
     position: absolute;
-    bottom: 15px;
+    bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
     display: flex;
-    gap: 10px;
+    gap: 12px;
 }
 
 .dot {
-    width: 12px;
-    height: 12px;
-    background: rgba(255, 255, 255, 0.5);
-    border-radius: 50%;
+    width: 30px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 2px;
     cursor: pointer;
+    transition: 0.3s;
 }
 
 .dot.active {
     background: white;
+    width: 40px;
 }
 
 .slide {
@@ -89,8 +157,8 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 40px 60px;
-    border-radius: 15px;
+    padding: 50px 80px;
+    border-radius: 20px;
 }
 
 .slide-orange {
@@ -103,27 +171,29 @@
 }
 
 .slide-content .badge {
-    background: #ffe600;
-    color: #cc4400;
-    padding: 5px 15px;
+    background: #ffcc00;
+    color: #111;
+    padding: 6px 16px;
     border-radius: 20px;
-    font-size: 14px;
-    font-weight: bold;
+    font-size: 13px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 .slide-content h2 {
-    font-size: 45px;
-    margin: 15px 0;
+    font-size: 55px;
+    margin: 20px 0;
     line-height: 1.1;
     font-weight: 900;
+    letter-spacing: -1px;
 }
 
 .slide-content .specs {
-    font-size: 16px;
-    margin-bottom: 20px;
+    font-size: 18px;
+    margin-bottom: 30px;
+    color: #ccc;
 }
-
-
 
 .slide-image {
     flex: 1;
@@ -131,23 +201,33 @@
 }
 
 .slide-image img {
-    max-width: 300px;
+    max-width: 350px;
     height: auto;
-    filter: drop-shadow(0px 10px 15px rgba(0, 0, 0, 0.3));
+    filter: drop-shadow(0px 20px 30px rgba(0, 0, 0, 0.4));
+    transition: transform 0.5s ease;
 }
 
+.slide:hover .slide-image img {
+    transform: scale(1.05) translateY(-10px);
+}
 
 .btn-buy {
     display: inline-block;
-    padding: 10px 25px;
+    padding: 12px 30px;
     background: white;
-    color: #333;
+    color: #111;
     border-radius: 30px;
     font-weight: bold;
+    font-size: 16px;
+    text-decoration: none;
+    transition: 0.3s;
 }
 
 .btn-buy:hover {
-    transform: scale(1.05);
+    background: #d70018;
+    color: white;
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(215, 0, 24, 0.3);
 }
 
 /* Cho hien thi san pham */
@@ -215,7 +295,8 @@
     display: flex;
     gap: 5px;
 }
- /* Danh mục nổi bật */
+
+/* Danh mục nổi bật */
 .home-categories {
     max-width: 1250px;
     margin: 30px auto;
