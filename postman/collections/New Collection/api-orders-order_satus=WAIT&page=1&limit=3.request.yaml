@@ -1,0 +1,16 @@
+$kind: http-request
+name: api/orders?order_satus=WAIT&page=1&limit=3
+url: http://localhost:8080/api/orders?order_satus=WAIT&page=1&limit=3
+method: GET
+queryParams:
+  - key: order_satus
+    value: WAIT
+  - key: page
+    value: "1"
+  - key: limit
+    value: "3"
+auth:
+  type: bearer
+  credentials:
+    token: eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJsZXZhbmMiLCJzY29wZSI6IkNVU1RPTUVSIiwiaXNzIjoicGhvbmVzaG9wLnZuIiwiZXhwIjoxNzc3MzEwNDcyLCJpYXQiOjE3NzczMDMyNzIsInVzZXJJZCI6NCwianRpIjoiYmVmNWMwODMtMzdkNi00OTFjLTkxNjMtODAwMTBmNDdkN2I4In0.POyBqX2v9Bp-h6q4p_4lxhFRmBdTK-c9gyq7ZBozz60OwNlET5U1yU3Ri7i1wv0oUNv7z_7GpDDjh41PM5RY2w
+order: 4503584478059425

@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý IMEI & Kho — HT Mobile Admin</title>
+    <meta name="description" content="Quản lý IMEI và Nhập kho thiết bị - HT Mobile Admin">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/admin.css">
+    <link rel="stylesheet" href="css/admin_devices.css">
+</head>
+
+<body>
+    <!-- ===== SIDEBAR ===== -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <span class="logo-icon">📱</span>
+                <span class="logo-text">HT Mobile</span>
+            </div>
+            <span class="sidebar-badge">ADMIN</span>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-section">
+                <span class="nav-section-title">Tổng quan</span>
+                <a href="index_admin.html" class="nav-item" id="nav-dashboard">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-label">Báo cáo & Thống kê</span>
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <span class="nav-section-title">Quản lý</span>
+                <a href="admin_product.html" class="nav-item" id="nav-products">
+                    <span class="nav-icon">📦</span>
+                    <span class="nav-label">Sản phẩm</span>
+                </a>
+                <a href="#" class="nav-item" id="nav-orders">
+                    <span class="nav-icon">🧾</span>
+                    <span class="nav-label">Đơn hàng</span>
+                </a>
+                <a href="admin_user.html" class="nav-item" id="nav-users">
+                    <span class="nav-icon">👥</span>
+                    <span class="nav-label">Người dùng</span>
+                </a>
+                <a href="admin_devices.html" class="nav-item active" id="nav-devices">
+                    <span class="nav-icon">🔧</span>
+                    <span class="nav-label">IMEI & Kho</span>
+                </a>
+                <a href="admin_voucher.html" class="nav-item" id="nav-vouchers">
+                    <span class="nav-icon">🎫</span>
+                    <span class="nav-label">Voucher</span>
+                </a>
+            </div>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="admin-profile" id="admin-profile">
+                <div class="admin-avatar">A</div>
+                <div class="admin-info">
+                    <span class="admin-name">Admin</span>
+                    <span class="admin-role">Quản trị viên</span>
+                </div>
+            </div>
+            <button class="btn-logout-sidebar" id="btn-logout" onclick="adminLogout()">
+                <span>🚪</span> Đăng xuất
+            </button>
+        </div>
+    </aside>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <main class="main-content">
+        <header class="topbar">
+            <button class="btn-toggle-sidebar" id="btn-toggle-sidebar" onclick="toggleSidebar()">☰</button>
+            <h1 class="page-title">Quản lý IMEI & Kho</h1>
+            <div class="topbar-right">
+                <span class="topbar-date" id="topbar-date"></span>
+            </div>
+        </header>
+
+        <div class="dashboard-content">
+
+            <!-- ===== TOOLBAR ===== -->
+            <section class="devices-toolbar">
+                <div class="toolbar-left">
+                    <form class="search-box-form" onsubmit="searchDevice(event)">
+                        <div class="search-box" style="min-width: 300px;">
+                            <span class="search-icon">🔍</span>
+                            <input type="text" id="search-imei" placeholder="Nhập mã IMEI cần tra cứu..." autocomplete="off" required>
+                        </div>
+                        <button type="submit" class="btn-search-imei">Tra cứu</button>
+                    </form>
+                </div>
+                <div class="toolbar-right-actions">
+                    <button class="btn-import-devices" onclick="openImportModal()">
+                        <span>📥</span> Nhập kho thiết bị
+                    </button>
+                </div>
+            </section>
+
+            <!-- ===== SEARCH RESULT ===== -->
+            <section class="search-result-section" id="search-result-container" style="display: none;">
+                <div class="device-detail-card" id="device-detail">
+                    <!-- Loaded via JS -->
+                </div>
+            </section>
+
+            <!-- ===== EMPTY STATE ===== -->
+            <div class="empty-state" id="empty-state">
+                <div class="empty-state-icon">📱</div>
+                <div class="empty-state-text">Nhập mã IMEI để tra cứu thông tin thiết bị hoặc tiến hành nhập kho.</div>
+            </div>
+
+        </div>
+    </main>
+
+    <!-- ===== MODAL: Import Devices ===== -->
+    <div class="modal-overlay" id="import-modal-overlay">
+        <div class="modal-card" style="max-width: 600px;">
+            <div class="modal-header">
+                <h2 class="modal-title">Nhập kho thiết bị</h2>
+                <button class="modal-close" onclick="closeImportModal()">✕</button>
+            </div>
+            <form class="modal-form" id="import-form" onsubmit="submitImportForm(event)">
+                <div class="form-row">
+                    <div class="form-group full-width">
+                        <label for="select-product">Sản phẩm <span class="required">*</span></label>
+                        <select id="select-product" onchange="onProductChange()" required>
+                            <option value="">-- Chọn sản phẩm --</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <div class="form-row">
+                    <div class="form-group full-width">
+                        <label for="select-variant">Biến thể (Màu sắc, Dung lượng,...) <span class="required">*</span></label>
+                        <select id="select-variant" required disabled>
+                            <option value="">-- Chọn biến thể --</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group full-width">
+                        <label for="input-imeis">Danh sách IMEI (Mỗi IMEI trên 1 dòng) <span class="required">*</span></label>
+                        <textarea id="input-imeis" rows="6" placeholder="VD:&#10;358890089887766&#10;358890089887767" required></textarea>
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeImportModal()">Hủy</button>
+                    <button type="submit" class="btn-submit" id="btn-submit-import">Nhập kho</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ===== MODAL: Import Result ===== -->
+    <div class="modal-overlay" id="import-result-overlay">
+        <div class="modal-card" style="max-width: 500px;">
+            <div class="modal-header">
+                <h2 class="modal-title" style="color: var(--green);">✅ Nhập kho thành công</h2>
+                <button class="modal-close" onclick="closeImportResultModal()">✕</button>
+            </div>
+            <div class="modal-form">
+                <div style="font-size: 14px; margin-bottom: 16px;">
+                    Đã nhập kho thành công <strong id="result-imported-count" style="color: var(--accent); font-size: 16px;">0</strong> thiết bị.
+                </div>
+                <div style="max-height: 300px; overflow-y: auto; border: 1px solid var(--border); border-radius: 8px;">
+                    <table class="simple-table" style="width: 100%; border-collapse: collapse; font-size: 13px;">
+                        <thead style="background: #fafafa;">
+                            <tr>
+                                <th style="padding: 10px; text-align: left; border-bottom: 1px solid var(--border);">ID</th>
+                                <th style="padding: 10px; text-align: left; border-bottom: 1px solid var(--border);">IMEI</th>
+                                <th style="padding: 10px; text-align: center; border-bottom: 1px solid var(--border);">Trạng thái</th>
+                            </tr>
+                        </thead>
+                        <tbody id="result-devices-list">
+                            <!-- Loaded via JS -->
+                        </tbody>
+                    </table>
+                </div>
+                <div class="modal-actions" style="margin-top: 16px; border-top: none; padding-top: 0;">
+                    <button type="button" class="btn-submit" onclick="closeImportResultModal()">Đóng</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/admin_devices.js"></script>
+</body>
+
+</html>

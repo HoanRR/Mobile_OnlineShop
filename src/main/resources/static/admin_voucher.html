@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý voucher — HT Mobile Admin</title>
+    <meta name="description" content="Quản lý mã giảm giá voucher - HT Mobile Admin">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/admin.css">
+    <link rel="stylesheet" href="css/admin_voucher.css">
+</head>
+
+<body>
+    <!-- ===== SIDEBAR ===== -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <span class="logo-icon">📱</span>
+                <span class="logo-text">HT Mobile</span>
+            </div>
+            <span class="sidebar-badge">ADMIN</span>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-section">
+                <span class="nav-section-title">Tổng quan</span>
+                <a href="index_admin.html" class="nav-item" id="nav-dashboard">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-label">Báo cáo & Thống kê</span>
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <span class="nav-section-title">Quản lý</span>
+                <a href="admin_product.html" class="nav-item" id="nav-products">
+                    <span class="nav-icon">📦</span>
+                    <span class="nav-label">Sản phẩm</span>
+                </a>
+                <a href="#" class="nav-item" id="nav-orders">
+                    <span class="nav-icon">🧾</span>
+                    <span class="nav-label">Đơn hàng</span>
+                </a>
+                <a href="admin_user.html" class="nav-item" id="nav-users">
+                    <span class="nav-icon">👥</span>
+                    <span class="nav-label">Người dùng</span>
+                </a>
+                <a href="admin_devices.html" class="nav-item" id="nav-devices">
+                    <span class="nav-icon">🔧</span>
+                    <span class="nav-label">IMEI & Kho</span>
+                </a>
+                <a href="admin_voucher.html" class="nav-item active" id="nav-vouchers">
+                    <span class="nav-icon">🎫</span>
+                    <span class="nav-label">Voucher</span>
+                </a>
+            </div>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="admin-profile" id="admin-profile">
+                <div class="admin-avatar">A</div>
+                <div class="admin-info">
+                    <span class="admin-name">Admin</span>
+                    <span class="admin-role">Quản trị viên</span>
+                </div>
+            </div>
+            <button class="btn-logout-sidebar" id="btn-logout" onclick="adminLogout()">
+                <span>🚪</span> Đăng xuất
+            </button>
+        </div>
+    </aside>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <main class="main-content">
+        <header class="topbar">
+            <button class="btn-toggle-sidebar" id="btn-toggle-sidebar" onclick="toggleSidebar()">☰</button>
+            <h1 class="page-title">Quản lý Voucher</h1>
+            <div class="topbar-right">
+                <span class="topbar-date" id="topbar-date"></span>
+            </div>
+        </header>
+
+        <div class="dashboard-content">
+
+            <!-- ===== TOOLBAR ===== -->
+            <section class="voucher-toolbar">
+                <div class="toolbar-left">
+                    <div class="search-box">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" id="search-input" placeholder="Tìm theo mã voucher..." autocomplete="off">
+                    </div>
+                    <button class="btn-apply-filter btn-sm" onclick="filterVouchers()">🔍 Tìm kiếm</button>
+                </div>
+                <div class="toolbar-right-actions">
+                    <button class="btn-add-voucher" id="btn-add-voucher" onclick="openCreateModal()">
+                        <span>➕</span> Tạo voucher
+                    </button>
+                </div>
+            </section>
+
+            <!-- ===== STATS SUMMARY ===== -->
+            <section class="voucher-stats">
+                <div class="stat-card-mini">
+                    <span class="stat-mini-icon">🎫</span>
+                    <div>
+                        <div class="stat-mini-value" id="stat-total">0</div>
+                        <div class="stat-mini-label">Tổng voucher</div>
+                    </div>
+                </div>
+                <div class="stat-card-mini">
+                    <span class="stat-mini-icon">✅</span>
+                    <div>
+                        <div class="stat-mini-value" id="stat-active">0</div>
+                        <div class="stat-mini-label">Đang hoạt động</div>
+                    </div>
+                </div>
+                <div class="stat-card-mini">
+                    <span class="stat-mini-icon">⏳</span>
+                    <div>
+                        <div class="stat-mini-value" id="stat-expired">0</div>
+                        <div class="stat-mini-label">Hết hạn</div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===== VOUCHER CARDS GRID ===== -->
+            <section class="voucher-grid" id="voucher-grid">
+                <div class="loading-placeholder">
+                    <div class="spinner"></div> Đang tải dữ liệu...
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- ===== MODAL: Create Voucher ===== -->
+    <div class="modal-overlay" id="create-modal-overlay">
+        <div class="modal-card" id="create-modal">
+            <div class="modal-header">
+                <h2 class="modal-title" id="modal-title">Tạo voucher mới</h2>
+                <button class="modal-close" onclick="closeCreateModal()">✕</button>
+            </div>
+            <form class="modal-form" id="voucher-form" onsubmit="submitVoucherForm(event)">
+                <input type="hidden" id="form-voucher-id">
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="form-code">Mã voucher <span class="required">*</span></label>
+                        <input type="text" id="form-code" placeholder="VD: SALE50, SUMMER2026..." required>
+                    </div>
+                    <div class="form-group">
+                        <label for="form-discount">Giảm giá (%) <span class="required">*</span></label>
+                        <input type="number" id="form-discount" min="1" max="100" step="1" placeholder="10" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="form-start">Ngày bắt đầu <span class="required">*</span></label>
+                        <input type="date" id="form-start" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="form-end">Ngày kết thúc <span class="required">*</span></label>
+                        <input type="date" id="form-end" required>
+                    </div>
+                </div>
+
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="form-usage">Giới hạn lượt dùng <span class="required">*</span></label>
+                        <input type="number" id="form-usage" min="1" placeholder="100" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="form-min-value">Đơn tối thiểu (VNĐ)</label>
+                        <input type="number" id="form-min-value" min="0" placeholder="500000">
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeCreateModal()">Hủy</button>
+                    <button type="submit" class="btn-submit" id="btn-submit">Tạo voucher</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ===== MODAL: Extend Voucher ===== -->
+    <div class="modal-overlay" id="extend-modal-overlay">
+        <div class="modal-card" style="max-width: 400px;">
+            <div class="modal-header">
+                <h2 class="modal-title">Gia hạn voucher</h2>
+                <button class="modal-close" onclick="closeExtendModal()">✕</button>
+            </div>
+            <form class="modal-form" onsubmit="submitExtendForm(event)">
+                <input type="hidden" id="extend-voucher-id">
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label for="extend-new-end-date">Ngày kết thúc mới <span class="required">*</span></label>
+                    <input type="date" id="extend-new-end-date" required>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeExtendModal()">Hủy</button>
+                    <button type="submit" class="btn-submit">Xác nhận</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="js/admin_voucher.js"></script>
+</body>
+
+</html>

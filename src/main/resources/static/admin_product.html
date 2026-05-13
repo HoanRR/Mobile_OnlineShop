@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý sản phẩm — HT Mobile Admin</title>
+    <meta name="description" content="Quản lý sản phẩm điện thoại - HT Mobile Admin">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/admin.css">
+    <link rel="stylesheet" href="css/admin_product.css">
+</head>
+
+<body>
+    <!-- ===== SIDEBAR ===== -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <span class="logo-icon">📱</span>
+                <span class="logo-text">HT Mobile</span>
+            </div>
+            <span class="sidebar-badge">ADMIN</span>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-section">
+                <span class="nav-section-title">Tổng quan</span>
+                <a href="index_admin.html" class="nav-item" id="nav-dashboard">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-label">Báo cáo & Thống kê</span>
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <span class="nav-section-title">Quản lý</span>
+                <a href="admin_product.html" class="nav-item active" id="nav-products">
+                    <span class="nav-icon">📦</span>
+                    <span class="nav-label">Sản phẩm</span>
+                </a>
+                <a href="#" class="nav-item" id="nav-orders">
+                    <span class="nav-icon">🧾</span>
+                    <span class="nav-label">Đơn hàng</span>
+                </a>
+                <a href="admin_user.html" class="nav-item" id="nav-users">
+                    <span class="nav-icon">👥</span>
+                    <span class="nav-label">Người dùng</span>
+                </a>
+                <a href="admin_devices.html" class="nav-item" id="nav-devices">
+                    <span class="nav-icon">🔧</span>
+                    <span class="nav-label">IMEI & Kho</span>
+                </a>
+                <a href="admin_voucher.html" class="nav-item" id="nav-vouchers">
+                    <span class="nav-icon">🎫</span>
+                    <span class="nav-label">Voucher</span>
+                </a>
+            </div>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="admin-profile" id="admin-profile">
+                <div class="admin-avatar">A</div>
+                <div class="admin-info">
+                    <span class="admin-name">Admin</span>
+                    <span class="admin-role">Quản trị viên</span>
+                </div>
+            </div>
+            <button class="btn-logout-sidebar" id="btn-logout" onclick="adminLogout()">
+                <span>🚪</span> Đăng xuất
+            </button>
+        </div>
+    </aside>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <main class="main-content">
+        <header class="topbar">
+            <button class="btn-toggle-sidebar" id="btn-toggle-sidebar" onclick="toggleSidebar()">☰</button>
+            <h1 class="page-title">Quản lý sản phẩm</h1>
+            <div class="topbar-right">
+                <span class="topbar-date" id="topbar-date"></span>
+            </div>
+        </header>
+
+        <div class="dashboard-content">
+
+            <!-- ===== TOOLBAR ===== -->
+            <section class="product-toolbar" id="product-toolbar">
+                <div class="toolbar-left">
+                    <div class="search-box">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" id="search-input" placeholder="Tìm sản phẩm theo tên..." autocomplete="off">
+                    </div>
+                    <div class="filter-group-admin compact">
+                        <label for="filter-brand">Hãng</label>
+                        <select id="filter-brand">
+                            <option value="">Tất cả</option>
+                            <option value="Apple">Apple</option>
+                            <option value="Samsung">Samsung</option>
+                            <option value="Xiaomi">Xiaomi</option>
+                            <option value="Oppo">Oppo</option>
+                            <option value="Vivo">Vivo</option>
+                        </select>
+                    </div>
+                    <div class="filter-group-admin compact">
+                        <label for="filter-sort">Sắp xếp</label>
+                        <select id="filter-sort">
+                            <option value="price">Giá</option>
+                            <option value="product_name">Tên A-Z</option>
+                        </select>
+                    </div>
+                    <div class="filter-group-admin compact">
+                        <label for="filter-order">Thứ tự</label>
+                        <select id="filter-order">
+                            <option value="asc">Tăng dần</option>
+                            <option value="desc">Giảm dần</option>
+                        </select>
+                    </div>
+                    <button class="btn-apply-filter btn-sm" onclick="searchProducts()">🔍 Tìm kiếm</button>
+                </div>
+                <div class="toolbar-right-actions">
+                    <button class="btn-add-product" id="btn-add-product" onclick="openAddProductModal()">
+                        <span>➕</span> Thêm sản phẩm
+                    </button>
+                </div>
+            </section>
+
+            <!-- ===== PRODUCTS TABLE ===== -->
+            <section class="products-table-section">
+                <div class="products-table-container">
+                    <table class="products-table-admin" id="products-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Hình ảnh</th>
+                                <th>Tên sản phẩm</th>
+                                <th>Hãng</th>
+                                <th>Giá từ</th>
+                                <th>Đánh giá</th>
+                                <th>Hành động</th>
+                            </tr>
+                        </thead>
+                        <tbody id="products-table-body">
+                            <tr>
+                                <td colspan="7" class="table-empty">
+                                    <div class="spinner"></div>
+                                    Đang tải dữ liệu...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Pagination -->
+                <div class="pagination-bar" id="pagination-bar">
+                    <span class="pagination-info" id="pagination-info"></span>
+                    <div class="pagination-controls" id="pagination-controls"></div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- ===== MODAL: Add Product ===== -->
+    <div class="modal-overlay" id="add-modal-overlay">
+        <div class="modal-card modal-xl" id="add-modal">
+            <div class="modal-header">
+                <h2 class="modal-title">Thêm sản phẩm mới</h2>
+                <button class="modal-close" onclick="closeAddModal()">✕</button>
+            </div>
+            <form class="modal-form" id="add-product-form" onsubmit="submitAddProduct(event)">
+                <div class="form-section-title">📦 Thông tin sản phẩm</div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="add-name">Tên sản phẩm <span class="required">*</span></label>
+                        <input type="text" id="add-name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="add-brand">Hãng</label>
+                        <select id="add-brand">
+                            <option value="">-- Chọn hãng --</option>
+                            <option value="Apple">Apple</option>
+                            <option value="Samsung">Samsung</option>
+                            <option value="Xiaomi">Xiaomi</option>
+                            <option value="Oppo">Oppo</option>
+                            <option value="Vivo">Vivo</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group full-width">
+                        <label for="add-desc">Mô tả</label>
+                        <textarea id="add-desc" rows="2"></textarea>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group full-width">
+                        <label for="add-image">Link ảnh sản phẩm</label>
+                        <input type="text" id="add-image" placeholder="https://...">
+                    </div>
+                </div>
+
+                <!-- Variants -->
+                <div class="form-section-title">🎨 Biến thể sản phẩm
+                    <button type="button" class="btn-add-variant" onclick="addVariantRow()">+ Thêm biến thể</button>
+                </div>
+                <div id="variants-container">
+                    <!-- JS will render variant rows here -->
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeAddModal()">Hủy</button>
+                    <button type="submit" class="btn-submit">Tạo sản phẩm</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ===== MODAL: Edit Product ===== -->
+    <div class="modal-overlay" id="edit-modal-overlay">
+        <div class="modal-card modal-lg" id="edit-modal">
+            <div class="modal-header">
+                <h2 class="modal-title">Chỉnh sửa sản phẩm</h2>
+                <button class="modal-close" onclick="closeEditModal()">✕</button>
+            </div>
+            <form class="modal-form" id="edit-product-form" onsubmit="submitEditProduct(event)">
+                <input type="hidden" id="edit-product-id">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="edit-name">Tên sản phẩm</label>
+                        <input type="text" id="edit-name">
+                    </div>
+                    <div class="form-group">
+                        <label for="edit-brand">Hãng</label>
+                        <select id="edit-brand">
+                            <option value="">-- Chọn hãng --</option>
+                            <option value="Apple">Apple</option>
+                            <option value="Samsung">Samsung</option>
+                            <option value="Xiaomi">Xiaomi</option>
+                            <option value="Oppo">Oppo</option>
+                            <option value="Vivo">Vivo</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group full-width">
+                        <label for="edit-desc">Mô tả</label>
+                        <textarea id="edit-desc" rows="2"></textarea>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group full-width">
+                        <label for="edit-image">Link ảnh sản phẩm</label>
+                        <input type="text" id="edit-image" placeholder="https://...">
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" onclick="closeEditModal()">Hủy</button>
+                    <button type="submit" class="btn-submit">Lưu thay đổi</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- ===== MODAL: Product Detail ===== -->
+    <div class="modal-overlay" id="detail-modal-overlay">
+        <div class="modal-card modal-xl" id="detail-modal">
+            <div class="modal-header">
+                <h2 class="modal-title">Chi tiết sản phẩm</h2>
+                <button class="modal-close" onclick="closeDetailModal()">✕</button>
+            </div>
+            <div class="detail-content" id="detail-content">
+                <div class="spinner"></div> Đang tải...
+            </div>
+        </div>
+    </div>
+
+    <!-- ===== MODAL: Confirm Delete ===== -->
+    <div class="modal-overlay" id="delete-modal-overlay">
+        <div class="modal-card modal-sm" id="delete-modal">
+            <div class="modal-header">
+                <h2 class="modal-title">Xác nhận xóa</h2>
+                <button class="modal-close" onclick="closeDeleteModal()">✕</button>
+            </div>
+            <div class="modal-form" style="text-align:center;">
+                <input type="hidden" id="delete-product-id">
+                <p style="margin-bottom:8px;font-size:14px;">Bạn có chắc chắn muốn xóa sản phẩm này?</p>
+                <p style="color:var(--text-muted);font-size:13px;" id="delete-product-name"></p>
+                <div class="modal-actions" style="justify-content:center;margin-top:20px;">
+                    <button type="button" class="btn-cancel" onclick="closeDeleteModal()">Hủy</button>
+                    <button type="button" class="btn-submit btn-danger" onclick="confirmDelete()">🗑 Xóa</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="js/admin_product.js"></script>
+</body>
+
+</html>

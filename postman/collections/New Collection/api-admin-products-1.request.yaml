@@ -1,0 +1,18 @@
+$kind: http-request
+name: api/admin/products/1
+url: http://localhost:8080/api/admin/products/1
+method: PATCH
+body:
+  type: json
+  content: "{\r
+
+    \    \"brand\" : \"Samsung\",\r
+
+    \    \"product_name\" : \"Iphone 15\"\r
+
+    }"
+auth:
+  type: bearer
+  credentials:
+    token: eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsInNjb3BlIjoiQURNSU4iLCJpc3MiOiJwaG9uZXNob3Audm4iLCJleHAiOjE3NzcwNTU0MTgsImlhdCI6MTc3NzA0ODIxOCwidXNlcklkIjoxLCJqdGkiOiJjOTQxNWQwOS0wYTQyLTQ2NzMtOThlYy1jZDRhMTY5YzE2MWUifQ.t21gJB0wUVIB3TC21tS4ReU7b77ocsMmuSCUTGw5zfOQmfz7xTOrU7lQ5NLjxqJREpxa2AAUg3T2roT-1urhUg
+order: 4503113506403912

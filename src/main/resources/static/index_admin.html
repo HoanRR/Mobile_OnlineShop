@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard — HT Mobile</title>
+    <meta name="description" content="Bảng điều khiển quản trị HT Mobile - Báo cáo doanh thu và thống kê sản phẩm">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/admin.css">
+</head>
+
+<body>
+    <!-- ===== SIDEBAR ===== -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="sidebar-logo">
+                <span class="logo-icon">📱</span>
+                <span class="logo-text">HT Mobile</span>
+            </div>
+            <span class="sidebar-badge">ADMIN</span>
+        </div>
+
+        <nav class="sidebar-nav">
+            <div class="nav-section">
+                <span class="nav-section-title">Tổng quan</span>
+                <a href="index_admin.html" class="nav-item active" id="nav-dashboard">
+                    <span class="nav-icon">📊</span>
+                    <span class="nav-label">Báo cáo & Thống kê</span>
+                </a>
+            </div>
+
+            <div class="nav-section">
+                <span class="nav-section-title">Quản lý</span>
+                <a href="admin_product.html" class="nav-item" id="nav-products">
+                    <span class="nav-icon">📦</span>
+                    <span class="nav-label">Sản phẩm</span>
+                </a>
+                <a href="#" class="nav-item" id="nav-orders">
+                    <span class="nav-icon">🧾</span>
+                    <span class="nav-label">Đơn hàng</span>
+                </a>
+                <a href="admin_user.html" class="nav-item" id="nav-users">
+                    <span class="nav-icon">👥</span>
+                    <span class="nav-label">Người dùng</span>
+                </a>
+                <a href="admin_devices.html" class="nav-item" id="nav-devices">
+                    <span class="nav-icon">🔧</span>
+                    <span class="nav-label">IMEI & Kho</span>
+                </a>
+                <a href="admin_voucher.html" class="nav-item" id="nav-vouchers">
+                    <span class="nav-icon">🎫</span>
+                    <span class="nav-label">Voucher</span>
+                </a>
+            </div>
+        </nav>
+
+        <div class="sidebar-footer">
+            <div class="admin-profile" id="admin-profile">
+                <div class="admin-avatar">A</div>
+                <div class="admin-info">
+                    <span class="admin-name">Admin</span>
+                    <span class="admin-role">Quản trị viên</span>
+                </div>
+            </div>
+            <button class="btn-logout-sidebar" id="btn-logout" onclick="adminLogout()">
+                <span>🚪</span> Đăng xuất
+            </button>
+        </div>
+    </aside>
+
+    <!-- ===== MAIN CONTENT ===== -->
+    <main class="main-content">
+        <!-- Top Bar -->
+        <header class="topbar">
+            <button class="btn-toggle-sidebar" id="btn-toggle-sidebar" onclick="toggleSidebar()">☰</button>
+            <h1 class="page-title">Báo cáo & Thống kê</h1>
+            <div class="topbar-right">
+                <span class="topbar-date" id="topbar-date"></span>
+            </div>
+        </header>
+
+        <!-- Dashboard Content -->
+        <div class="dashboard-content">
+
+            <!-- ===== STATS CARDS ===== -->
+            <section class="stats-grid" id="stats-grid">
+                <div class="stat-card stat-revenue">
+                    <div class="stat-card-icon">💰</div>
+                    <div class="stat-card-body">
+                        <span class="stat-card-label">Tổng doanh thu</span>
+                        <span class="stat-card-value" id="stat-total-revenue">--</span>
+                    </div>
+                    <div class="stat-card-glow"></div>
+                </div>
+                <div class="stat-card stat-orders">
+                    <div class="stat-card-icon">📋</div>
+                    <div class="stat-card-body">
+                        <span class="stat-card-label">Tổng đơn hàng</span>
+                        <span class="stat-card-value" id="stat-total-orders">--</span>
+                    </div>
+                    <div class="stat-card-glow"></div>
+                </div>
+                <div class="stat-card stat-devices">
+                    <div class="stat-card-icon">📱</div>
+                    <div class="stat-card-body">
+                        <span class="stat-card-label">Thiết bị đã bán</span>
+                        <span class="stat-card-value" id="stat-total-devices">--</span>
+                    </div>
+                    <div class="stat-card-glow"></div>
+                </div>
+                <div class="stat-card stat-avg">
+                    <div class="stat-card-icon">📈</div>
+                    <div class="stat-card-body">
+                        <span class="stat-card-label">TB / đơn hàng</span>
+                        <span class="stat-card-value" id="stat-avg-order">--</span>
+                    </div>
+                    <div class="stat-card-glow"></div>
+                </div>
+            </section>
+
+            <!-- ===== FILTER BAR ===== -->
+            <section class="filter-section">
+                <div class="filter-bar-admin" id="filter-bar-admin">
+                    <div class="filter-group-admin">
+                        <label for="filter-period">Chu kỳ</label>
+                        <select id="filter-period">
+                            <option value="day">Theo ngày</option>
+                            <option value="month" selected>Theo tháng</option>
+                            <option value="year">Theo năm</option>
+                        </select>
+                    </div>
+                    <div class="filter-group-admin">
+                        <label for="filter-from">Từ ngày</label>
+                        <input type="date" id="filter-from">
+                    </div>
+                    <div class="filter-group-admin">
+                        <label for="filter-to">Đến ngày</label>
+                        <input type="date" id="filter-to">
+                    </div>
+                    <div class="filter-group-admin">
+                        <label for="filter-status">Trạng thái đơn</label>
+                        <select id="filter-status">
+                            <option value="DELIVERED" selected>Đã giao</option>
+                            <option value="RETURNED">Đã trả hàng</option>
+                            <option value="ALL">Tất cả</option>
+                        </select>
+                    </div>
+                    <button class="btn-apply-filter" id="btn-apply-filter" onclick="applyReportFilter()">
+                        🔍 Lọc báo cáo
+                    </button>
+                </div>
+            </section>
+
+            <!-- ===== REVENUE CHART ===== -->
+            <section class="chart-section">
+                <div class="section-header">
+                    <h2 class="section-title-admin">📊 Biểu đồ doanh thu</h2>
+                    <div class="chart-legend">
+                        <span class="legend-item"><span class="legend-dot dot-revenue"></span> Doanh thu</span>
+                        <span class="legend-item"><span class="legend-dot dot-orders"></span> Số đơn</span>
+                    </div>
+                </div>
+                <div class="chart-container" id="chart-container">
+                    <div class="chart-loading" id="chart-loading">
+                        <div class="spinner"></div>
+                        <span>Đang tải dữ liệu...</span>
+                    </div>
+                    <canvas id="revenue-chart"></canvas>
+                </div>
+            </section>
+
+            <!-- ===== TOP PRODUCTS ===== -->
+            <section class="top-products-section">
+                <div class="section-header">
+                    <h2 class="section-title-admin">🏆 Top sản phẩm bán chạy</h2>
+                    <div class="top-products-controls">
+                        <div class="filter-group-admin compact">
+                            <label for="top-limit">Hiển thị</label>
+                            <select id="top-limit">
+                                <option value="5">Top 5</option>
+                                <option value="10" selected>Top 10</option>
+                                <option value="20">Top 20</option>
+                            </select>
+                        </div>
+                        <div class="filter-group-admin compact">
+                            <label for="top-brand">Hãng</label>
+                            <select id="top-brand">
+                                <option value="">Tất cả</option>
+                                <option value="Apple">Apple</option>
+                                <option value="Samsung">Samsung</option>
+                                <option value="Xiaomi">Xiaomi</option>
+                                <option value="Oppo">Oppo</option>
+                                <option value="Vivo">Vivo</option>
+                            </select>
+                        </div>
+                        <button class="btn-apply-filter btn-sm" onclick="loadTopProducts()">🔄 Cập nhật</button>
+                    </div>
+                </div>
+
+                <div class="top-products-grid">
+                    <!-- Podium (Top 3) -->
+                    <div class="podium-container" id="podium-container">
+                        <div class="podium-loading" id="podium-loading">
+                            <div class="spinner"></div>
+                            <span>Đang tải...</span>
+                        </div>
+                    </div>
+
+                    <!-- Table (All) -->
+                    <div class="products-table-container">
+                        <table class="products-table" id="products-table">
+                            <thead>
+                                <tr>
+                                    <th>Hạng</th>
+                                    <th>Sản phẩm</th>
+                                    <th>Hãng</th>
+                                    <th>Biến thể</th>
+                                    <th>Đã bán</th>
+                                    <th>Doanh thu</th>
+                                    <th>Tỷ lệ</th>
+                                </tr>
+                            </thead>
+                            <tbody id="products-table-body">
+                                <tr>
+                                    <td colspan="7" class="table-empty">
+                                        <div class="spinner"></div>
+                                        Đang tải dữ liệu...
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.7/dist/chart.umd.min.js"></script>
+    <script src="js/admin_dashboard.js"></script>
+</body>
+
+</html>
