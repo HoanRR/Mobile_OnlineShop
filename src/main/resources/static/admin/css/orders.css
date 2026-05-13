@@ -3,6 +3,28 @@
 .btn-update-status { background: rgba(59,130,246,0.1); color: var(--blue); border: 1px solid rgba(59,130,246,0.2); padding: 8px 12px; border-radius: 5px; cursor: pointer; transition: var(--transition); }
 .btn-update-status:hover { background: var(--blue); color: white; }
 
+.order-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-view-detail {
+  background: rgba(59,130,246,0.15);
+  color: var(--blue);
+  border: 1px solid rgba(59,130,246,0.3);
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: var(--transition);
+  font-weight: 600;
+}
+
+.btn-view-detail:hover {
+  background: var(--blue);
+  color: white;
+}
+
 /* Inline styles from orders.html */
 .filter-bar {
   display: flex;
@@ -50,6 +72,11 @@
   border: 1px solid var(--border);
 }
 
+.order-detail-modal {
+  width: 760px;
+  max-width: calc(100vw - 40px);
+}
+
 .modal-header {
   display: flex;
   justify-content: space-between;
@@ -63,4 +90,85 @@
   color: var(--red);
   margin: 0;
   font-size: 18px;
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.detail-grid > div,
+.detail-item,
+.detail-total {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px;
+}
+
+.detail-grid span,
+.detail-item span,
+.detail-total span {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+  margin-bottom: 6px;
+}
+
+.detail-grid strong,
+.detail-item strong,
+.detail-total strong {
+  color: var(--text);
+}
+
+.detail-full {
+  grid-column: 1 / -1;
+}
+
+.detail-section-title {
+  color: var(--text);
+  font-weight: 700;
+  margin: 16px 0 10px;
+}
+
+.detail-items {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.detail-item {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.detail-total {
+  margin-top: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.detail-total div {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.detail-total div:last-child strong {
+  color: #FF3D00;
+}
+
+@media (max-width: 760px) {
+  .detail-grid,
+  .detail-item,
+  .detail-total div,
+  .order-actions {
+    grid-template-columns: 1fr;
+    flex-direction: column;
+    align-items: stretch;
+  }
 }

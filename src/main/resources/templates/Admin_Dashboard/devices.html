@@ -2,16 +2,15 @@
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
-  <title>Quản lý Đánh giá - HT Mobile Admin</title>
+  <title>Kho thiết bị - HT Mobile Admin</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="../../static/admin/css/admin-base.css">
-  <link rel="stylesheet" href="../../static/admin/css/products.css">
+  <link rel="stylesheet" href="../../static/admin/css/devices.css">
   <script src="../../static/js/api-client.js"></script>
-  <script src="../../static/admin/js/admin-reviews.js"></script>
+  <script src="../../static/admin/js/devices.js"></script>
 </head>
 <body>
 <div class="app-wrapper">
-  
   <nav class="sidebar" id="sidebar">
     <button class="sidebar-toggle" id="sidebarToggle"><i class="fa-solid fa-chevron-left"></i></button>
     <div class="sidebar-logo"><span class="logo-icon"><i class="fa-solid fa-mobile-screen"></i></span><span class="logo-text">HT Mobile Admin</span></div>
@@ -19,11 +18,11 @@
       <ul>
         <li class="nav-item" data-label="Tổng quan"><a href="dashboard.html"><span class="nav-icon"><i class="fa-solid fa-chart-line"></i></span><span class="nav-label">Tổng quan</span></a></li>
         <li class="nav-item" data-label="Quản lý Sản phẩm"><a href="products.html"><span class="nav-icon"><i class="fa-solid fa-mobile-screen"></i></span><span class="nav-label">Quản lý Sản phẩm</span></a></li>
-        <li class="nav-item" data-label="Kho thiết bị"><a href="devices.html"><span class="nav-icon"><i class="fa-solid fa-boxes-stacked"></i></span><span class="nav-label">Kho thiết bị</span></a></li>
+        <li class="nav-item active" data-label="Kho thiết bị"><a href="devices.html"><span class="nav-icon"><i class="fa-solid fa-boxes-stacked"></i></span><span class="nav-label">Kho thiết bị</span></a></li>
         <li class="nav-item" data-label="Quản lý Đơn hàng"><a href="orders.html"><span class="nav-icon"><i class="fa-solid fa-cart-shopping"></i></span><span class="nav-label">Quản lý Đơn hàng</span></a></li>
         <li class="nav-item" data-label="Mã giảm giá"><a href="vouchers.html"><span class="nav-icon"><i class="fa-solid fa-ticket"></i></span><span class="nav-label">Mã giảm giá</span></a></li>
         <li class="nav-item" data-label="Quản lý Người dùng"><a href="users.html"><span class="nav-icon"><i class="fa-solid fa-users"></i></span><span class="nav-label">Quản lý Người dùng</span></a></li>
-        <li class="nav-item active" data-label="Quản lý Đánh giá"><a href="admin-reviews.html"><span class="nav-icon"><i class="fa-solid fa-star"></i></span><span class="nav-label">Quản lý Đánh giá</span></a></li>
+        <li class="nav-item" data-label="Quản lý Đánh giá"><a href="admin-reviews.html"><span class="nav-icon"><i class="fa-solid fa-star"></i></span><span class="nav-label">Quản lý Đánh giá</span></a></li>
         <div class="nav-divider"></div>
         <li class="nav-item logout"><a href="#"><span class="nav-icon"><i class="fa-solid fa-right-from-bracket"></i></span><span class="nav-label">Đăng xuất</span></a></li>
       </ul>
@@ -32,7 +31,7 @@
 
   <div class="main-content" id="mainContent">
     <header class="topbar">
-      <div class="topbar-title"><span>HT</span> Mobile – Quản lý Đánh giá</div>
+      <div class="topbar-title"><span>HT</span> Mobile – Kho thiết bị</div>
       <div class="topbar-right">
         <div class="topbar-date" id="currentDate"></div>
         <div class="topbar-user"><div class="avatar">AD</div> Xin chào, <strong>Admin</strong></div>
@@ -40,44 +39,49 @@
     </header>
 
     <div class="page-body">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
-        <h2 style="margin: 0; font-size: 20px; font-weight: 600;">Tổng hợp Đánh giá Sản phẩm</h2>
+      <div class="page-heading">
+        <h2>Quản lý IMEI thiết bị</h2>
+        <a href="products.html" class="btn-secondary"><i class="fa-solid fa-arrow-left"></i> Sản phẩm</a>
       </div>
 
-      <div class="filter-bar">
-        <input type="text" placeholder="Tìm tên sản phẩm cần xem đánh giá..." style="width: 300px;">
-        <select>
-            <option value="">Lọc theo số sao TB</option>
-            <option>Dưới 3 sao (Cần chú ý)</option>
-            <option>Từ 4 sao trở lên</option>
-        </select>
-        <button class="btn-add"><i class="fa-solid fa-filter"></i> Lọc</button>
+      <div class="device-grid">
+        <section class="panel">
+          <h3>Nhập thiết bị vào kho</h3>
+          <form id="importDeviceForm" class="device-form">
+            <div class="form-group">
+              <label>Mã biến thể sản phẩm</label>
+              <input type="text" id="variantId" placeholder="VD: PV1001" required>
+            </div>
+            <div class="form-group">
+              <label>Danh sách IMEI</label>
+              <textarea id="imeiListInput" placeholder="Mỗi dòng một IMEI hoặc cách nhau bằng dấu phẩy" required></textarea>
+            </div>
+            <button type="submit" class="btn-add"><i class="fa-solid fa-file-import"></i> Nhập kho</button>
+          </form>
+        </section>
+
+        <section class="panel">
+          <h3>Tra cứu thiết bị</h3>
+          <div class="lookup-row">
+            <input type="text" id="lookupImei" placeholder="Nhập IMEI cần tra">
+            <button type="button" id="lookupBtn" class="btn-add"><i class="fa-solid fa-magnifying-glass"></i> Tra cứu</button>
+          </div>
+          <div id="deviceLookupResult" class="lookup-result"></div>
+        </section>
       </div>
 
-      <div class="panel">
+      <section class="panel">
+        <div class="table-title">
+          <h3>Danh sách thiết bị</h3>
+          <span id="deviceCount">0 thiết bị</span>
+        </div>
         <table class="admin-table">
           <thead>
-            <tr>
-                <th>ID</th>
-                <th>Tên Sản phẩm</th>
-                <th>Điểm Trung Bình</th>
-                <th>Tổng số đánh giá</th>
-                <th>Đánh giá mới nhất</th>
-                <th>Thao tác</th>
-            </tr>
+            <tr><th>IMEI</th><th>Mã biến thể</th><th>Trạng thái</th><th>Đơn hàng</th><th>Ngày nhập</th><th>Bảo hành đến</th></tr>
           </thead>
-          <tbody>
-            <tr>
-              <td style="color: var(--muted);">#SP005</td>
-              <td style="color: var(--text); font-weight: 500;">Samsung Galaxy A06 5G Chính hãng</td>
-              <td><span style="color: #f59e0b; font-weight: bold;">5.0 <i class="fa-solid fa-star"></i></span></td>
-              <td style="color: var(--text);">73 lượt</td>
-              <td style="color: var(--muted); font-size: 13px;">Hôm nay, 19:42</td>
-              <td><a href="admin-review-detail.html" class="btn-edit" style="text-decoration: none; display: inline-block;">Xem chi tiết</a></td>
-            </tr>
-          </tbody>
+          <tbody></tbody>
         </table>
-      </div>
+      </section>
     </div>
   </div>
 </div>

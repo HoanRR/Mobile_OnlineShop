@@ -6,6 +6,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="../../static/admin/css/admin-base.css">
   <link rel="stylesheet" href="../../static/admin/css/products.css">
+  <script src="../../static/js/api-client.js"></script>
   <script src="../../static/admin/js/products.js"></script>
 </head>
 <body>
@@ -19,6 +20,7 @@
       <ul>
         <li class="nav-item" data-label="Tổng quan"><a href="dashboard.html"><span class="nav-icon"><i class="fa-solid fa-chart-line"></i></span><span class="nav-label">Tổng quan</span></a></li>
         <li class="nav-item active" data-label="Quản lý Sản phẩm"><a href="products.html"><span class="nav-icon"><i class="fa-solid fa-mobile-screen"></i></span><span class="nav-label">Quản lý Sản phẩm</span></a></li>
+        <li class="nav-item" data-label="Kho thiết bị"><a href="devices.html"><span class="nav-icon"><i class="fa-solid fa-boxes-stacked"></i></span><span class="nav-label">Kho thiết bị</span></a></li>
         <li class="nav-item" data-label="Quản lý Đơn hàng"><a href="orders.html"><span class="nav-icon"><i class="fa-solid fa-cart-shopping"></i></span><span class="nav-label">Quản lý Đơn hàng</span></a></li>
         <li class="nav-item" data-label="Mã giảm giá"><a href="vouchers.html"><span class="nav-icon"><i class="fa-solid fa-ticket"></i></span><span class="nav-label">Mã giảm giá</span></a></li>
         <li class="nav-item" data-label="Quản lý Người dùng"><a href="users.html"><span class="nav-icon"><i class="fa-solid fa-users"></i></span><span class="nav-label">Quản lý Người dùng</span></a></li>
@@ -41,7 +43,10 @@
     <div class="page-body">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
         <h2 style="margin: 0; font-size: 20px; font-weight: 600;">Danh sách Sản phẩm</h2>
-        <a href="add-product.html" class="btn-add" style="text-decoration:none;"><i class="fa-solid fa-plus"></i> Thêm Sản phẩm mới</a>
+        <div style="display:flex; gap:10px;">
+          <a href="devices.html" class="btn-edit" style="text-decoration:none;"><i class="fa-solid fa-boxes-stacked"></i> Kho thiết bị</a>
+          <a href="add-product.html" class="btn-add" style="text-decoration:none;"><i class="fa-solid fa-plus"></i> Thêm Sản phẩm mới</a>
+        </div>
       </div>
 
       <div class="filter-bar">

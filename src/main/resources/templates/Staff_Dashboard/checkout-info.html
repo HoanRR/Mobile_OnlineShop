@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Thông tin đơn hàng - HT Mobile Staff</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../static/staff/css/staff-base.css">
+    <link rel="stylesheet" href="../../static/staff/css/checkout-info.css">
+    <script src="../../static/js/api-client.js"></script>
+    <script src="../../static/staff/js/common.js"></script>
+    <script src="../../static/staff/js/checkout-info.js"></script>
+</head>
+<body>
+<div class="app-wrapper">
+    <nav class="sidebar" id="sidebar">
+        <button class="sidebar-toggle" id="sidebarToggle"><i class="fa-solid fa-chevron-left"></i></button>
+        <div class="sidebar-logo">
+            <span class="logo-icon"><i class="fa-solid fa-mobile-screen"></i></span>
+            <span class="logo-text">HT Mobile Staff</span>
+        </div>
+        <nav class="sidebar-nav">
+            <ul>
+                <li class="nav-item" data-label="Tổng quan"><a href="dashboard.html"><span class="nav-icon"><i class="fa-solid fa-chart-line"></i></span><span class="nav-label">Tổng quan</span></a></li>
+                <li class="nav-item active" data-label="Bán hàng (POS)"><a href="pos.html"><span class="nav-icon"><i class="fa-solid fa-cash-register"></i></span><span class="nav-label">Bán hàng (POS)</span></a></li>
+                <li class="nav-item" data-label="Quản lý Đơn hàng"><a href="orders.html"><span class="nav-icon"><i class="fa-solid fa-cart-shopping"></i></span><span class="nav-label">Quản lý Đơn hàng</span></a></li>
+                <li class="nav-item" data-label="Tra cứu Sản phẩm"><a href="products.html"><span class="nav-icon"><i class="fa-solid fa-mobile-screen"></i></span><span class="nav-label">Tra cứu Sản phẩm</span></a></li>
+                <li class="nav-item" data-label="Tra cứu Bảo hành"><a href="warranty.html"><span class="nav-icon"><i class="fa-solid fa-shield-halved"></i></span><span class="nav-label">Tra cứu Bảo hành</span></a></li>
+                <li class="nav-item" data-label="Quản lý Đánh giá"><a href="reviews.html"><span class="nav-icon"><i class="fa-solid fa-star"></i></span><span class="nav-label">Quản lý Đánh giá</span></a></li>
+                <div class="nav-divider"></div>
+                <li class="nav-item logout" data-label="Đăng xuất"><a href="#"><span class="nav-icon"><i class="fa-solid fa-right-from-bracket"></i></span><span class="nav-label">Đăng xuất</span></a></li>
+            </ul>
+        </nav>
+    </nav>
+
+    <div class="main-content" id="mainContent">
+        <header class="topbar">
+            <div class="topbar-title"><span>HT</span> Mobile – Thông tin đơn hàng</div>
+            <div class="topbar-right">
+                <div class="topbar-date" id="currentDate"></div>
+                <div class="topbar-user"><div class="avatar">NV</div> Xin chào, <strong>Nhân Viên</strong></div>
+            </div>
+        </header>
+
+        <div class="page-body checkout-page">
+            <a href="pos.html" class="back-link"><i class="fa-solid fa-arrow-left"></i> Quay lại POS</a>
+
+            <div class="checkout-grid">
+                <form class="checkout-form" id="checkoutForm">
+                    <div class="section-title">Thông tin khách hàng</div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Họ và tên</label>
+                            <input type="text" id="customerName" placeholder="VD: Nguyễn Văn A" value="Khách lẻ" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Số điện thoại</label>
+                            <input type="tel" id="customerPhone" placeholder="VD: 0901234567">
+                        </div>
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Email</label>
+                            <input type="email" id="customerEmail" placeholder="VD: khachhang@email.com">
+                        </div>
+                        <div class="form-group">
+                            <label>Hình thức nhận hàng</label>
+                            <select id="receiveType">
+                                <option value="store">Nhận tại cửa hàng</option>
+                                <option value="delivery">Giao hàng tận nơi</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <div class="form-group" id="addressGroup">
+                        <label>Địa chỉ giao hàng</label>
+                        <input type="text" id="customerAddress" placeholder="Nhập địa chỉ giao hàng">
+                    </div>
+
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Phương thức thanh toán</label>
+                            <select id="paymentMethod">
+                                <option value="COD">Tiền mặt</option>
+                                <option value="ATM">Chuyển khoản/ATM</option>
+                                <option value="ShopeePay">ShopeePay</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Giảm giá</label>
+                            <input type="number" id="discountAmount" min="0" value="0">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Ghi chú</label>
+                        <textarea id="orderNote" placeholder="Ghi chú thêm cho đơn hàng"></textarea>
+                    </div>
+
+                    <div class="section-title imei-title">IMEI thiết bị</div>
+                    <div class="imei-list" id="imeiList"></div>
+
+                    <div class="form-actions">
+                        <a href="pos.html" class="btn-cancel">Hủy</a>
+                        <button type="submit" class="btn-submit"><i class="fa-solid fa-check"></i> Xác nhận thanh toán</button>
+                    </div>
+                </form>
+
+                <aside class="order-summary">
+                    <div class="section-title">Tóm tắt đơn hàng</div>
+                    <div class="summary-items" id="summaryItems"></div>
+                    <div class="summary-box">
+                        <div class="summary-line"><span>Tạm tính</span><strong id="summarySubtotal">0 ₫</strong></div>
+                        <div class="summary-line"><span>Giảm giá</span><strong id="summaryDiscount">0 ₫</strong></div>
+                        <div class="summary-line total"><span>Thành tiền</span><strong id="summaryTotal">0 ₫</strong></div>
+                    </div>
+                </aside>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

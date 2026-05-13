@@ -23,6 +23,9 @@
                 <li class="nav-item" th:classappend="${activePage == 'products'} ? 'active' : ''" data-label="Tra cứu Sản phẩm">
                     <a th:href="@{/staff/products}"><span class="nav-icon"><i class="fa-solid fa-mobile-screen"></i></span><span class="nav-label">Tra cứu Sản phẩm</span></a>
                 </li>
+                <li class="nav-item" th:classappend="${activePage == 'warranty'} ? 'active' : ''" data-label="Tra cứu Bảo hành">
+                    <a th:href="@{/staff/warranty}"><span class="nav-icon"><i class="fa-solid fa-shield-halved"></i></span><span class="nav-label">Tra cứu Bảo hành</span></a>
+                </li>
                 <div class="nav-divider"></div>
                 <li class="nav-item logout" data-label="Đăng xuất">
                     <a th:href="@{/logout}"><span class="nav-icon"><i class="fa-solid fa-right-from-bracket"></i></span><span class="nav-label">Đăng xuất</span></a>

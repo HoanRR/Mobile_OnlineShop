@@ -7,6 +7,7 @@
     <!-- Link 2 CSS -->
 <link rel="stylesheet" href="../../static/staff/css/staff-base.css">
 <link rel="stylesheet" href="../../static/staff/css/products.css">
+    <script src="../../static/js/api-client.js"></script>
     <script src="../../static/staff/js/common.js"></script>
     <script src="../../static/staff/js/products.js"></script>
 </head>
@@ -25,6 +26,7 @@
                 <li class="nav-item" data-label="Bán Hàng (POS)"><a href="pos.html"><span class="nav-icon"><i class="fa-solid fa-cash-register"></i></span><span class="nav-label">Bán Hàng (POS)</span></a></li>
                 <li class="nav-item" data-label="Quản lý Đơn Hàng"><a href="orders.html"><span class="nav-icon"><i class="fa-solid fa-cart-shopping"></i></span><span class="nav-label">Quản lý Đơn Hàng</span></a></li>
                 <li class="nav-item active" data-label="Tra cứu Sản phẩm"><a href="products.html"><span class="nav-icon"><i class="fa-solid fa-mobile-screen"></i></span><span class="nav-label">Tra cứu Sản phẩm</span></a></li>
+                <li class="nav-item" data-label="Tra cứu Bảo hành"><a href="warranty.html"><span class="nav-icon"><i class="fa-solid fa-shield-halved"></i></span><span class="nav-label">Tra cứu Bảo hành</span></a></li>
                 <li class="nav-item" data-label="Quản lý Đánh giá"><a href="reviews.html"><span class="nav-icon"><i class="fa-solid fa-star"></i></span><span class="nav-label">Quản lý Đánh giá</span></a></li>
                 <div class="nav-divider"></div>
                 <li class="nav-item logout" data-label="Đăng xuất"><a href="#"><span class="nav-icon"><i class="fa-solid fa-right-from-bracket"></i></span><span class="nav-label">Đăng xuất</span></a></li>
@@ -43,7 +45,10 @@
         </header>
 
         <div class="page-body">
-            <h2 style="margin: 0 0 20px 0; font-size: 20px; font-weight: 600;">Danh sách Sản phẩm</h2>
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                <h2 style="margin: 0; font-size: 20px; font-weight: 600;">Danh sách Sản phẩm</h2>
+                <a href="warranty.html" style="text-decoration:none;"><button style="border:none; border-radius:8px; background:var(--red); color:white; padding:12px 16px; font-weight:700; cursor:pointer;"><i class="fa-solid fa-shield-halved"></i> Tra cứu bảo hành</button></a>
+            </div>
 
             <div class="filter-bar">
                 <input type="text" placeholder="Nhập tên Sản phẩm hoặc mã vạch cần tìm...">

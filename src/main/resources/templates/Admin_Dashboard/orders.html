@@ -6,6 +6,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <link rel="stylesheet" href="../../static/admin/css/admin-base.css">
   <link rel="stylesheet" href="../../static/admin/css/orders.css">
+  <script src="../../static/js/api-client.js"></script>
   <script src="../../static/admin/js/orders.js"></script>
 </head>
 <body>
@@ -17,6 +18,7 @@
       <ul>
         <li class="nav-item" data-label="Tổng quan"><a href="dashboard.html"><span class="nav-icon"><i class="fa-solid fa-chart-line"></i></span><span class="nav-label">Tổng quan</span></a></li>
         <li class="nav-item" data-label="Quản lý Sản phẩm"><a href="products.html"><span class="nav-icon"><i class="fa-solid fa-mobile-screen"></i></span><span class="nav-label">Quản lý Sản phẩm</span></a></li>
+        <li class="nav-item" data-label="Kho thiết bị"><a href="devices.html"><span class="nav-icon"><i class="fa-solid fa-boxes-stacked"></i></span><span class="nav-label">Kho thiết bị</span></a></li>
         <li class="nav-item active" data-label="Quản lý Đơn hàng"><a href="orders.html"><span class="nav-icon"><i class="fa-solid fa-cart-shopping"></i></span><span class="nav-label">Quản lý Đơn hàng</span></a></li>
         <li class="nav-item" data-label="Mã giảm giá"><a href="vouchers.html"><span class="nav-icon"><i class="fa-solid fa-ticket"></i></span><span class="nav-label">Mã giảm giá</span></a></li>
         <li class="nav-item" data-label="Quản lý Người dùng"><a href="users.html"><span class="nav-icon"><i class="fa-solid fa-users"></i></span><span class="nav-label">Quản lý Người dùng</span></a></li>
@@ -29,7 +31,7 @@
 
   <div class="main-content" id="mainContent">
     <header class="topbar">
-      <div class="topbar-title"><span>HT</span> Mobile — Đơn Hàng</div>
+      <div class="topbar-title"><span>HT</span> Mobile — Đơn hàng</div>
       <div class="topbar-right">
         <div class="topbar-date" id="currentDate"></div>
         <div class="topbar-user"><div class="avatar">AD</div> Xin chào, <strong>Admin</strong></div>
@@ -37,10 +39,14 @@
     </header>
 
     <div class="page-body">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <h2 style="margin: 0; font-size: 20px; font-weight: 600;">Danh sách Đơn hàng</h2>
+      </div>
+
       <div class="filter-bar">
         <input type="text" placeholder="Nhập mã đơn hoặc tên khách..." style="width: 250px;">
         <input type="date">
-        <select><option value="">Tất cả trạng thái</option><option>Chờ xác nhận</option><option>Đang giao</option></select>
+        <select><option value="">Tất cả trạng thái</option><option value="WAIT">Chờ xác nhận</option><option value="CONFIRMED">Đã xác nhận</option><option value="PROCESSING">Đang xử lý</option><option value="SHIPPING">Đang giao</option><option value="DELIVERED">Đã giao</option><option value="RETURNED">Hoàn trả</option></select>
         <button class="btn-add"><i class="fa-solid fa-filter"></i> Lọc</button>
       </div>
       
@@ -88,12 +94,25 @@
         <p style="color: var(--muted); margin-bottom: 10px;">Mã đơn hàng: <strong id="modalOrderId" style="color: white;">---</strong></p>
         <label style="display:block; color:var(--muted); margin-bottom:8px;">Trạng thái mới:</label>
         <select style="width:100%; padding:12px; background:var(--bg); color:var(--text); border:1px solid var(--border); border-radius:8px; outline:none;">
-          <option>Chờ xác nhận</option><option>Đang giao hàng</option><option>Giao thành công</option><option>Đã hủy</option>
+          <option value="WAIT">Chờ xác nhận</option><option value="CONFIRMED">Đã xác nhận</option><option value="PROCESSING">Đang xử lý</option><option value="SHIPPING">Đang giao hàng</option><option value="DELIVERED">Giao thành công</option><option value="RETURNED">Hoàn trả</option>
         </select>
       </div>
       <div style="text-align: right; display:flex; justify-content:flex-end; gap:10px;">
         <button class="btn-edit" onclick="document.getElementById('statusModal').style.display='none'">Hủy bỏ</button>
         <button class="btn-add" onclick="document.getElementById('statusModal').style.display='none'; alert('Đã lưu');">Lưu thay đổi</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="orderDetailModal">
+    <div class="modal-content order-detail-modal">
+      <div class="modal-header">
+        <h3>Chi tiết đơn hàng</h3>
+        <button onclick="closeDetailModal()" style="background:none; border:none; color:var(--muted); font-size:24px; cursor:pointer;">&times;</button>
+      </div>
+      <div id="orderDetailContent"></div>
+      <div style="text-align: right; display:flex; justify-content:flex-end; gap:10px; margin-top:20px;">
+        <button class="btn-edit" onclick="closeDetailModal()">Đóng</button>
       </div>
     </div>
   </div>
