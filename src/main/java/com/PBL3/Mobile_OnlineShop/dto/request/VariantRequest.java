@@ -17,6 +17,10 @@ public class VariantRequest {
     String resolution;
     String chip;
     String ram;
+    String screen_size;
+    String front_camera;
+    String rear_camera;
+    String sim_card;
     Double price;
     Long total_available;
     String variant_image_link;

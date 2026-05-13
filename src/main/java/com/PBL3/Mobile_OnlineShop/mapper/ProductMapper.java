@@ -11,6 +11,7 @@ import org.mapstruct.NullValuePropertyMappingStrategy;
 public interface ProductMapper {
     @Mapping(source = "product_name", target = "productName")
     @Mapping(source = "brand", target = "brand")
+    @Mapping(source = "description", target = "description")
     @Mapping(source = "product_image_link", target = "productImageLink")
 
     void updateProductFromRequest(UpdateProductRequest request, @MappingTarget Product product);
