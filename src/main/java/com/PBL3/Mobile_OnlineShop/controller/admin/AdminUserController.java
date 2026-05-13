@@ -25,7 +25,7 @@ import org.springframework.web.bind.annotation.*;
 public class AdminUserController {
     UserService userService;
     @GetMapping("/{user_id}")
-    public ResponseEntity<UserDetailResponse> getUserdetail(@PathVariable ("{user_id}") Long user_id){
+    public ResponseEntity<UserDetailResponse> getUserdetail(@PathVariable ("user_id") Long user_id){
         return ResponseEntity.ok(userService.getUser(user_id));
     }
     @GetMapping
