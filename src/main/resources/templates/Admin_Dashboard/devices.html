@@ -7,36 +7,15 @@
   <link rel="stylesheet" href="../../static/admin/css/admin-base.css">
   <link rel="stylesheet" href="../../static/admin/css/devices.css">
   <script src="../../static/js/api-client.js"></script>
-  <script src="../../static/admin/js/devices.js"></script>
+    <script src="../../static/admin/js/common.js"></script>
+<script src="../../static/admin/js/devices.js"></script>
 </head>
 <body>
 <div class="app-wrapper">
-  <nav class="sidebar" id="sidebar">
-    <button class="sidebar-toggle" id="sidebarToggle"><i class="fa-solid fa-chevron-left"></i></button>
-    <div class="sidebar-logo"><span class="logo-icon"><i class="fa-solid fa-mobile-screen"></i></span><span class="logo-text">HT Mobile Admin</span></div>
-    <nav class="sidebar-nav">
-      <ul>
-        <li class="nav-item" data-label="Tổng quan"><a href="dashboard.html"><span class="nav-icon"><i class="fa-solid fa-chart-line"></i></span><span class="nav-label">Tổng quan</span></a></li>
-        <li class="nav-item" data-label="Quản lý Sản phẩm"><a href="products.html"><span class="nav-icon"><i class="fa-solid fa-mobile-screen"></i></span><span class="nav-label">Quản lý Sản phẩm</span></a></li>
-        <li class="nav-item active" data-label="Kho thiết bị"><a href="devices.html"><span class="nav-icon"><i class="fa-solid fa-boxes-stacked"></i></span><span class="nav-label">Kho thiết bị</span></a></li>
-        <li class="nav-item" data-label="Quản lý Đơn hàng"><a href="orders.html"><span class="nav-icon"><i class="fa-solid fa-cart-shopping"></i></span><span class="nav-label">Quản lý Đơn hàng</span></a></li>
-        <li class="nav-item" data-label="Mã giảm giá"><a href="vouchers.html"><span class="nav-icon"><i class="fa-solid fa-ticket"></i></span><span class="nav-label">Mã giảm giá</span></a></li>
-        <li class="nav-item" data-label="Quản lý Người dùng"><a href="users.html"><span class="nav-icon"><i class="fa-solid fa-users"></i></span><span class="nav-label">Quản lý Người dùng</span></a></li>
-        <li class="nav-item" data-label="Quản lý Đánh giá"><a href="admin-reviews.html"><span class="nav-icon"><i class="fa-solid fa-star"></i></span><span class="nav-label">Quản lý Đánh giá</span></a></li>
-        <div class="nav-divider"></div>
-        <li class="nav-item logout"><a href="#"><span class="nav-icon"><i class="fa-solid fa-right-from-bracket"></i></span><span class="nav-label">Đăng xuất</span></a></li>
-      </ul>
-    </nav>
-  </nav>
+    <div id="sidebar-container"></div>
 
-  <div class="main-content" id="mainContent">
-    <header class="topbar">
-      <div class="topbar-title"><span>HT</span> Mobile – Kho thiết bị</div>
-      <div class="topbar-right">
-        <div class="topbar-date" id="currentDate"></div>
-        <div class="topbar-user"><div class="avatar">AD</div> Xin chào, <strong>Admin</strong></div>
-      </div>
-    </header>
+    <div class="main-content" id="mainContent">
+        <div id="header-container"></div>
 
     <div class="page-body">
       <div class="page-heading">
@@ -48,14 +27,31 @@
         <section class="panel">
           <h3>Nhập thiết bị vào kho</h3>
           <form id="importDeviceForm" class="device-form">
-            <div class="form-group">
-              <label>Mã biến thể sản phẩm</label>
-              <input type="text" id="variantId" placeholder="VD: PV1001" required>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Tên sản phẩm</label>
+                <input type="text" id="importProductName" placeholder="VD: iPhone 15 Pro Max" required>
+              </div>
+              <div class="form-group">
+                <label>Mã biến thể sản phẩm</label>
+                <input type="text" id="variantId" placeholder="VD: PV1001" required>
+              </div>
+            </div>
+            <div class="form-grid">
+              <div class="form-group">
+                <label>Màu sắc</label>
+                <input type="text" id="importColor" placeholder="VD: Titan">
+              </div>
+              <div class="form-group">
+                <label>Bảo hành</label>
+                <input type="number" id="warrantyMonths" min="1" value="12">
+              </div>
             </div>
             <div class="form-group">
               <label>Danh sách IMEI</label>
               <textarea id="imeiListInput" placeholder="Mỗi dòng một IMEI hoặc cách nhau bằng dấu phẩy" required></textarea>
             </div>
+            <div id="importDeviceMessage" class="form-message"></div>
             <button type="submit" class="btn-add"><i class="fa-solid fa-file-import"></i> Nhập kho</button>
           </form>
         </section>
@@ -77,7 +73,15 @@
         </div>
         <table class="admin-table">
           <thead>
-            <tr><th>IMEI</th><th>Mã biến thể</th><th>Trạng thái</th><th>Đơn hàng</th><th>Ngày nhập</th><th>Bảo hành đến</th></tr>
+            <tr>
+              <th>Sản phẩm</th>
+              <th>Mã biến thể</th>
+              <th>Tổng nhập</th>
+              <th>Còn kho</th>
+              <th>Đã bán</th>
+              <th>IMEI mới nhất</th>
+              <th>Ngày nhập mới nhất</th>
+            </tr>
           </thead>
           <tbody></tbody>
         </table>

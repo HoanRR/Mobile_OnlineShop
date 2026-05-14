@@ -1,18 +1,7 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<body>
-    <!-- Fragment topbar -->
-    <header th:fragment="topbar" class="topbar">
-        <!-- Tên trang sẽ thay đổi linh hoạt tùy trang -->
-        <div class="topbar-title"><span>HT</span> Mobile — <span th:text="${pageTitle}">Tiêu đề trang</span></div>
-        
-        <div class="topbar-right">
-            <div class="topbar-date" id="currentDate"></div>
-            <div class="topbar-user">
-                <div class="avatar">NV</div> 
-                Xin chào, <strong th:text="${session.userName != null ? session.userName : 'Nhân Viên'}">Nhân Viên</strong>
-            </div>
-        </div>
-    </header>
-</body>
-</html>
+<header class="topbar">
+    <div class="topbar-title"><span>HT</span> Mobile – <span id="topbarPageTitle">Staff</span></div>
+    <div class="topbar-right">
+        <div class="topbar-date" id="currentDate"></div>
+        <div class="topbar-user"><div class="avatar">NV</div> Xin chào, <strong>Nhân Viên</strong></div>
+    </div>
+</header>

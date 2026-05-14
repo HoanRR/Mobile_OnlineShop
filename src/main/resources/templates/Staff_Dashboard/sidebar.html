@@ -1,37 +1,37 @@
-<!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
-<body>
-    <!-- Đoạn fragment này sẽ được nhúng vào các trang khác -->
-    <nav th:fragment="sidebar" class="sidebar" id="sidebar">
-        <button class="sidebar-toggle" id="sidebarToggle"><i class="fa-solid fa-chevron-left"></i></button>
-        <div class="sidebar-logo">
-            <span class="logo-icon"><i class="fa-solid fa-mobile-screen"></i></span>
-            <span class="logo-text">HT Mobile Staff</span>
-        </div>
-        <nav class="sidebar-nav">
-            <ul>
-                <!-- Dùng Thymeleaf để check trang nào đang active -->
-                <li class="nav-item" th:classappend="${activePage == 'dashboard'} ? 'active' : ''" data-label="Tổng quan">
-                    <a th:href="@{/staff/dashboard}"><span class="nav-icon"><i class="fa-solid fa-chart-line"></i></span><span class="nav-label">Tổng quan</span></a>
-                </li>
-                <li class="nav-item" th:classappend="${activePage == 'pos'} ? 'active' : ''" data-label="Bán hàng (POS)">
-                    <a th:href="@{/staff/pos}"><span class="nav-icon"><i class="fa-solid fa-cash-register"></i></span><span class="nav-label">Bán hàng (POS)</span></a>
-                </li>
-                <li class="nav-item" th:classappend="${activePage == 'orders'} ? 'active' : ''" data-label="Quản lý Đơn hàng">
-                    <a th:href="@{/staff/orders}"><span class="nav-icon"><i class="fa-solid fa-cart-shopping"></i></span><span class="nav-label">Quản lý Đơn hàng</span></a>
-                </li>
-                <li class="nav-item" th:classappend="${activePage == 'products'} ? 'active' : ''" data-label="Tra cứu Sản phẩm">
-                    <a th:href="@{/staff/products}"><span class="nav-icon"><i class="fa-solid fa-mobile-screen"></i></span><span class="nav-label">Tra cứu Sản phẩm</span></a>
-                </li>
-                <li class="nav-item" th:classappend="${activePage == 'warranty'} ? 'active' : ''" data-label="Tra cứu Bảo hành">
-                    <a th:href="@{/staff/warranty}"><span class="nav-icon"><i class="fa-solid fa-shield-halved"></i></span><span class="nav-label">Tra cứu Bảo hành</span></a>
-                </li>
-                <div class="nav-divider"></div>
-                <li class="nav-item logout" data-label="Đăng xuất">
-                    <a th:href="@{/logout}"><span class="nav-icon"><i class="fa-solid fa-right-from-bracket"></i></span><span class="nav-label">Đăng xuất</span></a>
-                </li>
-            </ul>
-        </nav>
+<nav class="sidebar" id="sidebar">
+    <button class="sidebar-toggle" id="sidebarToggle" title="Thu gọn/Mở rộng">
+        <i class="fa-solid fa-chevron-left"></i>
+    </button>
+
+    <div class="sidebar-logo">
+        <span class="logo-icon"><i class="fa-solid fa-mobile-screen"></i></span>
+        <span class="logo-text">HT Mobile Staff</span>
+    </div>
+
+    <nav class="sidebar-nav">
+        <ul>
+            <li class="nav-item" data-page="dashboard.html" data-label="Tổng quan">
+                <a href="dashboard.html"><span class="nav-icon"><i class="fa-solid fa-chart-line"></i></span><span class="nav-label">Tổng quan</span></a>
+            </li>
+            <li class="nav-item" data-page="pos.html,checkout-info.html" data-label="Bán hàng (POS)">
+                <a href="pos.html"><span class="nav-icon"><i class="fa-solid fa-cash-register"></i></span><span class="nav-label">Bán hàng (POS)</span></a>
+            </li>
+            <li class="nav-item" data-page="orders.html" data-label="Quản lý Đơn hàng">
+                <a href="orders.html"><span class="nav-icon"><i class="fa-solid fa-cart-shopping"></i></span><span class="nav-label">Quản lý Đơn hàng</span></a>
+            </li>
+            <li class="nav-item" data-page="products.html" data-label="Tra cứu Sản phẩm">
+                <a href="products.html"><span class="nav-icon"><i class="fa-solid fa-mobile-screen"></i></span><span class="nav-label">Tra cứu Sản phẩm</span></a>
+            </li>
+            <li class="nav-item" data-page="warranty.html" data-label="Tra cứu Bảo hành">
+                <a href="warranty.html"><span class="nav-icon"><i class="fa-solid fa-shield-halved"></i></span><span class="nav-label">Tra cứu Bảo hành</span></a>
+            </li>
+            <li class="nav-item" data-page="reviews.html,review-detail.html" data-label="Quản lý Đánh giá">
+                <a href="reviews.html"><span class="nav-icon"><i class="fa-solid fa-star"></i></span><span class="nav-label">Quản lý Đánh giá</span></a>
+            </li>
+            <div class="nav-divider"></div>
+            <li class="nav-item logout" data-label="Đăng xuất">
+                <a href="#"><span class="nav-icon"><i class="fa-solid fa-right-from-bracket"></i></span><span class="nav-label">Đăng xuất</span></a>
+            </li>
+        </ul>
     </nav>
-</body>
-</html>
+</nav>

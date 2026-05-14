@@ -36,6 +36,8 @@ function setupLogout() {
         logoutBtn.onclick = function(e) {
             e.preventDefault();
             localStorage.removeItem('jwt_token');
+            localStorage.removeItem('access_token');
+            localStorage.removeItem('refresh_token');
             localStorage.removeItem('user_role');
             window.location.href = '../login.html';
         };

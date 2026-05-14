@@ -62,14 +62,6 @@ function useStaffOrdersApi() {
   return Boolean(window.HTApi?.isEnabled());
 }
 
-function normalizeText(value) {
-  return String(value || '')
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .toLowerCase()
-    .trim();
-}
-
 async function loadStaffOrders(query = {}) {
   if (useStaffOrdersApi()) {
     try {

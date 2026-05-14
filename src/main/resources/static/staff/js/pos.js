@@ -23,14 +23,6 @@ function escapeHtml(value) {
   return div.innerHTML;
 }
 
-function normalizeText(value) {
-  return String(value || '')
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .toLowerCase()
-    .trim();
-}
-
 function readSavedCart() {
   try {
     const saved = JSON.parse(sessionStorage.getItem(POS_CART_STORAGE_KEY) || '[]');

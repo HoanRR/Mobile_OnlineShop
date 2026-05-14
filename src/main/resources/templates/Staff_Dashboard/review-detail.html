@@ -13,31 +13,10 @@
 </head>
 <body>
 <div class="app-wrapper">
-    <nav class="sidebar" id="sidebar">
-        <button class="sidebar-toggle" id="sidebarToggle"><i class="fa-solid fa-chevron-left"></i></button>
-        <div class="sidebar-logo"><span class="logo-icon"><i class="fa-solid fa-mobile-screen"></i></span><span class="logo-text">HT Mobile Staff</span></div>
-        <nav class="sidebar-nav">
-            <ul>
-                <li class="nav-item" data-label="Tổng quan"><a href="dashboard.html"><span class="nav-icon"><i class="fa-solid fa-chart-line"></i></span><span class="nav-label">Tổng quan</span></a></li>
-                <li class="nav-item" data-label="Bán hàng (POS)"><a href="pos.html"><span class="nav-icon"><i class="fa-solid fa-cash-register"></i></span><span class="nav-label">Bán hàng (POS)</span></a></li>
-                <li class="nav-item" data-label="Quản lý Đơn hàng"><a href="orders.html"><span class="nav-icon"><i class="fa-solid fa-cart-shopping"></i></span><span class="nav-label">Quản lý Đơn hàng</span></a></li>
-                <li class="nav-item" data-label="Tra cứu Sản phẩm"><a href="products.html"><span class="nav-icon"><i class="fa-solid fa-mobile-screen"></i></span><span class="nav-label">Tra cứu Sản phẩm</span></a></li>
-                <li class="nav-item" data-label="Tra cứu Bảo hành"><a href="warranty.html"><span class="nav-icon"><i class="fa-solid fa-shield-halved"></i></span><span class="nav-label">Tra cứu Bảo hành</span></a></li>
-                <li class="nav-item active" data-label="Quản lý Đánh giá"><a href="reviews.html"><span class="nav-icon"><i class="fa-solid fa-star"></i></span><span class="nav-label">Quản lý Đánh giá</span></a></li>
-                <div class="nav-divider"></div>
-                <li class="nav-item logout"><a href="#"><span class="nav-icon"><i class="fa-solid fa-right-from-bracket"></i></span><span class="nav-label">Đăng xuất</span></a></li>
-            </ul>
-        </nav>
-    </nav>
+    <div id="sidebar-container"></div>
 
     <div class="main-content" id="mainContent">
-        <header class="topbar">
-            <div class="topbar-title"><span>HT</span> Mobile – Chi tiết Đánh giá</div>
-            <div class="topbar-right">
-                <div class="topbar-date" id="currentDate"></div>
-                <div class="topbar-user"><div class="avatar">NV</div> Xin chào, <strong>Nhân Viên</strong></div>
-            </div>
-        </header>
+        <div id="header-container"></div>
 
         <div class="page-body">
             <a href="reviews.html" style="color: var(--muted); text-decoration: none; font-size: 14px; margin-bottom: 20px; display: inline-block;"><i class="fa-solid fa-arrow-left"></i> Quay lại Danh sách</a>

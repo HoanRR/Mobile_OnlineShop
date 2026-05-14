@@ -14,14 +14,6 @@ function useStaffReviewsApi() {
   return Boolean(window.HTApi?.isEnabled());
 }
 
-function normalizeText(value) {
-  return String(value || '')
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .toLowerCase()
-    .trim();
-}
-
 function escapeHtml(value) {
   const div = document.createElement('div');
   div.textContent = value;
@@ -207,7 +199,7 @@ function submitReply(button) {
   const textarea = button.previousElementSibling;
 
   if (!textarea || !textarea.value.trim()) {
-    alert('Vui l\u00f2ng nh\u1eadp n\u1ed9i dung ph\u1ea3n h\u1ed3i.');
+    if (textarea) textarea.focus();
     return;
   }
 
@@ -235,7 +227,6 @@ function submitReply(button) {
 
   textarea.value = '';
   if (replySection) replySection.style.display = 'none';
-  alert('\u0110\u00e3 g\u1eedi ph\u1ea3n h\u1ed3i.');
 }
 
 document.addEventListener('DOMContentLoaded', async () => {

@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
@@ -7,38 +7,15 @@
   <link rel="stylesheet" href="../../static/admin/css/admin-base.css">
   <link rel="stylesheet" href="../../static/admin/css/products.css">
   <script src="../../static/js/api-client.js"></script>
-  <script src="../../static/admin/js/products.js"></script>
+    <script src="../../static/admin/js/common.js"></script>
+<script src="../../static/admin/js/products.js"></script>
 </head>
 <body>
 <div class="app-wrapper">
-  <nav class="sidebar" id="sidebar">
-    <button class="sidebar-toggle" id="sidebarToggle"><i class="fa-solid fa-chevron-left"></i></button>
-    <div class="sidebar-logo">
-      <span class="logo-icon"><i class="fa-solid fa-mobile-screen"></i></span><span class="logo-text">HT Mobile Admin</span>
-    </div>
-    <nav class="sidebar-nav">
-      <ul>
-        <li class="nav-item" data-label="Tổng quan"><a href="dashboard.html"><span class="nav-icon"><i class="fa-solid fa-chart-line"></i></span><span class="nav-label">Tổng quan</span></a></li>
-        <li class="nav-item active" data-label="Quản lý Sản phẩm"><a href="products.html"><span class="nav-icon"><i class="fa-solid fa-mobile-screen"></i></span><span class="nav-label">Quản lý Sản phẩm</span></a></li>
-        <li class="nav-item" data-label="Kho thiết bị"><a href="devices.html"><span class="nav-icon"><i class="fa-solid fa-boxes-stacked"></i></span><span class="nav-label">Kho thiết bị</span></a></li>
-        <li class="nav-item" data-label="Quản lý Đơn hàng"><a href="orders.html"><span class="nav-icon"><i class="fa-solid fa-cart-shopping"></i></span><span class="nav-label">Quản lý Đơn hàng</span></a></li>
-        <li class="nav-item" data-label="Mã giảm giá"><a href="vouchers.html"><span class="nav-icon"><i class="fa-solid fa-ticket"></i></span><span class="nav-label">Mã giảm giá</span></a></li>
-        <li class="nav-item" data-label="Quản lý Người dùng"><a href="users.html"><span class="nav-icon"><i class="fa-solid fa-users"></i></span><span class="nav-label">Quản lý Người dùng</span></a></li>
-        <li class="nav-item" data-label="Quản lý Đánh giá"><a href="admin-reviews.html"><span class="nav-icon"><i class="fa-solid fa-star"></i></span><span class="nav-label">Quản lý Đánh giá</span></a></li>
-        <div class="nav-divider"></div>
-        <li class="nav-item logout"><a href="#"><span class="nav-icon"><i class="fa-solid fa-right-from-bracket"></i></span><span class="nav-label">Đăng xuất</span></a></li>
-      </ul>
-    </nav>
-  </nav>
+    <div id="sidebar-container"></div>
 
-  <div class="main-content" id="mainContent">
-    <header class="topbar">
-      <div class="topbar-title"><span>HT</span> Mobile – Kho Sản phẩm</div>
-      <div class="topbar-right">
-        <div class="topbar-date" id="currentDate"></div>
-        <div class="topbar-user"><div class="avatar">AD</div> Xin chào, <strong>Admin</strong></div>
-      </div>
-    </header>
+    <div class="main-content" id="mainContent">
+        <div id="header-container"></div>
 
     <div class="page-body">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
@@ -85,6 +62,47 @@
           </tbody>
         </table>
       </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="productEditModal">
+    <div class="modal-content product-edit-modal">
+      <div class="modal-header">
+        <div>
+          <h3>Chỉnh sửa Sản phẩm</h3>
+          <p>Các thông tin đang được điền lại từ dữ liệu đã lưu.</p>
+        </div>
+        <button type="button" class="close-modal" data-close-product-edit>&times;</button>
+      </div>
+      <form id="productEditForm">
+        <input type="hidden" id="editingProductId">
+        <div class="edit-form-grid">
+          <div>
+            <div class="form-group"><label>Tên sản phẩm</label><input type="text" id="editProductName" required></div>
+            <div class="form-group"><label>Hãng</label><select id="editProductBrand" required><option>Apple</option><option>Samsung</option><option>Xiaomi</option><option>OPPO</option></select></div>
+            <div class="form-group"><label>Link ảnh sản phẩm</label><input type="url" id="editProductImageLink" placeholder="https://..."></div>
+          </div>
+          <div>
+            <div class="form-group"><label>Chip xử lý</label><input type="text" id="editProductChip"></div>
+            <div class="form-group"><label>Dung lượng pin</label><input type="text" id="editBatteryCapacity"></div>
+            <div class="form-group"><label>Độ phân giải</label><input type="text" id="editResolution"></div>
+          </div>
+        </div>
+
+        <div class="variant-heading">
+          <h4>Phiên bản cấu hình</h4>
+          <button type="button" class="btn-edit" id="addEditVariantBtn"><i class="fa-solid fa-plus"></i> Thêm</button>
+        </div>
+        <table class="admin-table edit-variant-table" id="editVariantTable">
+          <thead><tr><th>RAM</th><th>Bộ nhớ</th><th>Màu sắc</th><th>Giá bán</th><th>Tồn kho</th><th>Link ảnh</th><th>Xóa</th></tr></thead>
+          <tbody></tbody>
+        </table>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-edit" data-close-product-edit>Hủy</button>
+          <button type="submit" class="btn-add"><i class="fa-solid fa-floppy-disk"></i> Lưu thay đổi</button>
+        </div>
+      </form>
     </div>
   </div>
 </div>

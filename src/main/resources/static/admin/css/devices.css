@@ -43,6 +43,12 @@
   margin-top: 18px;
 }
 
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
 .form-group {
   margin-bottom: 16px;
 }
@@ -86,6 +92,40 @@
   line-height: 1.8;
 }
 
+.lookup-card {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 14px;
+}
+
+.lookup-card strong {
+  color: var(--text);
+}
+
+.form-message {
+  display: none;
+  margin: 0 0 14px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.form-message.success {
+  display: block;
+  background: rgba(34,197,94,0.12);
+  color: var(--green);
+  border: 1px solid rgba(34,197,94,0.25);
+}
+
+.form-message.error {
+  display: block;
+  background: rgba(239,68,68,0.12);
+  color: #ef4444;
+  border: 1px solid rgba(239,68,68,0.25);
+}
+
 .device-status {
   display: inline-flex;
   padding: 4px 10px;
@@ -118,6 +158,7 @@
 
 @media (max-width: 980px) {
   .device-grid,
+  .form-grid,
   .lookup-row {
     grid-template-columns: 1fr;
     flex-direction: column;

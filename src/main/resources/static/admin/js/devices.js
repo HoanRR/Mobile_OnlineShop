@@ -1,14 +1,17 @@
 /**
- * Admin devices page script
- * Mocks /api/admin/devices/import and /api/admin/devices/:imei.
+ * Admin devices page script.
+ * Keeps imported IMEIs, but renders the inventory as product/variant quantity groups.
  */
 
 const DEVICES_STORAGE_KEY = 'ht_devices';
+const DEVICE_PRODUCTS_STORAGE_KEY = 'ht_products';
 
 const defaultDevices = [
   {
     imei: '356789101234567',
     product_variant_id: 'PV1001',
+    product_name: 'iPhone 15 Pro Max 256GB',
+    color: 'Titan',
     status: 'AVAILABLE',
     imported_at: '2026-05-01',
     warranty_months: 12
@@ -16,8 +19,11 @@ const defaultDevices = [
   {
     imei: '356789101234568',
     product_variant_id: 'PV1002',
+    product_name: 'Samsung Galaxy S24 Ultra',
+    color: 'Đen',
     status: 'SOLD',
     order_id: 'DH1001',
+    imported_at: '2026-04-01',
     sold_at: '2026-04-06',
     warranty_start: '2026-04-06',
     warranty_end: '2027-04-06',
@@ -29,46 +35,6 @@ let devices = [];
 
 function useDevicesApi() {
   return Boolean(window.HTApi?.isEnabled());
-}
-
-function initCommonUI() {
-  const sidebar = document.getElementById('sidebar');
-  const mainContent = document.getElementById('mainContent');
-  const toggleBtn = document.getElementById('sidebarToggle');
-
-  if (sidebar && mainContent && toggleBtn) {
-    const collapsedKey = 'ht_admin_sidebar_collapsed';
-    if (localStorage.getItem(collapsedKey) === '1') {
-      sidebar.classList.add('collapsed');
-      mainContent.classList.add('expanded');
-    }
-
-    toggleBtn.addEventListener('click', () => {
-      const isCollapsed = sidebar.classList.toggle('collapsed');
-      mainContent.classList.toggle('expanded', isCollapsed);
-      localStorage.setItem(collapsedKey, isCollapsed ? '1' : '0');
-    });
-  }
-
-  const dateEl = document.getElementById('currentDate');
-  if (dateEl) {
-    dateEl.textContent = new Date().toLocaleDateString('vi-VN', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-  }
-
-  const logoutBtn = document.querySelector('.logout a');
-  if (logoutBtn) {
-    logoutBtn.addEventListener('click', (event) => {
-      event.preventDefault();
-      localStorage.removeItem('jwt_token');
-      localStorage.removeItem('user_role');
-      window.location.href = '../login.html';
-    });
-  }
 }
 
 function readDevices() {
@@ -86,7 +52,7 @@ function saveDevices() {
 
 function formatDate(dateValue) {
   if (!dateValue) return '-';
-  const date = new Date(`${dateValue}T00:00:00`);
+  const date = new Date(`${String(dateValue).slice(0, 10)}T00:00:00`);
   if (Number.isNaN(date.getTime())) return dateValue;
   return date.toLocaleDateString('vi-VN');
 }
@@ -98,30 +64,103 @@ function splitImeis(value) {
     .filter(Boolean);
 }
 
+function readProductVariantNames() {
+  const map = new Map();
+
+  try {
+    const products = JSON.parse(localStorage.getItem(DEVICE_PRODUCTS_STORAGE_KEY) || '[]');
+    if (!Array.isArray(products)) return map;
+
+    products.forEach((product) => {
+      (product.variants || []).forEach((variant, index) => {
+        const variantId = variant.product_variant_id || variant.productVariantId || variant.variant_id || variant.id || `${product.id || 'PV'}-${index + 1}`;
+        const storage = variant.storage || (variant.storage_capacity ? `${variant.storage_capacity}GB` : '');
+        const color = variant.color ? ` ${variant.color}` : '';
+        const label = `${product.product_name || product.name || 'Sản phẩm'} ${storage}${color}`.trim();
+        map.set(String(variantId), label);
+      });
+    });
+  } catch (error) {
+    return map;
+  }
+
+  return map;
+}
+
+function productNameForDevice(device, variantNameMap = readProductVariantNames()) {
+  return device.product_name
+    || device.productName
+    || variantNameMap.get(String(device.product_variant_id || device.productVariantId || ''))
+    || 'Chưa xác định';
+}
+
+function isSold(device) {
+  return String(device.status || '').toUpperCase() === 'SOLD' || Boolean(device.order_id || device.orderId);
+}
+
 function statusLabel(device) {
-  const sold = device.status === 'SOLD';
+  const sold = isSold(device);
   return `<span class="device-status ${sold ? 'sold' : 'available'}">${sold ? 'Đã bán' : 'Còn kho'}</span>`;
+}
+
+function buildInventoryRows() {
+  const variantNameMap = readProductVariantNames();
+  const groups = new Map();
+
+  devices.forEach((device) => {
+    const variantId = String(device.product_variant_id || device.productVariantId || '-');
+    const productName = productNameForDevice(device, variantNameMap);
+    const key = `${variantId}::${productName}`;
+    const importedAt = String(device.imported_at || device.importedAt || '').slice(0, 10);
+
+    if (!groups.has(key)) {
+      groups.set(key, {
+        variantId,
+        productName,
+        total: 0,
+        available: 0,
+        sold: 0,
+        latestImei: '',
+        latestImportedAt: ''
+      });
+    }
+
+    const row = groups.get(key);
+    row.total += 1;
+    if (isSold(device)) row.sold += 1;
+    else row.available += 1;
+
+    if (!row.latestImportedAt || importedAt >= row.latestImportedAt) {
+      row.latestImportedAt = importedAt;
+      row.latestImei = device.imei || '-';
+    }
+  });
+
+  return Array.from(groups.values()).sort((a, b) => a.productName.localeCompare(b.productName, 'vi'));
 }
 
 function renderDevices() {
   const tableBody = document.querySelector('.admin-table tbody');
   const countEl = document.getElementById('deviceCount');
-  if (countEl) countEl.textContent = `${devices.length} thiết bị`;
+  const rows = buildInventoryRows();
+
+  if (countEl) countEl.textContent = `${rows.length} dòng / ${devices.length} thiết bị`;
   if (!tableBody) return;
 
-  if (!devices.length) {
-    tableBody.innerHTML = '<tr><td colspan="6" style="text-align:center; color:var(--muted); padding:28px;">Chưa có thiết bị trong kho</td></tr>';
+  if (!rows.length) {
+    tableBody.innerHTML = '<tr><td colspan="7" style="text-align:center; color:var(--muted); padding:28px;">Chưa có thiết bị trong kho</td></tr>';
     return;
   }
 
-  tableBody.innerHTML = devices.map((device) => `
+  tableBody.innerHTML = rows.map((row) => `
     <tr>
-      <td><strong style="color:var(--text);">${device.imei}</strong></td>
-      <td style="color:var(--muted);">${device.product_variant_id}</td>
-      <td>${statusLabel(device)}</td>
-      <td style="color:var(--muted);">${device.order_id || '-'}</td>
-      <td style="color:var(--muted);">${formatDate(device.imported_at)}</td>
-      <td style="color:var(--muted);">${formatDate(device.warranty_end)}</td>
+      <td><strong style="color:var(--text);">${row.productName}</strong></td>
+      <td style="color:var(--muted);">${row.variantId}</td>
+      <td style="color:var(--text); font-weight:700;">${row.total}</td>
+      <td style="color:var(--green); font-weight:700;">${row.available}</td>
+      <td style="color:var(--blue); font-weight:700;">${row.sold}</td>
+      <td style="color:var(--muted);">${row.latestImei || '-'}</td>
+      <td style="color:var(--muted);">${formatDate(row.latestImportedAt)}</td>
     </tr>
   `).join('');
 }
@@ -131,51 +170,74 @@ function renderLookup(device) {
   if (!result) return;
 
   if (!device) {
-    result.innerHTML = '<span>Không tìm thấy IMEI trong kho.</span>';
+    result.innerHTML = '<div class="lookup-card">Không tìm thấy IMEI trong kho.</div>';
     return;
   }
 
   result.innerHTML = `
-    <div><strong>IMEI:</strong> ${device.imei}</div>
-    <div><strong>Mã biến thể:</strong> ${device.product_variant_id}</div>
-    <div><strong>Trạng thái:</strong> ${device.status === 'SOLD' ? 'Đã bán' : 'Còn kho'}</div>
-    <div><strong>Đơn hàng:</strong> ${device.order_id || '-'}</div>
-    <div><strong>Bảo hành đến:</strong> ${formatDate(device.warranty_end)}</div>
+    <div class="lookup-card">
+      <div><strong>IMEI:</strong> ${device.imei}</div>
+      <div><strong>Sản phẩm:</strong> ${productNameForDevice(device)}</div>
+      <div><strong>Mã biến thể:</strong> ${device.product_variant_id || device.productVariantId || '-'}</div>
+      <div><strong>Trạng thái:</strong> ${statusLabel(device)}</div>
+      <div><strong>Đơn hàng:</strong> ${device.order_id || device.orderId || '-'}</div>
+      <div><strong>Bảo hành đến:</strong> ${isSold(device) ? formatDate(device.warranty_end || device.warrantyEnd) : '-'}</div>
+    </div>
   `;
+}
+
+function setImportMessage(text, type = 'success') {
+  const message = document.getElementById('importDeviceMessage');
+  if (!message) return;
+  message.textContent = text;
+  message.className = `form-message ${type}`;
+}
+
+function clearImportMessage() {
+  const message = document.getElementById('importDeviceMessage');
+  if (!message) return;
+  message.textContent = '';
+  message.className = 'form-message';
 }
 
 async function importDevices(event) {
   event.preventDefault();
+  clearImportMessage();
 
+  const productName = document.getElementById('importProductName')?.value.trim();
   const variantIdText = document.getElementById('variantId')?.value.trim();
   const variantId = Number(variantIdText) || variantIdText;
+  const color = document.getElementById('importColor')?.value.trim() || '';
+  const warrantyMonths = Math.max(1, Number(document.getElementById('warrantyMonths')?.value) || 12);
   const imeis = splitImeis(document.getElementById('imeiListInput')?.value);
 
-  if (!variantId || !imeis.length) {
-    alert('Vui lòng nhập mã biến thể và ít nhất một IMEI.');
+  if (!productName || !variantId || !imeis.length) {
+    setImportMessage('Vui lòng nhập tên sản phẩm, mã biến thể và ít nhất một IMEI.', 'error');
     return;
   }
 
   const uniqueImeis = Array.from(new Set(imeis.map((imei) => imei.toUpperCase())));
   if (uniqueImeis.length !== imeis.length) {
-    alert('Danh sách IMEI đang bị trùng.');
+    setImportMessage('Danh sách IMEI đang bị trùng.', 'error');
     return;
   }
 
-  const existed = uniqueImeis.find((imei) => devices.some((device) => device.imei.toUpperCase() === imei));
+  const existed = uniqueImeis.find((imei) => devices.some((device) => String(device.imei || '').toUpperCase() === imei));
   if (existed) {
-    alert(`IMEI ${existed} đã tồn tại trong kho.`);
+    setImportMessage(`IMEI ${existed} đã tồn tại trong kho.`, 'error');
     return;
   }
 
   const today = new Date().toISOString().slice(0, 10);
   const importedDevices = uniqueImeis.map((imei) => ({
-      imei,
-      product_variant_id: variantId,
-      status: 'AVAILABLE',
-      imported_at: today,
-      warranty_months: 12
-    }));
+    imei,
+    product_variant_id: variantId,
+    product_name: productName,
+    color,
+    status: 'AVAILABLE',
+    imported_at: today,
+    warranty_months: warrantyMonths
+  }));
 
   if (useDevicesApi()) {
     try {
@@ -184,9 +246,12 @@ async function importDevices(event) {
         imei_list: uniqueImeis
       });
       const apiDevices = Array.isArray(response?.devices) ? response.devices.map(HTApi.mapDevice) : importedDevices;
-      devices = [...apiDevices, ...devices];
+      devices = [
+        ...apiDevices.map((device) => ({ ...device, product_name: productName, color, warranty_months: warrantyMonths })),
+        ...devices
+      ];
     } catch (error) {
-      alert(error.message || 'Không nhập được IMEI qua API.');
+      setImportMessage(error.message || 'Không nhập được IMEI qua API.', 'error');
       return;
     }
   } else {
@@ -196,7 +261,9 @@ async function importDevices(event) {
   saveDevices();
   renderDevices();
   event.currentTarget.reset();
-  alert('Đã nhập thiết bị vào kho dùng thử.');
+  const warrantyInput = document.getElementById('warrantyMonths');
+  if (warrantyInput) warrantyInput.value = '12';
+  setImportMessage(`Đã nhập ${uniqueImeis.length} thiết bị cho ${productName}.`);
 }
 
 async function lookupDevice() {
@@ -217,7 +284,7 @@ async function lookupDevice() {
     }
   }
 
-  renderLookup(devices.find((device) => device.imei.toUpperCase() === value));
+  renderLookup(devices.find((device) => String(device.imei || '').toUpperCase() === value));
 }
 
 document.addEventListener('DOMContentLoaded', () => {

@@ -1,63 +1,40 @@
-<!DOCTYPE html>
-<html lang="vi" xmlns:th="http://www.thymeleaf.org">
-<body>
-    <nav class="sidebar" id="sidebar" th:fragment="sidebar">
-        <button class="sidebar-toggle" id="sidebarToggle" title="Thu gọn/Mở rộng">
-            <i class="fa-solid fa-chevron-left"></i>
-        </button>
+<nav class="sidebar" id="sidebar">
+    <button class="sidebar-toggle" id="sidebarToggle" title="Thu gọn/Mở rộng">
+        <i class="fa-solid fa-chevron-left"></i>
+    </button>
 
-        <div class="sidebar-logo">
-            <span class="logo-icon"><i class="fa-solid fa-mobile-screen"></i></span>
-            <span class="logo-text">HT Mobile Admin</span>
-        </div>
+    <div class="sidebar-logo">
+        <span class="logo-icon"><i class="fa-solid fa-mobile-screen"></i></span>
+        <span class="logo-text">HT Mobile Admin</span>
+    </div>
 
-        <nav class="sidebar-nav">
-            <ul>
-                <li class="nav-item" data-label="Tổng quan">
-                    <a th:href="@{/admin/dashboard}">
-                        <span class="nav-icon"><i class="fa-solid fa-chart-line"></i></span>
-                        <span class="nav-label">Tổng quan</span>
-                    </a>
-                </li>
-                <li class="nav-item" data-label="Quản lý Sản phẩm">
-                    <a th:href="@{/admin/products}">
-                        <span class="nav-icon"><i class="fa-solid fa-mobile-screen"></i></span>
-                        <span class="nav-label">Quản lý Sản phẩm</span>
-                    </a>
-                </li>
-                <li class="nav-item" data-label="Kho thiết bị">
-                    <a th:href="@{/admin/devices}">
-                        <span class="nav-icon"><i class="fa-solid fa-boxes-stacked"></i></span>
-                        <span class="nav-label">Kho thiết bị</span>
-                    </a>
-                </li>
-                <li class="nav-item" data-label="Quản lý Đơn hàng">
-                    <a th:href="@{/admin/orders}">
-                        <span class="nav-icon"><i class="fa-solid fa-cart-shopping"></i></span>
-                        <span class="nav-label">Quản lý Đơn hàng</span>
-                    </a>
-                </li>
-                <li class="nav-item" data-label="Mã giảm giá">
-                    <a th:href="@{/admin/vouchers}">
-                        <span class="nav-icon"><i class="fa-solid fa-ticket"></i></span>
-                        <span class="nav-label">Mã giảm giá</span>
-                    </a>
-                </li>
-                <li class="nav-item" data-label="Quản lý Người dùng">
-                    <a th:href="@{/admin/users}">
-                        <span class="nav-icon"><i class="fa-solid fa-users"></i></span>
-                        <span class="nav-label">Quản lý Người dùng</span>
-                    </a>
-                </li>
-                <div class="nav-divider"></div>
-                <li class="nav-item logout" data-label="Đăng xuất">
-                    <a th:href="@{/logout}">
-                        <span class="nav-icon"><i class="fa-solid fa-right-from-bracket"></i></span>
-                        <span class="nav-label">Đăng xuất</span>
-                    </a>
-                </li>
-            </ul>
-        </nav>
+    <nav class="sidebar-nav">
+        <ul>
+            <li class="nav-item" data-page="dashboard.html" data-label="Tổng quan">
+                <a href="dashboard.html"><span class="nav-icon"><i class="fa-solid fa-chart-line"></i></span><span class="nav-label">Tổng quan</span></a>
+            </li>
+            <li class="nav-item" data-page="products.html" data-label="Quản lý Sản phẩm">
+                <a href="products.html"><span class="nav-icon"><i class="fa-solid fa-mobile-screen"></i></span><span class="nav-label">Quản lý Sản phẩm</span></a>
+            </li>
+            <li class="nav-item" data-page="devices.html" data-label="Kho thiết bị">
+                <a href="devices.html"><span class="nav-icon"><i class="fa-solid fa-boxes-stacked"></i></span><span class="nav-label">Kho thiết bị</span></a>
+            </li>
+            <li class="nav-item" data-page="orders.html" data-label="Quản lý Đơn hàng">
+                <a href="orders.html"><span class="nav-icon"><i class="fa-solid fa-cart-shopping"></i></span><span class="nav-label">Quản lý Đơn hàng</span></a>
+            </li>
+            <li class="nav-item" data-page="vouchers.html" data-label="Mã giảm giá">
+                <a href="vouchers.html"><span class="nav-icon"><i class="fa-solid fa-ticket"></i></span><span class="nav-label">Mã giảm giá</span></a>
+            </li>
+            <li class="nav-item" data-page="users.html" data-label="Quản lý Người dùng">
+                <a href="users.html"><span class="nav-icon"><i class="fa-solid fa-users"></i></span><span class="nav-label">Quản lý Người dùng</span></a>
+            </li>
+            <li class="nav-item" data-page="admin-reviews.html,admin-review-detail.html" data-label="Quản lý Đánh giá">
+                <a href="admin-reviews.html"><span class="nav-icon"><i class="fa-solid fa-star"></i></span><span class="nav-label">Quản lý Đánh giá</span></a>
+            </li>
+            <div class="nav-divider"></div>
+            <li class="nav-item logout" data-label="Đăng xuất">
+                <a href="#"><span class="nav-icon"><i class="fa-solid fa-right-from-bracket"></i></span><span class="nav-label">Đăng xuất</span></a>
+            </li>
+        </ul>
     </nav>
-</body>
-</html>
+</nav>

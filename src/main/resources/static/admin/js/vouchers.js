@@ -16,46 +16,6 @@ function useVouchersApi() {
   return Boolean(window.HTApi?.isEnabled());
 }
 
-function initCommonUI() {
-  const sidebar = document.getElementById('sidebar');
-  const mainContent = document.getElementById('mainContent');
-  const toggleBtn = document.getElementById('sidebarToggle');
-
-  if (sidebar && mainContent && toggleBtn) {
-    const collapsedKey = 'ht_sidebar_collapsed';
-    if (localStorage.getItem(collapsedKey) === '1') {
-      sidebar.classList.add('collapsed');
-      mainContent.classList.add('expanded');
-    }
-
-    toggleBtn.addEventListener('click', () => {
-      const isCollapsed = sidebar.classList.toggle('collapsed');
-      mainContent.classList.toggle('expanded', isCollapsed);
-      localStorage.setItem(collapsedKey, isCollapsed ? '1' : '0');
-    });
-  }
-
-  const dateEl = document.getElementById('currentDate');
-  if (dateEl) {
-    dateEl.textContent = new Date().toLocaleDateString('vi-VN', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-  }
-
-  const logoutBtn = document.querySelector('.logout a');
-  if (logoutBtn) {
-    logoutBtn.addEventListener('click', (event) => {
-      event.preventDefault();
-      localStorage.removeItem('jwt_token');
-      localStorage.removeItem('user_role');
-      window.location.href = '../login.html';
-    });
-  }
-}
-
 function loadVouchers() {
   try {
     const saved = JSON.parse(localStorage.getItem(VOUCHERS_STORAGE_KEY) || 'null');
@@ -69,22 +29,6 @@ function loadVouchers() {
 
 function saveVouchers() {
   localStorage.setItem(VOUCHERS_STORAGE_KEY, JSON.stringify(vouchers));
-}
-
-function normalizeText(value) {
-  return String(value || '')
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .toLowerCase()
-    .trim();
-}
-
-function formatCurrency(amount) {
-  return new Intl.NumberFormat('vi-VN', {
-    style: 'currency',
-    currency: 'VND',
-    minimumFractionDigits: 0
-  }).format(Number(amount) || 0);
 }
 
 function formatDate(dateValue) {
@@ -167,6 +111,13 @@ function openVoucherModal() {
 function closeModal() {
   const modal = document.getElementById('voucherModal');
   const form = modal ? modal.querySelector('form') : null;
+  if (form) form.reset();
+  if (modal) modal.style.display = 'none';
+}
+
+function closeExtendVoucherModal() {
+  const modal = document.getElementById('extendVoucherModal');
+  const form = document.getElementById('extendVoucherForm');
   if (form) form.reset();
   if (modal) modal.style.display = 'none';
 }
@@ -260,25 +211,48 @@ async function handleVoucherSubmit(event) {
   saveVouchers();
   renderVouchers();
   closeModal();
-  alert(useVouchersApi() ? '\u0110\u00e3 t\u1ea1o voucher qua API.' : '\u0110\u00e3 th\u00eam voucher m\u1edbi.');
 }
 
-async function extendVoucher(code) {
+function openExtendVoucherModal(code) {
   const voucher = vouchers.find((item) => voucherCode(item) === code);
   if (!voucher) return;
 
-  const nextDate = prompt('Nh\u1eadp h\u1ea1n s\u1eed d\u1ee5ng m\u1edbi (yyyy-mm-dd):', voucherEndDate(voucher));
-  if (nextDate === null) return;
+  const endDate = voucherEndDate(voucher);
+  document.getElementById('extendVoucherCode').value = code;
+  document.getElementById('extendEndDate').value = endDate;
+  document.getElementById('extendUsageLimit').value = voucherUsageLimit(voucher);
+
+  const codeText = document.getElementById('extendVoucherCodeText');
+  if (codeText) codeText.textContent = `Mã ${code}`;
+
+  const currentInfo = document.getElementById('extendCurrentInfo');
+  if (currentInfo) {
+    currentInfo.innerHTML = `
+      <div><strong>Hạn hiện tại:</strong> ${formatDate(endDate)}</div>
+      <div><strong>Đã dùng:</strong> ${voucher.used || 0}/${voucherUsageLimit(voucher)}</div>
+      <div><strong>Đơn tối thiểu:</strong> ${voucherMinOrder(voucher) ? formatCurrency(voucherMinOrder(voucher)) : 'Mỗi đơn hàng'}</div>
+    `;
+  }
+
+  const modal = document.getElementById('extendVoucherModal');
+  if (modal) modal.style.display = 'flex';
+}
+
+async function handleExtendVoucherSubmit(event) {
+  event.preventDefault();
+
+  const code = document.getElementById('extendVoucherCode')?.value || '';
+  const voucher = vouchers.find((item) => voucherCode(item) === code);
+  if (!voucher) return;
+
+  const nextDate = document.getElementById('extendEndDate')?.value || '';
+  const usageLimit = Number(document.getElementById('extendUsageLimit')?.value);
 
   if (!/^\d{4}-\d{2}-\d{2}$/.test(nextDate) || Number.isNaN(new Date(`${nextDate}T00:00:00`).getTime())) {
     alert('Ng\u00e0y h\u1ebft h\u1ea1n kh\u00f4ng h\u1ee3p l\u1ec7.');
     return;
   }
 
-  const nextUsage = prompt('Nh\u1eadp s\u1ed1 l\u01b0\u1ee3t d\u00f9ng m\u1edbi:', voucherUsageLimit(voucher));
-  if (nextUsage === null) return;
-
-  const usageLimit = Number(nextUsage);
   if (!Number.isFinite(usageLimit) || usageLimit <= 0) {
     alert('S\u1ed1 l\u01b0\u1ee3t d\u00f9ng kh\u00f4ng h\u1ee3p l\u1ec7.');
     return;
@@ -302,6 +276,7 @@ async function extendVoucher(code) {
   voucher.usage_limit = usageLimit;
   saveVouchers();
   renderVouchers();
+  closeExtendVoucherModal();
 }
 
 function deleteVoucher(code) {
@@ -315,6 +290,7 @@ function initVoucherPageEvents() {
   const addButton = document.querySelector('.page-body .btn-add');
   const modal = document.getElementById('voucherModal');
   const form = modal ? modal.querySelector('form') : null;
+  const extendForm = document.getElementById('extendVoucherForm');
   const tableBody = document.querySelector('.admin-table tbody');
 
   if (addButton) {
@@ -323,6 +299,7 @@ function initVoucherPageEvents() {
   }
 
   if (form) form.addEventListener('submit', handleVoucherSubmit);
+  if (extendForm) extendForm.addEventListener('submit', handleExtendVoucherSubmit);
 
   if (modal) {
     modal.querySelectorAll('button').forEach((button) => {
@@ -338,13 +315,21 @@ function initVoucherPageEvents() {
     });
   }
 
+  document.querySelectorAll('[data-close-extend]').forEach((button) => {
+    button.addEventListener('click', closeExtendVoucherModal);
+  });
+
+  document.getElementById('extendVoucherModal')?.addEventListener('click', (event) => {
+    if (event.target.id === 'extendVoucherModal') closeExtendVoucherModal();
+  });
+
   if (tableBody) {
     tableBody.addEventListener('click', (event) => {
       const button = event.target.closest('button[data-action]');
       if (!button) return;
 
       if (button.dataset.action === 'extend') {
-        extendVoucher(button.dataset.code);
+        openExtendVoucherModal(button.dataset.code);
       } else if (button.dataset.action === 'delete') {
         deleteVoucher(button.dataset.code);
       }

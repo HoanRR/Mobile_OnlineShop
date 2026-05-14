@@ -191,6 +191,63 @@ function renderSummary() {
   renderImeiInputs();
 }
 
+function renderReceipt(order, imeis) {
+  const body = document.getElementById('receiptBody');
+  const orderIdEl = document.getElementById('receiptOrderId');
+  if (!body) return;
+
+  if (orderIdEl) orderIdEl.textContent = `Mã đơn ${order.id}`;
+
+  const items = order.cartItems || [];
+  let imeiOffset = 0;
+  const itemRows = items.map((item) => {
+    const qty = Number(item.qty || 0);
+    const lineTotal = Number(item.price || 0) * qty;
+    const itemImeis = imeis.slice(imeiOffset, imeiOffset + qty).join(', ');
+    imeiOffset += qty;
+    return `
+      <tr>
+        <td>${item.name}</td>
+        <td>${qty}</td>
+        <td>${itemImeis || '-'}</td>
+        <td style="text-align:right; font-weight:700;">${formatMoney(lineTotal)}</td>
+      </tr>
+    `;
+  }).join('');
+
+  body.innerHTML = `
+    <div class="receipt-meta">
+      <div><span>Khách hàng</span><br><strong>${order.customerName}</strong></div>
+      <div><span>Số điện thoại</span><br><strong>${order.customerPhone || '-'}</strong></div>
+      <div><span>Ngày tạo</span><br><strong>${new Date(`${order.date}T00:00:00`).toLocaleDateString('vi-VN')}</strong></div>
+      <div><span>Thanh toán</span><br><strong>${order.paymentMethod}</strong></div>
+      <div><span>Nhận hàng</span><br><strong>${order.shipping_address}</strong></div>
+      <div><span>Trạng thái</span><br><strong>Đã thanh toán</strong></div>
+    </div>
+
+    <table class="receipt-table">
+      <thead>
+        <tr><th>Sản phẩm</th><th>SL</th><th>IMEI</th><th style="text-align:right;">Thành tiền</th></tr>
+      </thead>
+      <tbody>
+        ${itemRows}
+      </tbody>
+    </table>
+
+    <div class="receipt-total">
+      <div class="summary-line"><span>Tạm tính</span><strong>${formatMoney(getSubtotal())}</strong></div>
+      <div class="summary-line"><span>Giảm giá</span><strong>${formatMoney(order.discount)}</strong></div>
+      <div class="summary-line total"><span>Thành tiền</span><strong>${formatMoney(order.total)}</strong></div>
+    </div>
+  `;
+}
+
+function showOrderSuccessModal(order, imeis) {
+  renderReceipt(order, imeis);
+  const modal = document.getElementById('orderSuccessModal');
+  if (modal) modal.style.display = 'flex';
+}
+
 function toggleAddressField() {
   const receiveType = document.getElementById('receiveType');
   const addressGroup = document.getElementById('addressGroup');
@@ -292,8 +349,7 @@ async function handleSubmit(event) {
   syncSoldDevices(imeis, newOrder.id);
   sessionStorage.removeItem(CHECKOUT_CART_KEY);
   sessionStorage.removeItem(CHECKOUT_PENDING_CART_KEY);
-  alert(useCheckoutApi() ? `Đã tạo đơn ${newOrder.id} qua API.` : `Đã tạo đơn ${newOrder.id}.`);
-  window.location.href = `orders.html?q=${encodeURIComponent(newOrder.id)}`;
+  showOrderSuccessModal(newOrder, imeis);
 }
 
 function initCheckoutPage() {
@@ -310,6 +366,20 @@ function initCheckoutPage() {
   if (form) form.addEventListener('submit', handleSubmit);
   if (discountInput) discountInput.addEventListener('input', renderSummary);
   if (receiveType) receiveType.addEventListener('change', toggleAddressField);
+  document.getElementById('orderSuccessModal')?.addEventListener('click', (event) => {
+    const actionButton = event.target.closest('[data-receipt-action]');
+    if (!actionButton) return;
+
+    const action = actionButton.dataset.receiptAction;
+    if (action === 'print') {
+      window.print();
+    } else if (action === 'new') {
+      window.location.href = 'pos.html';
+    } else if (action === 'orders') {
+      const orderId = document.getElementById('receiptOrderId')?.textContent.replace('Mã đơn ', '') || '';
+      window.location.href = `orders.html?q=${encodeURIComponent(orderId)}`;
+    }
+  });
 
   toggleAddressField();
   renderSummary();

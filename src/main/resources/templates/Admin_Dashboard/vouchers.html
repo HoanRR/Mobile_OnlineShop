@@ -1,4 +1,4 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="vi">
 <head>
   <meta charset="UTF-8">
@@ -7,36 +7,15 @@
   <link rel="stylesheet" href="../../static/admin/css/admin-base.css">
   <link rel="stylesheet" href="../../static/admin/css/vouchers.css">
   <script src="../../static/js/api-client.js"></script>
-  <script src="../../static/admin/js/vouchers.js"></script>
+    <script src="../../static/admin/js/common.js"></script>
+<script src="../../static/admin/js/vouchers.js"></script>
 </head>
 <body>
 <div class="app-wrapper">
-  <nav class="sidebar" id="sidebar">
-    <button class="sidebar-toggle" id="sidebarToggle"><i class="fa-solid fa-chevron-left"></i></button>
-    <div class="sidebar-logo"><span class="logo-icon"><i class="fa-solid fa-mobile-screen"></i></span><span class="logo-text">HT Mobile Admin</span></div>
-    <nav class="sidebar-nav">
-      <ul>
-        <li class="nav-item" data-label="Tổng quan"><a href="dashboard.html"><span class="nav-icon"><i class="fa-solid fa-chart-line"></i></span><span class="nav-label">Tổng quan</span></a></li>
-        <li class="nav-item" data-label="Quản lý Sản phẩm"><a href="products.html"><span class="nav-icon"><i class="fa-solid fa-mobile-screen"></i></span><span class="nav-label">Quản lý Sản phẩm</span></a></li>
-        <li class="nav-item" data-label="Kho thiết bị"><a href="devices.html"><span class="nav-icon"><i class="fa-solid fa-boxes-stacked"></i></span><span class="nav-label">Kho thiết bị</span></a></li>
-        <li class="nav-item" data-label="Quản lý Đơn hàng"><a href="orders.html"><span class="nav-icon"><i class="fa-solid fa-cart-shopping"></i></span><span class="nav-label">Quản lý Đơn hàng</span></a></li>
-        <li class="nav-item active" data-label="Mã giảm giá"><a href="vouchers.html"><span class="nav-icon"><i class="fa-solid fa-ticket"></i></span><span class="nav-label">Mã giảm giá</span></a></li>
-        <li class="nav-item" data-label="Quản lý Người dùng"><a href="users.html"><span class="nav-icon"><i class="fa-solid fa-users"></i></span><span class="nav-label">Quản lý Người dùng</span></a></li>
-        <li class="nav-item" data-label="Quản lý Đánh giá"><a href="admin-reviews.html"><span class="nav-icon"><i class="fa-solid fa-star"></i></span><span class="nav-label">Quản lý Đánh giá</span></a></li>
-        <div class="nav-divider"></div>
-        <li class="nav-item logout"><a href="#"><span class="nav-icon"><i class="fa-solid fa-right-from-bracket"></i></span><span class="nav-label">Đăng xuất</span></a></li>
-      </ul>
-    </nav>
-  </nav>
+    <div id="sidebar-container"></div>
 
-  <div class="main-content" id="mainContent">
-    <header class="topbar">
-      <div class="topbar-title"><span>HT</span> Mobile – Voucher</div>
-      <div class="topbar-right">
-        <div class="topbar-date" id="currentDate"></div>
-        <div class="topbar-user"><div class="avatar">AD</div> Xin chào, <strong>Admin</strong></div>
-      </div>
-    </header>
+    <div class="main-content" id="mainContent">
+        <div id="header-container"></div>
 
     <div class="page-body">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
@@ -96,6 +75,34 @@
         <div style="text-align: right; display:flex; justify-content:flex-end; gap:10px; margin-top:10px;">
           <button type="button" class="btn-edit" onclick="document.getElementById('voucherModal').style.display='none'">Hủy</button>
           <button type="submit" class="btn-add">Lưu Voucher</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="extendVoucherModal">
+    <div class="modal-content extend-modal">
+      <div class="modal-header">
+        <div>
+          <h3>Gia hạn Mã giảm giá</h3>
+          <p id="extendVoucherCodeText">Cập nhật hạn dùng và số lượng voucher.</p>
+        </div>
+        <button type="button" class="close-modal" data-close-extend>&times;</button>
+      </div>
+      <form id="extendVoucherForm">
+        <input type="hidden" id="extendVoucherCode">
+        <div class="form-group">
+          <label>Hạn sử dụng mới</label>
+          <input type="date" id="extendEndDate" required>
+        </div>
+        <div class="form-group">
+          <label>Số lượt dùng tối đa</label>
+          <input type="number" id="extendUsageLimit" min="1" required>
+        </div>
+        <div class="extend-current-info" id="extendCurrentInfo"></div>
+        <div style="text-align: right; display:flex; justify-content:flex-end; gap:10px; margin-top:18px;">
+          <button type="button" class="btn-edit" data-close-extend>Hủy</button>
+          <button type="submit" class="btn-add"><i class="fa-solid fa-calendar-plus"></i> Lưu gia hạn</button>
         </div>
       </form>
     </div>

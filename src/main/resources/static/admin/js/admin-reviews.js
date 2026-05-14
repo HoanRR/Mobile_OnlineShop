@@ -14,54 +14,6 @@ function useAdminReviewsApi() {
   return Boolean(window.HTApi?.isEnabled());
 }
 
-function initCommonUI() {
-  const sidebar = document.getElementById('sidebar');
-  const mainContent = document.getElementById('mainContent');
-  const toggleBtn = document.getElementById('sidebarToggle');
-
-  if (sidebar && mainContent && toggleBtn) {
-    const collapsedKey = 'ht_admin_sidebar_collapsed';
-    if (localStorage.getItem(collapsedKey) === '1') {
-      sidebar.classList.add('collapsed');
-      mainContent.classList.add('expanded');
-    }
-
-    toggleBtn.addEventListener('click', () => {
-      const isCollapsed = sidebar.classList.toggle('collapsed');
-      mainContent.classList.toggle('expanded', isCollapsed);
-      localStorage.setItem(collapsedKey, isCollapsed ? '1' : '0');
-    });
-  }
-
-  const dateEl = document.getElementById('currentDate');
-  if (dateEl) {
-    dateEl.textContent = new Date().toLocaleDateString('vi-VN', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-  }
-
-  const logoutBtn = document.querySelector('.logout a');
-  if (logoutBtn) {
-    logoutBtn.addEventListener('click', (event) => {
-      event.preventDefault();
-      localStorage.removeItem('jwt_token');
-      localStorage.removeItem('user_role');
-      window.location.href = '../login.html';
-    });
-  }
-}
-
-function normalizeText(value) {
-  return String(value || '')
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .toLowerCase()
-    .trim();
-}
-
 function escapeHtml(value) {
   const div = document.createElement('div');
   div.textContent = value;
@@ -253,7 +205,7 @@ function submitReply(button) {
   const textarea = button.previousElementSibling;
 
   if (!textarea || !textarea.value.trim()) {
-    alert('Vui l\u00f2ng nh\u1eadp n\u1ed9i dung ph\u1ea3n h\u1ed3i.');
+    if (textarea) textarea.focus();
     return;
   }
 
@@ -272,7 +224,6 @@ function submitReply(button) {
 
   textarea.value = '';
   if (staffReplySection) staffReplySection.style.display = 'none';
-  alert('\u0110\u00e3 g\u1eedi ph\u1ea3n h\u1ed3i.');
 }
 
 function editProduct() {

@@ -17,14 +17,6 @@ function useStaffProductsApi() {
   return Boolean(window.HTApi?.isEnabled());
 }
 
-function normalizeText(value) {
-  return String(value || '')
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .toLowerCase()
-    .trim();
-}
-
 async function loadStaffProducts(query = {}) {
   if (useStaffProductsApi()) {
     try {

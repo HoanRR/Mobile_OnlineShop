@@ -17,46 +17,6 @@ function useProductsApi() {
   return Boolean(window.HTApi?.isEnabled());
 }
 
-function initCommonUI() {
-  const sidebar = document.getElementById('sidebar');
-  const mainContent = document.getElementById('mainContent');
-  const toggleBtn = document.getElementById('sidebarToggle');
-
-  if (sidebar && mainContent && toggleBtn) {
-    const collapsedKey = 'ht_sidebar_collapsed';
-    if (localStorage.getItem(collapsedKey) === '1') {
-      sidebar.classList.add('collapsed');
-      mainContent.classList.add('expanded');
-    }
-
-    toggleBtn.addEventListener('click', () => {
-      const isCollapsed = sidebar.classList.toggle('collapsed');
-      mainContent.classList.toggle('expanded', isCollapsed);
-      localStorage.setItem(collapsedKey, isCollapsed ? '1' : '0');
-    });
-  }
-
-  const dateEl = document.getElementById('currentDate');
-  if (dateEl) {
-    dateEl.textContent = new Date().toLocaleDateString('vi-VN', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-  }
-
-  const logoutBtn = document.querySelector('.logout a');
-  if (logoutBtn) {
-    logoutBtn.addEventListener('click', (event) => {
-      event.preventDefault();
-      localStorage.removeItem('jwt_token');
-      localStorage.removeItem('user_role');
-      window.location.href = '../login.html';
-    });
-  }
-}
-
 async function loadProducts(query = {}) {
   if (useProductsApi()) {
     try {
@@ -86,22 +46,6 @@ function apiProductId(product) {
   return product.product_id || product.productId || String(product.id || '').replace(/\D/g, '');
 }
 
-function normalizeText(value) {
-  return String(value || '')
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .toLowerCase()
-    .trim();
-}
-
-function formatCurrency(amount) {
-  return new Intl.NumberFormat('vi-VN', {
-    style: 'currency',
-    currency: 'VND',
-    minimumFractionDigits: 0
-  }).format(Number(amount) || 0);
-}
-
 function getFilteredProducts() {
   const input = document.querySelector('.filter-bar input');
   const keyword = normalizeText(input ? input.value : '');
@@ -123,6 +67,31 @@ function stockText(product) {
   }
 
   return `<span style="color:var(--green); font-weight:600;">${stock} chi\u1ebfc</span>`;
+}
+
+function productBaseName(product) {
+  return product.product_name || product.productName || product.name || '';
+}
+
+function productVariants(product) {
+  if (Array.isArray(product.variants) && product.variants.length) return product.variants;
+
+  return [{
+    ram: product.ram || '',
+    storage: product.storage || '',
+    storage_capacity: product.storage_capacity || product.storageCapacity || '',
+    color: product.color || '',
+    price: Number(product.price) || 0,
+    total_available: Number(product.stock) || 0,
+    variant_image_link: product.variant_image_link || product.product_image_link || ''
+  }];
+}
+
+function variantStorageText(variant) {
+  if (variant.storage) return variant.storage;
+  const storage = variant.storage_capacity ?? variant.storageCapacity ?? '';
+  if (!storage) return '';
+  return String(storage).match(/[a-zA-Z]/) ? String(storage) : `${storage}GB`;
 }
 
 function renderProducts() {
@@ -157,31 +126,115 @@ function renderProducts() {
   `).join('');
 }
 
-async function editProduct(productId) {
+function createEditVariantRow(variant = {}) {
+  const row = document.createElement('tr');
+  row.innerHTML = `
+    <td><input type="text" data-field="ram" value="${variant.ram || ''}" placeholder="8GB"></td>
+    <td><input type="text" data-field="storage_capacity" value="${variantStorageText(variant)}" placeholder="256GB"></td>
+    <td><input type="text" data-field="color" value="${variant.color || ''}" placeholder="Titan"></td>
+    <td><input type="number" data-field="price" value="${Number(variant.price) || 0}" min="0" placeholder="29990000"></td>
+    <td><input type="number" data-field="total_available" value="${Number(variant.total_available ?? variant.totalAvailable ?? productStockFromVariant(variant)) || 0}" min="0" placeholder="12"></td>
+    <td><input type="url" data-field="variant_image_link" value="${variant.variant_image_link || variant.variantImageLink || ''}" placeholder="https://..."></td>
+    <td><button type="button" class="btn-delete" data-action="remove-edit-variant"><i class="fa-solid fa-trash"></i></button></td>
+  `;
+  return row;
+}
+
+function productStockFromVariant(variant) {
+  return Number(variant.total_available ?? variant.totalAvailable ?? variant.stock ?? 0) || 0;
+}
+
+function addEditVariantRow(variant = {}) {
+  const tableBody = document.querySelector('#editVariantTable tbody');
+  if (!tableBody) return;
+  tableBody.appendChild(createEditVariantRow(variant));
+}
+
+function collectEditVariants() {
+  const chip = document.getElementById('editProductChip')?.value.trim() || '';
+  const batteryCapacity = document.getElementById('editBatteryCapacity')?.value.trim() || '';
+  const resolution = document.getElementById('editResolution')?.value.trim() || '';
+  const productImageLink = document.getElementById('editProductImageLink')?.value.trim() || '';
+
+  return Array.from(document.querySelectorAll('#editVariantTable tbody tr'))
+    .map((row) => {
+      const fieldValue = (field) => row.querySelector(`[data-field="${field}"]`)?.value.trim() || '';
+      const storageText = fieldValue('storage_capacity');
+      return {
+        ram: fieldValue('ram'),
+        storage: storageText,
+        storage_capacity: Number(String(storageText).replace(/\D/g, '')) || 0,
+        color: fieldValue('color'),
+        price: Number(fieldValue('price')),
+        total_available: Number(fieldValue('total_available')) || 0,
+        variant_image_link: fieldValue('variant_image_link') || productImageLink,
+        battery_capacity: batteryCapacity,
+        resolution,
+        chip
+      };
+    })
+    .filter((variant) => variant.ram || variant.storage || variant.color || variant.price || variant.total_available);
+}
+
+function closeProductEditModal() {
+  const modal = document.getElementById('productEditModal');
+  if (modal) modal.style.display = 'none';
+}
+
+function openProductEditModal(productId) {
   const product = products.find((item) => item.id === productId);
   if (!product) return;
 
-  const nextName = prompt('T\u00ean s\u1ea3n ph\u1ea9m:', product.name);
-  if (nextName === null) return;
+  const variants = productVariants(product);
+  const firstVariant = variants[0] || {};
+  document.getElementById('editingProductId').value = product.id;
+  document.getElementById('editProductName').value = productBaseName(product);
+  document.getElementById('editProductBrand').value = product.brand || 'Apple';
+  document.getElementById('editProductImageLink').value = product.product_image_link || product.productImageLink || '';
+  document.getElementById('editProductChip').value = firstVariant.chip || product.chip || '';
+  document.getElementById('editBatteryCapacity').value = firstVariant.battery_capacity || firstVariant.batteryCapacity || product.battery_capacity || '';
+  document.getElementById('editResolution').value = firstVariant.resolution || product.resolution || '';
 
-  const nextPrice = prompt('Gi\u00e1 b\u00e1n:', product.price);
-  if (nextPrice === null) return;
+  const tableBody = document.querySelector('#editVariantTable tbody');
+  if (tableBody) {
+    tableBody.innerHTML = '';
+    variants.forEach((variant) => addEditVariantRow(variant));
+  }
 
-  const nextStock = prompt('T\u1ed3n kho:', product.stock);
-  if (nextStock === null) return;
+  const modal = document.getElementById('productEditModal');
+  if (modal) modal.style.display = 'flex';
+}
 
-  const parsedPrice = Number(nextPrice);
-  const parsedStock = Number(nextStock);
+async function saveEditedProduct(event) {
+  event.preventDefault();
 
-  if (!nextName.trim() || Number.isNaN(parsedPrice) || parsedPrice < 0 || Number.isNaN(parsedStock) || parsedStock < 0) {
-    alert('D\u1eef li\u1ec7u s\u1ea3n ph\u1ea9m kh\u00f4ng h\u1ee3p l\u1ec7.');
+  const productId = document.getElementById('editingProductId')?.value;
+  const product = products.find((item) => item.id === productId);
+  if (!product) return;
+
+  const nextName = document.getElementById('editProductName')?.value.trim() || '';
+  const nextBrand = document.getElementById('editProductBrand')?.value.trim() || '';
+  const productImageLink = document.getElementById('editProductImageLink')?.value.trim() || '';
+  const variants = collectEditVariants();
+
+  if (!nextName || !nextBrand || !variants.length) {
+    alert('Vui lòng nhập tên, hãng và ít nhất một phiên bản cấu hình.');
+    return;
+  }
+
+  const invalidVariant = variants.some((variant) => Number.isNaN(variant.price) || variant.price <= 0 || variant.total_available < 0);
+  if (invalidVariant) {
+    alert('Giá bán phải lớn hơn 0 và tồn kho không được âm.');
     return;
   }
 
   if (useProductsApi()) {
     try {
       await HTApi.admin.products.update(apiProductId(product), {
-        product_name: nextName.trim()
+        product_name: nextName,
+        brand: nextBrand,
+        product_image_link: productImageLink,
+        variants
       });
     } catch (error) {
       alert(error.message || 'Không cập nhật được sản phẩm qua API.');
@@ -189,13 +242,23 @@ async function editProduct(productId) {
     }
   }
 
+  const firstVariant = variants[0];
   products = products.map((item) => item.id === productId
-    ? { ...item, name: nextName.trim(), product_name: nextName.trim(), price: parsedPrice, stock: parsedStock }
+    ? {
+        ...item,
+        name: `${nextName}${firstVariant.storage ? ` ${firstVariant.storage}` : ''}`.trim(),
+        product_name: nextName,
+        brand: nextBrand,
+        product_image_link: productImageLink,
+        price: firstVariant.price,
+        stock: variants.reduce((sum, variant) => sum + Number(variant.total_available || 0), 0),
+        variants
+      }
     : item);
 
   saveProducts();
   renderProducts();
-  alert('\u0110\u00e3 c\u1eadp nh\u1eadt s\u1ea3n ph\u1ea9m.');
+  closeProductEditModal();
 }
 
 async function deleteProduct(productId) {
@@ -255,12 +318,37 @@ function initProductPageEvents() {
       if (!button) return;
 
       if (button.dataset.action === 'edit') {
-        editProduct(button.dataset.id);
+        openProductEditModal(button.dataset.id);
       } else if (button.dataset.action === 'delete') {
         deleteProduct(button.dataset.id);
       }
     });
   }
+
+  document.getElementById('productEditForm')?.addEventListener('submit', saveEditedProduct);
+  document.getElementById('addEditVariantBtn')?.addEventListener('click', () => addEditVariantRow());
+  document.querySelectorAll('[data-close-product-edit]').forEach((button) => {
+    button.addEventListener('click', closeProductEditModal);
+  });
+
+  document.getElementById('editVariantTable')?.addEventListener('click', (event) => {
+    const button = event.target.closest('button[data-action="remove-edit-variant"]');
+    if (!button) return;
+
+    const rows = document.querySelectorAll('#editVariantTable tbody tr');
+    if (rows.length <= 1) {
+      button.closest('tr').querySelectorAll('input').forEach((input) => {
+        input.value = '';
+      });
+      return;
+    }
+
+    button.closest('tr').remove();
+  });
+
+  document.getElementById('productEditModal')?.addEventListener('click', (event) => {
+    if (event.target.id === 'productEditModal') closeProductEditModal();
+  });
 }
 
 document.addEventListener('DOMContentLoaded', async () => {

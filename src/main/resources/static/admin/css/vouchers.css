@@ -3,8 +3,11 @@
 .modal-content { background: var(--surface); padding: 30px; border-radius: 16px; width: 550px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); border: 1px solid var(--border); }
 .modal-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--border); padding-bottom: 15px; margin-bottom: 25px; }
 .modal-header h3 { color: var(--red); margin: 0; font-size: 18px; }
+.modal-header p { margin: 6px 0 0; color: var(--muted); font-size: 13px; }
 .close-modal { color: var(--muted); font-size: 24px; cursor: pointer; background: none; border: none; transition: var(--transition); }
 .close-modal:hover { color: var(--text); }
+.extend-modal { width: 460px; }
+.extend-current-info { background: var(--surface2); border: 1px solid var(--border); border-radius: 10px; color: var(--muted); font-size: 13px; padding: 12px; line-height: 1.7; }
 .modal-form-group { margin-bottom: 20px; }
 .modal-form-group label { display: block; color: var(--muted); margin-bottom: 8px; font-size: 13px; font-weight: 600; }
 .modal-form-group input, .modal-form-group select { width: 100%; padding: 12px 14px; background-color: var(--bg); color: var(--text); border: 1px solid var(--border); border-radius: 8px; outline: none; font-family: inherit; transition: var(--transition); }

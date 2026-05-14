@@ -39,46 +39,6 @@ function useUsersApi() {
   return Boolean(window.HTApi?.isEnabled());
 }
 
-function initCommonUI() {
-  const sidebar = document.getElementById('sidebar');
-  const mainContent = document.getElementById('mainContent');
-  const toggleBtn = document.getElementById('sidebarToggle');
-
-  if (sidebar && mainContent && toggleBtn) {
-    const collapsedKey = 'ht_sidebar_collapsed';
-    if (localStorage.getItem(collapsedKey) === '1') {
-      sidebar.classList.add('collapsed');
-      mainContent.classList.add('expanded');
-    }
-
-    toggleBtn.addEventListener('click', () => {
-      const isCollapsed = sidebar.classList.toggle('collapsed');
-      mainContent.classList.toggle('expanded', isCollapsed);
-      localStorage.setItem(collapsedKey, isCollapsed ? '1' : '0');
-    });
-  }
-
-  const dateEl = document.getElementById('currentDate');
-  if (dateEl) {
-    dateEl.textContent = new Date().toLocaleDateString('vi-VN', {
-      weekday: 'long',
-      year: 'numeric',
-      month: 'long',
-      day: 'numeric'
-    });
-  }
-
-  const logoutBtn = document.querySelector('.logout a');
-  if (logoutBtn) {
-    logoutBtn.addEventListener('click', (event) => {
-      event.preventDefault();
-      localStorage.removeItem('jwt_token');
-      localStorage.removeItem('user_role');
-      window.location.href = '../login.html';
-    });
-  }
-}
-
 async function loadUsers(query = {}) {
   if (useUsersApi()) {
     try {
@@ -102,14 +62,6 @@ async function loadUsers(query = {}) {
 
 function saveUsers() {
   localStorage.setItem(USERS_STORAGE_KEY, JSON.stringify(users));
-}
-
-function normalizeText(value) {
-  return String(value || '')
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .toLowerCase()
-    .trim();
 }
 
 function getRoleLabel(role) {
