@@ -6,10 +6,45 @@ function getRefreshToken(data) {
     return data.refresh_token || data.refreshToken || '';
 }
 
+function normalizeRole(role) {
+    const value = String(role || '').trim().toUpperCase();
+    if (value === 'ADMIN') return 'ADMIN';
+    if (value === 'EMPLOYEE' || value === 'STAFF' || value === 'NHANVIEN') return 'EMPLOYEE';
+    if (value === 'CUSTOMER' || value === 'USER' || value === 'KHACHHANG') return 'CUSTOMER';
+    return '';
+}
+
+function inferDemoRole(username) {
+    const value = String(username || '')
+        .normalize('NFD')
+        .replace(/[\u0300-\u036f]/g, '')
+        .toLowerCase()
+        .trim();
+
+    if (value.includes('admin') || value === 'ad') return 'ADMIN';
+    if (value.includes('staff') || value.includes('employee') || value.includes('nhanvien') || value.startsWith('nv') || value.startsWith('sv')) {
+        return 'EMPLOYEE';
+    }
+    return 'CUSTOMER';
+}
+
+function demoLogin(username) {
+    const role = inferDemoRole(username);
+    return {
+        access_token: `demo-access-token-${Date.now()}`,
+        refresh_token: `demo-refresh-token-${Date.now()}`,
+        user: {
+            user_id: Date.now(),
+            username,
+            role
+        }
+    };
+}
+
 function saveAuthSession(data) {
     const accessToken = getAuthToken(data);
     const refreshToken = getRefreshToken(data);
-    const userRole = data.user?.role || data.role;
+    const userRole = normalizeRole(data.user?.role || data.role);
 
     if (accessToken) {
         localStorage.setItem('jwt_token', accessToken);
@@ -20,6 +55,22 @@ function saveAuthSession(data) {
     if (userRole) localStorage.setItem('user_role', userRole);
 
     return userRole;
+}
+
+function loginRedirectByRole(role) {
+    const userRole = normalizeRole(role);
+
+    if (userRole === 'ADMIN') return 'Admin_Dashboard/dashboard.html';
+    if (userRole === 'EMPLOYEE') return 'Staff_Dashboard/dashboard.html';
+    return 'index.html';
+}
+
+async function requestLogin(username, password) {
+    if (window.HTApi?.isEnabled()) {
+        return HTApi.auth.login({ username, password });
+    }
+
+    return demoLogin(username);
 }
 
 // Bắt sự kiện khi người dùng click vào nút Đăng nhập
@@ -38,36 +89,14 @@ if (loginButton) {
         }
 
         try {
-            const data = window.HTApi
-                ? await HTApi.auth.login({
-                    username: usernameInput,
-                    password: passwordInput
-                })
-                : await fetch('/api/auth/login', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        username: usernameInput,
-                        password: passwordInput
-                    })
-                }).then((response) => {
-                    if (!response.ok) throw new Error('Sai tài khoản hoặc mật khẩu');
-                    return response.json();
-                });
-
+            const data = await requestLogin(usernameInput, passwordInput);
             const userRole = saveAuthSession(data);
 
-            if (userRole === 'ADMIN') {
-                window.location.href = '/Admin_Dashboard/dashboard.html';
-            } else if (userRole === 'EMPLOYEE') {
-                window.location.href = '/Staff_Dashboard/dashboard.html';
-            } else if (userRole === 'CUSTOMER') {
-                window.location.href = '/index.html';
-            } else {
+            if (!userRole) {
                 throw new Error('Không xác định được vai trò tài khoản');
             }
+
+            window.location.href = loginRedirectByRole(userRole);
         } catch(error) {
             console.error('Lỗi đăng nhập:', error);
             alert('Đăng nhập thất bại: Vui lòng kiểm tra lại tài khoản và mật khẩu!');
