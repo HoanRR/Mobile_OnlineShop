@@ -19,6 +19,5 @@ import java.util.Date;
 public class InvalidatedToken {
     @Id
     String id;
-
     Date expiryTime;
 }

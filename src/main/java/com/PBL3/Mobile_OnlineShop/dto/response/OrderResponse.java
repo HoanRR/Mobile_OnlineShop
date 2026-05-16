@@ -1,20 +1,29 @@
 package com.PBL3.Mobile_OnlineShop.dto.response;
 
-import lombok.Data;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
+
 import java.time.LocalDateTime;
 
 @Data
+@Builder
+@AllArgsConstructor
+@NoArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class OrderResponse {
-    private Long orderId;
-    private String orderStatus; // PENDING, PROCESSING...
-    private LocalDateTime orderDate;
-    private String receiverName;
-    private String receiverPhone;
-    private String shippingAddress;
-    private String paymentMethod;
-    private Boolean isPaid;
+    Long order_id;
+    String order_status; // PENDING, PROCESSING...
+    LocalDateTime order_date;
+    String receiver_name;
+    String receiver_phone;
+    String shipping_address;
+    String payment_method;
+    Boolean is_paid;
+    Long voucher_id;
 
-    private Double subTotal; // Tiền hàng
-    private Double discountAmount; // Tiền giảm giá
-    private Double totalAmount; // Tiền khách phải trả cuối cùng
+    Double sub_total; // Tiền hàng
+    Double discount_amount; // Tiền giảm giá
+    Double total_amount; // Tiền khách phải trả cuối cùng
 }

@@ -6,7 +6,6 @@ import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Entity
 @Table(name = "voucher")
@@ -36,6 +35,6 @@ public class Voucher {
     @Min(value = 0, message = "Giới hạn sử dụng không được âm")
     private Long usageLimit;
 
-    @OneToMany(mappedBy = "voucher")
-    private List<ApplyCondition> applyConditions;
+    @OneToOne(mappedBy = "voucher",cascade = CascadeType.ALL, orphanRemoval = true)
+    private ApplyCondition applyConditions;
 }

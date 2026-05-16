@@ -1,0 +1,18 @@
+$kind: http-request
+name: api/products?page=1&limit=10&brand=&keyword=&sort_by=price&order=asc
+url: http://localhost:8080/api/products?page=1&limit=10&brand=&keyword=&sort_by=price&order=asc
+method: GET
+queryParams:
+  - key: page
+    value: "1"
+  - key: limit
+    value: "10"
+  - key: brand
+    value: ""
+  - key: keyword
+    value: ""
+  - key: sort_by
+    value: price
+  - key: order
+    value: asc
+order: 4503573843328488

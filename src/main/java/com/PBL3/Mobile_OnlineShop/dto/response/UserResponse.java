@@ -1,21 +1,21 @@
 package com.PBL3.Mobile_OnlineShop.dto.response;
 
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
+
+import java.util.logging.Level;
+
+import javax.management.relation.Role;
 
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class UserResponse {
-    Long userId;
+    Long user_Id;
     String username;
     String email;
-    String phoneNumber;
+    String phone_number;
     String role;
 }

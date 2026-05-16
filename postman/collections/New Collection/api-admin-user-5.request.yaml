@@ -1,0 +1,12 @@
+$kind: http-request
+name: api/admin/user/5
+url: http://localhost:8080/api/admin/user/5
+method: PATCH
+body:
+  type: json
+  content: "{\r\n    \"role\" : \"ADMIN\"\r\n}"
+auth:
+  type: bearer
+  credentials:
+    token: eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsInNjb3BlIjoiQURNSU4iLCJpc3MiOiJwaG9uZXNob3Audm4iLCJleHAiOjE3NzcyMDU3NzksImlhdCI6MTc3NzE5ODU3OSwidXNlcklkIjoxLCJqdGkiOiI4ODllN2ZkMi03NmUzLTQ3Y2QtOGMxNC1mOGM2YWZjYzdkMDgifQ.4gAjnyCiW6jr0GidmCUkOZdPFRbDG_UDlxVl4INaKs8B3cBwnLlV0BPXC-Kw9UEelGX0b9g_W-9OM1lX4ITEVA
+order: 4503551414312428

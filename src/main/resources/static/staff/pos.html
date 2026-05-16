@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>POS Bán Hàng - HT Mobile</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../static/staff/css/staff-base.css">
+<link rel="stylesheet" href="../../static/staff/css/pos.css">
+    <script src="../../static/js/api-client.js"></script>
+    <script src="../../static/staff/js/common.js"></script>
+    <script src="../../static/staff/js/pos.js"></script>
+</head>
+<body>
+<div class="app-wrapper">
+    <div id="sidebar-container"></div>
+
+    <div class="main-content" id="mainContent">
+        <div id="header-container"></div>
+
+        <div class="page-body pos-page">
+            <div class="pos-container">
+                <div class="pos-products">
+                    <div class="pos-search">
+                        <input type="text" placeholder="Nhập tên Sản phẩm...">
+                        <button><i class="fa-solid fa-search"></i> tìm kiếm</button>
+                    </div>
+                    
+                    <div class="product-grid" id="product-grid">
+                        <div class="pos-loading" style="grid-column:1/-1;text-align:center;padding:40px;color:var(--muted);">
+                            <i class="fa-solid fa-spinner fa-spin" style="font-size:32px;margin-bottom:12px;"></i>
+                            <p>Đang tải sản phẩm...</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="pos-cart">
+                    <h3 class="cart-header"><i class="fa-solid fa-basket-shopping" style="color:var(--red); margin-right:8px;"></i> Đơn hàng hiện tại</h3>
+                    <div class="cart-items" id="cart-items">
+                        <div style="color: var(--muted); text-align: center; margin-top: 60px;">
+                            <i class="fa-solid fa-cart-arrow-down" style="font-size: 48px; margin-bottom: 16px; opacity: 0.5;"></i>
+                            <p>Chưa có Sản phẩm nào</p>
+                        </div>
+                    </div>
+                    <div class="cart-summary">
+                        <div class="summary-row">
+                            <span>Tạm tính (<span id="total-qty">0</span> SP)</span>
+                            <span id="subtotal">0 ₫</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Chiết khấu/Giảm giá</span>
+                            <span style="color:var(--green)">0 ₫</span>
+                        </div>
+                        <div class="summary-row total">
+                            <span>THÀNH TIỀN</span>
+                            <span id="total-price">0 ₫</span>
+                        </div>
+                        <button class="btn-checkout" onclick="checkout()"><i class="fa-solid fa-money-bill-wave"></i> THANH TOÁN NGAY</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>

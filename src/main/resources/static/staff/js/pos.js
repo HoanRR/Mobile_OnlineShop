@@ -1,16 +1,19 @@
 /**
- * POS Sales Page JavaScript
- * Mock cart and checkout while backend APIs are not connected.
+ * POS Bán Hàng - HT Mobile
+ * - Sản phẩm được load từ API (database).
+ * - Giỏ hàng chỉ tồn tại trong bộ nhớ (in-memory), không dùng localStorage.
+ * - Khi chuyển sang trang thanh toán, dữ liệu giỏ hàng được truyền tạm qua sessionStorage (one-time bridge).
  */
 
-const POS_CART_STORAGE_KEY = 'ht_pos_cart';
-const POS_PENDING_CART_KEY = 'ht_pos_pending_cart';
+
+const POS_PENDING_KEY = 'ht_pos_pending_cart';
+
+// ===================== State =====================
 
 let cart = [];
+let searchDebounce = null;
 
-function usePosApi() {
-  return Boolean(window.HTApi?.isEnabled());
-}
+// ===================== Helpers =====================
 
 function formatMoney(amount) {
   if (typeof formatCurrency === 'function') return formatCurrency(Number(amount) || 0);
@@ -23,30 +26,24 @@ function escapeHtml(value) {
   return div.innerHTML;
 }
 
-function readSavedCart() {
-  try {
-    const saved = JSON.parse(sessionStorage.getItem(POS_CART_STORAGE_KEY) || '[]');
-    return Array.isArray(saved) ? saved : [];
-  } catch (error) {
-    return [];
-  }
+function getProductGrid() {
+  return document.getElementById('product-grid');
 }
 
-function saveCart() {
-  sessionStorage.setItem(POS_CART_STORAGE_KEY, JSON.stringify(cart));
-}
+// ===================== Cart - Actions =====================
 
-function addToCart(name, price, variantId = '', imei = '') {
-  const item = cart.find((cartItem) => cartItem.name === name);
-  if (item) {
-    item.qty += 1;
+function addToCart(name, price, variantId = '') {
+  const key = variantId || name;
+  const existing = cart.find(item => item.key === key);
+  if (existing) {
+    existing.qty += 1;
   } else {
     cart.push({
+      key,
       name,
       price: Number(price) || 0,
       qty: 1,
-      variantId: variantId || `PV-${normalizeText(name).replace(/\s+/g, '-').toUpperCase()}`,
-      imei
+      variantId,
     });
   }
 
@@ -132,13 +129,15 @@ function productImage(product) {
 }
 
 function renderPOSProducts(products) {
-  const grid = document.querySelector('.product-grid');
+  const grid = document.getElementById('product-grid') || document.querySelector('.product-grid');
+
   if (!grid) return;
 
   if (!products.length) {
     grid.innerHTML = `
       <div style="color: var(--muted); grid-column: 1 / -1; text-align: center; padding: 40px;">
-        Kh\u00f4ng t\u00ecm th\u1ea5y s\u1ea3n ph\u1ea9m ph\u00f9 h\u1ee3p
+        <i class="fa-solid fa-box-open" style="font-size:32px;margin-bottom:12px;opacity:0.5;"></i>
+        <p>Kh\u00f4ng t\u00ecm th\u1ea5y s\u1ea3n ph\u1ea9m ph\u00f9 h\u1ee3p</p>
       </div>
     `;
     return;
@@ -151,7 +150,7 @@ function renderPOSProducts(products) {
 
     return `
       <div class="pos-item" data-add-cart="1" data-name="${escapeHtml(mapped.name)}" data-price="${Number(mapped.price) || 0}" data-variant-id="${escapeHtml(variantId)}">
-        <img src="${escapeHtml(productImage(mapped))}" alt="${escapeHtml(mapped.name)}">
+        <img src="${escapeHtml(productImage(mapped))}" alt="${escapeHtml(mapped.name)}" onerror="this.src='../../static/staff/img/iphone-15-plus_1__1.webp'">
         <h4>${escapeHtml(mapped.name)}</h4>
         <p>${formatMoney(mapped.price)}</p>
       </div>
@@ -160,25 +159,31 @@ function renderPOSProducts(products) {
 }
 
 async function loadPOSProducts(keyword = '') {
-  if (!usePosApi()) return;
+  const grid = getProductGrid();
+  if (grid) {
+    grid.innerHTML = `
+      <div class="pos-loading" style="grid-column:1/-1;text-align:center;padding:40px;color:var(--muted);">
+        <i class="fa-solid fa-spinner fa-spin" style="font-size:32px;margin-bottom:12px;"></i>
+        <p>\u0110ang t\u1ea3i s\u1ea3n ph\u1ea9m...</p>
+      </div>
+    `;
+  }
 
   try {
-    const response = await HTApi.products.list({ page: 1, limit: 24, keyword });
+    const response = await HTApi.products.list({ page: 1, limit: 48, keyword });
     renderPOSProducts(HTApi.listData(response));
   } catch (error) {
     console.warn('Khong tai duoc san pham POS tu API:', error);
+    if (grid) {
+      grid.innerHTML = `
+        <div style="color:var(--muted);grid-column:1/-1;text-align:center;padding:40px;">
+          <i class="fa-solid fa-triangle-exclamation" style="font-size:32px;margin-bottom:12px;color:#e74c3c;"></i>
+          <p>Kh\u00f4ng t\u1ea3i \u0111\u01b0\u1ee3c s\u1ea3n ph\u1ea9m. Vui l\u00f2ng ki\u1ec3m tra k\u1ebft n\u1ed1i.</p>
+          <button onclick="loadPOSProducts()" style="margin-top:12px;padding:8px 20px;border-radius:8px;border:1px solid var(--muted);background:transparent;cursor:pointer;">\u21ba Th\u1eed l\u1ea1i</button>
+        </div>
+      `;
+    }
   }
-}
-
-function filterPOSProducts() {
-  const searchInput = document.querySelector('.pos-search input');
-  const keyword = normalizeText(searchInput ? searchInput.value : '');
-  const items = document.querySelectorAll('.pos-item');
-
-  items.forEach((item) => {
-    const name = normalizeText(item.querySelector('h4')?.textContent);
-    item.style.display = !keyword || name.includes(keyword) ? '' : 'none';
-  });
 }
 
 function initPOSEvents() {
@@ -186,30 +191,27 @@ function initPOSEvents() {
   const searchButton = document.querySelector('.pos-search button');
 
   if (searchInput) {
+    let debounceTimer = null;
     searchInput.addEventListener('input', () => {
-      if (!usePosApi()) filterPOSProducts();
+      clearTimeout(debounceTimer);
+      debounceTimer = setTimeout(() => {
+        loadPOSProducts(searchInput.value.trim());
+      }, 400);
     });
     searchInput.addEventListener('keydown', (event) => {
       if (event.key !== 'Enter') return;
-      if (usePosApi()) {
-        loadPOSProducts(searchInput.value.trim());
-      } else {
-        filterPOSProducts();
-      }
+      clearTimeout(debounceTimer);
+      loadPOSProducts(searchInput.value.trim());
     });
   }
 
   if (searchButton) {
     searchButton.addEventListener('click', () => {
-      if (usePosApi()) {
-        loadPOSProducts(searchInput ? searchInput.value.trim() : '');
-      } else {
-        filterPOSProducts();
-      }
+      loadPOSProducts(searchInput ? searchInput.value.trim() : '');
     });
   }
 
-  const productGrid = document.querySelector('.product-grid');
+  const productGrid = getProductGrid();
   if (productGrid) {
     productGrid.addEventListener('click', (event) => {
       const item = event.target.closest('.pos-item[data-add-cart="1"]');

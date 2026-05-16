@@ -13,4 +13,5 @@ public class RegisterReponse {
     String username;
     String email;
     String role;
+    String fulname;
 }

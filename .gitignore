@@ -10,7 +10,6 @@ target/
 !.mvn/wrapper/maven-wrapper.jar
 !**/src/main/**/target/
 !**/src/test/**/target/
-
 # Các file biên dịch của Java
 *.class
 
@@ -19,4 +18,3 @@ target/
 *.iws
 *.iml
 *.ipr
-src/main/resources/application.properties

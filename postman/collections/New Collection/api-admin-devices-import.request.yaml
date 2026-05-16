@@ -1,0 +1,19 @@
+$kind: http-request
+name: api/admin/devices/import
+url: http://localhost:8080/api/admin/devices/import
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \  \"product_variant_id\": 2,\r
+
+    \  \"imei_list\": [\"356938025643809\", \"156938035643810\"]\r
+
+    }"
+auth:
+  credentials:
+    - key: token
+      value: eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbjIiLCJzY29wZSI6IkFETUlOIiwiaXNzIjoicGhvbmVzaG9wLnZuIiwiZXhwIjoxNzc2NzkwMjY2LCJpYXQiOjE3NzY3ODY2NjYsInVzZXJJZCI6NiwianRpIjoiMDQ4NmQwMzctYTk0Ni00OWNiLWEzNGYtYTVjZGY0MTdhOTBjIn0.Cu3999eOIV_2FV6DuEQcKKahTwXHa1NilJLAzcnk0_v2LO5T8UprusHz1_YrKA0FIRYYhG7bC-_HjM_HJm8NIQ
+  type: bearer
+order: 4408337442878536

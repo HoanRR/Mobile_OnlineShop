@@ -1,0 +1,20 @@
+$kind: http-request
+name: api/admin/user
+url: http://localhost:8080/api/admin/user?role=ADMIN&search=&sort_by=username&page=1&limit=5
+method: GET
+queryParams:
+  - key: role
+    value: ADMIN
+  - key: search
+    value: ""
+  - key: sort_by
+    value: username
+  - key: page
+    value: "1"
+  - key: limit
+    value: "5"
+auth:
+  type: bearer
+  credentials:
+    token: eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsInNjb3BlIjoiQURNSU4iLCJpc3MiOiJwaG9uZXNob3Audm4iLCJleHAiOjE3NzcyMDU3NzksImlhdCI6MTc3NzE5ODU3OSwidXNlcklkIjoxLCJqdGkiOiI4ODllN2ZkMi03NmUzLTQ3Y2QtOGMxNC1mOGM2YWZjYzdkMDgifQ.4gAjnyCiW6jr0GidmCUkOZdPFRbDG_UDlxVl4INaKs8B3cBwnLlV0BPXC-Kw9UEelGX0b9g_W-9OM1lX4ITEVA
+order: 4503554359817559

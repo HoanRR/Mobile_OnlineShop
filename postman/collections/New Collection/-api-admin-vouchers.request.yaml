@@ -1,0 +1,32 @@
+$kind: http-request
+name: /api/admin/vouchers
+url: http://localhost:8080/api/admin/vouchers
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \  \"voucher_code\": \"GIAM100\",\r
+
+    \  \"discount_percentage\": 100.0,\r
+
+    \  \"start_date\": \"2024-01-01T00:00:00\",\r
+
+    \  \"end_date\": \"2024-12-31T23:59:59\",\r
+
+    \  \"usage_limit\": 100,\r
+
+    \  \"apply_condition\": {\r
+
+    \    \"min_value\": 10000000,\r
+
+    \    \"product_variant_ids\": [5, 6, 7]    \r
+
+    \  }\r
+
+    }"
+auth:
+  type: bearer
+  credentials:
+    token: eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJhZG1pbiIsInNjb3BlIjoiQURNSU4iLCJpc3MiOiJwaG9uZXNob3Audm4iLCJleHAiOjE3NzcyMzI2MTIsImlhdCI6MTc3NzIyNTQxMiwidXNlcklkIjoxLCJqdGkiOiI5MzU2NTdlOS1hYjgzLTQxNWMtYjJjYi1mY2NkNmNiYjdjN2IifQ.zmAiTr_tRtzdX5I-w0HzkXy5F4cSYBsy0ZSb-1Ckj6HtR-cZk2pOdhc1hq0ihNONAi3IzajSUZyOZnhFmpiFYw
+order: 4503556539485369

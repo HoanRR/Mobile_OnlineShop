@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Đơn hàng - HT Mobile Staff</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="../../static/staff/css/staff-base.css">
+<link rel="stylesheet" href="../../static/staff/css/orders.css">
+    <script src="../../static/js/api-client.js"></script>
+    <script src="../../static/staff/js/common.js"></script>
+    <script src="../../static/staff/js/orders.js"></script>
+</head>
+<body>
+<div class="app-wrapper">
+    <div id="sidebar-container"></div>
+
+    <div class="main-content" id="mainContent">
+        <div id="header-container"></div>
+
+        <div class="page-body">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2 style="margin: 0; font-size: 20px; font-weight: 600;">Danh sách Đơn hàng</h2>
+                <a href="pos.html"><button class="btn-add"><i class="fa-solid fa-plus"></i> Thêm đơn hàng mới</button></a>
+            </div>
+
+            <div class="filter-bar">
+                <input type="text" placeholder="Nhập mã đơn hoặc tên khách..." style="width: 280px;">
+                <input type="date">
+                <select>
+                    <option value="">Tất cả trạng thái</option>
+                    <option value="WAIT">Chờ xác nhận</option>
+                    <option value="CONFIRMED">Đã xác nhận</option>
+                    <option value="PROCESSING">Đang xử lý</option>
+                    <option value="SHIPPING">Đang giao hàng</option>
+                    <option value="DELIVERED">Đã hoàn thành</option>
+                    <option value="CANCELLED">Đã hủy</option>
+                </select>
+                <button><i class="fa-solid fa-filter"></i> Lọc</button>
+            </div>
+
+            <div class="data-table-wrap">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>Mã Đơn</th>
+                            <th>Khách hàng</th>
+                            <th>Ngày đặt</th>
+                            <th>Tổng tiền</th>
+                            <th>Trạng thái</th>
+                            <th>Thao tác</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td colspan="6" style="text-align:center;padding:32px;color:var(--muted);">
+                                <i class="fa-solid fa-spinner fa-spin" style="font-size:24px;margin-bottom:8px;display:block;"></i>
+                                Đang tải đơn hàng...
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal cập nhật trạng thái -->
+<div class="modal-overlay" id="statusModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3>Cập nhật trạng thái</h3>
+            <button class="close-modal" onclick="closeModal()">&times;</button>
+        </div>
+        <div class="modal-form-info">
+            <p class="modal-info-text">Mã đơn hàng: <strong id="modalOrderId">---</strong></p>
+            <label class="modal-label">Chọn trạng thái mới:</label>
+            <select id="newStatus" class="modal-select">
+                <option value="WAIT">Chờ xác nhận</option>
+                <option value="CONFIRMED">Đã xác nhận</option>
+                <option value="PROCESSING">Đang xử lý</option>
+                <option value="SHIPPING">Đang giao hàng</option>
+                <option value="DELIVERED">Giao thành công</option>
+                <option value="RETURNED">Hoàn trả</option>
+            </select>
+            <label style="display:flex; align-items:center; gap:8px; color:var(--muted); margin-top:14px;">
+                <input type="checkbox" id="isPaid"> Đã thanh toán
+            </label>
+        </div>
+        <div class="modal-actions">
+            <button onclick="closeModal()" class="btn-cancel">Hủy bỏ</button>
+            <button onclick="saveStatus()" class="btn-save">Lưu thay đổi</button>
+        </div>
+    </div>
+</div>
+
+<div class="modal-overlay" id="orderDetailModal">
+    <div class="modal-content order-detail-modal">
+        <div class="modal-header">
+            <h3>Chi tiết đơn hàng</h3>
+            <button class="close-modal" onclick="closeDetailModal()">&times;</button>
+        </div>
+        <div id="orderDetailContent"></div>
+        <div class="modal-actions">
+            <button onclick="closeDetailModal()" class="btn-cancel">Đóng</button>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
+
