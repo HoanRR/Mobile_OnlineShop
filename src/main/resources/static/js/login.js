@@ -61,7 +61,7 @@ function loginRedirectByRole(role) {
     const userRole = normalizeRole(role);
 
     if (userRole === 'ADMIN') return 'Admin_Dashboard/dashboard.html';
-    if (userRole === 'EMPLOYEE') return 'Staff_Dashboard/dashboard.html';
+    if (userRole === 'EMPLOYEE') return 'Staff_Dashboard/pos.html';
     return 'index.html';
 }
 

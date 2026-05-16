@@ -124,3 +124,127 @@ html, body { height: 100%; font-family: 'Segoe UI', system-ui, sans-serif; backg
 .btn-edit:hover { background: var(--blue); border-color: var(--blue); color: white; }
 .btn-delete { background: rgba(239, 68, 68, 0.1); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.2); padding: 8px 12px; border-radius: 6px; cursor: pointer; font-weight: 600; transition: var(--transition); font-size: 13px;} 
 .btn-delete:hover { background: #ef4444; color: white; }
+
+/* === CONFIRM DIALOG === */
+.admin-confirm-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 4000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    background: rgba(17, 24, 39, 0.52);
+    backdrop-filter: blur(3px);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.18s ease, visibility 0.18s ease;
+}
+
+.admin-confirm-overlay.is-visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+.admin-confirm-dialog {
+    width: min(360px, calc(100vw - 32px));
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: 0 24px 70px rgba(0, 0, 0, 0.28);
+    padding: 20px;
+    transform: translateY(8px) scale(0.98);
+    transition: transform 0.18s ease, background-color var(--transition), border-color var(--transition);
+}
+
+.admin-confirm-overlay.is-visible .admin-confirm-dialog {
+    transform: translateY(0) scale(1);
+}
+
+.admin-confirm-header {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    margin-bottom: 14px;
+}
+
+.admin-confirm-icon {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: 0 0 auto;
+    color: var(--confirm-color, var(--red));
+    background: var(--confirm-bg, var(--red-glow));
+}
+
+.admin-confirm-dialog[data-tone="danger"] {
+    --confirm-color: #ef4444;
+    --confirm-bg: rgba(239, 68, 68, 0.12);
+}
+
+.admin-confirm-dialog[data-tone="success"] {
+    --confirm-color: var(--green);
+    --confirm-bg: rgba(34, 197, 94, 0.14);
+}
+
+.admin-confirm-dialog[data-tone="warning"] {
+    --confirm-color: #f59e0b;
+    --confirm-bg: rgba(245, 158, 11, 0.16);
+}
+
+.admin-confirm-title {
+    margin: 0;
+    color: var(--text);
+    font-size: 17px;
+    line-height: 1.35;
+    font-weight: 700;
+}
+
+.admin-confirm-message {
+    margin: 4px 0 0;
+    color: var(--muted);
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.admin-confirm-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    margin-top: 18px;
+}
+
+.admin-confirm-button {
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 9px 14px;
+    cursor: pointer;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 700;
+    transition: var(--transition);
+}
+
+.admin-confirm-button.secondary {
+    background: var(--surface2);
+    color: var(--text);
+}
+
+.admin-confirm-button.secondary:hover {
+    border-color: var(--muted);
+}
+
+.admin-confirm-button.primary {
+    background: var(--confirm-color, var(--red));
+    border-color: var(--confirm-color, var(--red));
+    color: white;
+    min-width: 82px;
+}
+
+.admin-confirm-button.primary:hover {
+    filter: brightness(0.94);
+    box-shadow: 0 8px 20px var(--confirm-bg, var(--red-glow));
+}

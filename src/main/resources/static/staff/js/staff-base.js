@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 function setActiveSidebar() {
-    const currentPath = window.location.pathname.split('/').pop() || 'dashboard.html';
+    const currentPath = window.location.pathname.split('/').pop() || 'pos.html';
     const sidebarLinks = document.querySelectorAll('.admin-sidebar ul li a');
     
     sidebarLinks.forEach(link => {

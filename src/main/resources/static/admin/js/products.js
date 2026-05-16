@@ -28,18 +28,15 @@ async function loadProducts(query = {}) {
     }
   }
 
-  try {
-    const saved = JSON.parse(localStorage.getItem(PRODUCTS_STORAGE_KEY) || 'null');
-    products = Array.isArray(saved) && saved.length ? saved : [...defaultProducts];
-  } catch (error) {
-    products = [...defaultProducts];
-  }
-
+  products = HTAdminCatalog.syncProductsWithDevices(
+    HTAdminCatalog.readProducts(defaultProducts),
+    HTAdminCatalog.readDevices([])
+  );
   saveProducts();
 }
 
 function saveProducts() {
-  localStorage.setItem(PRODUCTS_STORAGE_KEY, JSON.stringify(products));
+  HTAdminCatalog.writeProducts(products);
 }
 
 function apiProductId(product) {
@@ -128,6 +125,7 @@ function renderProducts() {
 
 function createEditVariantRow(variant = {}) {
   const row = document.createElement('tr');
+  row.dataset.variantId = variant.product_variant_id || variant.productVariantId || variant.variant_id || variant.id || '';
   row.innerHTML = `
     <td><input type="text" data-field="ram" value="${variant.ram || ''}" placeholder="8GB"></td>
     <td><input type="text" data-field="storage_capacity" value="${variantStorageText(variant)}" placeholder="256GB"></td>
@@ -162,6 +160,7 @@ function collectEditVariants() {
       const storageText = fieldValue('storage_capacity');
       return {
         ram: fieldValue('ram'),
+        product_variant_id: row.dataset.variantId || undefined,
         storage: storageText,
         storage_capacity: Number(String(storageText).replace(/\D/g, '')) || 0,
         color: fieldValue('color'),
@@ -218,13 +217,19 @@ async function saveEditedProduct(event) {
   const variants = collectEditVariants();
 
   if (!nextName || !nextBrand || !variants.length) {
-    alert('Vui lòng nhập tên, hãng và ít nhất một phiên bản cấu hình.');
+    await showAdminWarning({
+      message: 'Vui lòng nhập tên, hãng và ít nhất một phiên bản cấu hình.',
+      confirmText: 'OK'
+    });
     return;
   }
 
   const invalidVariant = variants.some((variant) => Number.isNaN(variant.price) || variant.price <= 0 || variant.total_available < 0);
   if (invalidVariant) {
-    alert('Giá bán phải lớn hơn 0 và tồn kho không được âm.');
+    await showAdminWarning({
+      message: 'Giá bán phải lớn hơn 0 và tồn kho không được âm.',
+      confirmText: 'OK'
+    });
     return;
   }
 
@@ -237,7 +242,10 @@ async function saveEditedProduct(event) {
         variants
       });
     } catch (error) {
-      alert(error.message || 'Không cập nhật được sản phẩm qua API.');
+      await showAdminError({
+        message: error.message || 'Không cập nhật được sản phẩm qua API.',
+        confirmText: 'OK'
+      });
       return;
     }
   }
@@ -256,6 +264,7 @@ async function saveEditedProduct(event) {
       }
     : item);
 
+  products = HTAdminCatalog.syncProductsWithDevices(products, HTAdminCatalog.readDevices([]));
   saveProducts();
   renderProducts();
   closeProductEditModal();
@@ -265,13 +274,36 @@ async function deleteProduct(productId) {
   const product = products.find((item) => item.id === productId);
   if (!product) return;
 
-  if (!confirm(`X\u00f3a s\u1ea3n ph\u1ea9m ${product.name}?`)) return;
+  const variantIds = new Set((productVariants(product) || []).map((variant) => HTAdminCatalog.normalizedId(variant.product_variant_id || variant.productVariantId || variant.variant_id || variant.id)));
+  const hasDevices = HTAdminCatalog.readDevices([]).some((device) => variantIds.has(HTAdminCatalog.normalizedId(HTAdminCatalog.deviceVariantId(device))));
+  if (hasDevices) {
+    await showAdminWarning({
+      title: 'Không thể xóa sản phẩm',
+      message: 'Sản phẩm này đang có thiết bị trong kho. Hãy xử lý kho trước để tránh lệch dữ liệu.',
+      confirmText: 'OK'
+    });
+    return;
+  }
+
+  const confirmed = await showAdminConfirm({
+    title: 'Xóa sản phẩm?',
+    message: `Sản phẩm "${product.name}" sẽ bị xóa khỏi danh sách.`,
+    confirmText: 'Xóa',
+    cancelText: 'Hủy',
+    tone: 'danger',
+    icon: 'fa-trash-can'
+  });
+
+  if (!confirmed) return;
 
   if (useProductsApi()) {
     try {
       await HTApi.admin.products.remove(apiProductId(product));
     } catch (error) {
-      alert(error.message || 'Không xóa được sản phẩm qua API.');
+      await showAdminError({
+        message: error.message || 'Không xóa được sản phẩm qua API.',
+        confirmText: 'OK'
+      });
       return;
     }
   }

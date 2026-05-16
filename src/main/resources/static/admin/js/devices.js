@@ -6,6 +6,12 @@
 const DEVICES_STORAGE_KEY = 'ht_devices';
 const DEVICE_PRODUCTS_STORAGE_KEY = 'ht_products';
 
+const defaultDeviceProducts = [
+  { id: 'SP001', name: 'iPhone 15 Pro Max 256GB', product_name: 'iPhone 15 Pro Max', brand: 'Apple', price: 29990000, stock: 12 },
+  { id: 'SP002', name: 'Samsung Galaxy S24 Ultra', product_name: 'Samsung Galaxy S24 Ultra', brand: 'Samsung', price: 27990000, stock: 8 },
+  { id: 'SP003', name: 'Xiaomi 14 Pro', product_name: 'Xiaomi 14 Pro', brand: 'Xiaomi', price: 22500000, stock: 0 }
+];
+
 const defaultDevices = [
   {
     imei: '356789101234567',
@@ -32,22 +38,36 @@ const defaultDevices = [
 ];
 
 let devices = [];
+let productCatalog = [];
 
 function useDevicesApi() {
   return Boolean(window.HTApi?.isEnabled());
 }
 
 function readDevices() {
-  try {
-    const saved = JSON.parse(localStorage.getItem(DEVICES_STORAGE_KEY) || 'null');
-    return Array.isArray(saved) && saved.length ? saved : [...defaultDevices];
-  } catch (error) {
-    return [...defaultDevices];
-  }
+  return HTAdminCatalog.readDevices(defaultDevices);
 }
 
 function saveDevices() {
-  localStorage.setItem(DEVICES_STORAGE_KEY, JSON.stringify(devices));
+  HTAdminCatalog.writeDevices(devices);
+}
+
+async function loadProductCatalog() {
+  if (useDevicesApi()) {
+    try {
+      const response = await HTApi.products.list({ page: 1, limit: 100 });
+      productCatalog = HTApi.listData(response).map(HTApi.mapProduct);
+      return;
+    } catch (error) {
+      console.warn('Khong tai duoc danh sach san pham tu API, dung du lieu mock.', error);
+    }
+  }
+
+  productCatalog = HTAdminCatalog.syncProductsWithDevices(
+    HTAdminCatalog.readProducts(defaultDeviceProducts),
+    devices
+  );
+  HTAdminCatalog.writeProducts(productCatalog);
 }
 
 function formatDate(dateValue) {
@@ -67,22 +87,15 @@ function splitImeis(value) {
 function readProductVariantNames() {
   const map = new Map();
 
-  try {
-    const products = JSON.parse(localStorage.getItem(DEVICE_PRODUCTS_STORAGE_KEY) || '[]');
-    if (!Array.isArray(products)) return map;
-
-    products.forEach((product) => {
-      (product.variants || []).forEach((variant, index) => {
-        const variantId = variant.product_variant_id || variant.productVariantId || variant.variant_id || variant.id || `${product.id || 'PV'}-${index + 1}`;
-        const storage = variant.storage || (variant.storage_capacity ? `${variant.storage_capacity}GB` : '');
-        const color = variant.color ? ` ${variant.color}` : '';
-        const label = `${product.product_name || product.name || 'Sản phẩm'} ${storage}${color}`.trim();
-        map.set(String(variantId), label);
-      });
+  HTAdminCatalog.normalizeProducts(productCatalog).forEach((product) => {
+    (product.variants || []).forEach((variant) => {
+      const variantId = variant.product_variant_id || variant.productVariantId || variant.variant_id || variant.id;
+      const storage = HTAdminCatalog.storageText(variant);
+      const color = variant.color ? ` ${variant.color}` : '';
+      const label = `${HTAdminCatalog.baseProductName(product) || product.name || 'Sản phẩm'} ${storage}${color}`.trim();
+      map.set(String(variantId), label);
     });
-  } catch (error) {
-    return map;
-  }
+  });
 
   return map;
 }
@@ -104,12 +117,33 @@ function statusLabel(device) {
 }
 
 function buildInventoryRows() {
-  const variantNameMap = readProductVariantNames();
   const groups = new Map();
+  const variantIndex = HTAdminCatalog.buildVariantIndex(productCatalog);
+
+  HTAdminCatalog.normalizeProducts(productCatalog).forEach((product) => {
+    (product.variants || []).forEach((variant) => {
+      const variantId = String(variant.product_variant_id || variant.productVariantId || variant.variant_id || variant.id || '-');
+      const productName = HTAdminCatalog.baseProductName(product) || product.name || 'Sản phẩm';
+      const available = Number(variant.total_available ?? variant.totalAvailable ?? 0) || 0;
+      const key = `${variantId}::${productName}`;
+      groups.set(key, {
+        variantId,
+        productName,
+        total: available,
+        available,
+        sold: 0,
+        latestImei: '',
+        latestImportedAt: ''
+      });
+    });
+  });
 
   devices.forEach((device) => {
     const variantId = String(device.product_variant_id || device.productVariantId || '-');
-    const productName = productNameForDevice(device, variantNameMap);
+    const catalogEntry = variantIndex.get(HTAdminCatalog.normalizedId(variantId));
+    if (!catalogEntry) return;
+
+    const productName = HTAdminCatalog.baseProductName(catalogEntry.product) || catalogEntry.product.name;
     const key = `${variantId}::${productName}`;
     const importedAt = String(device.imported_at || device.importedAt || '').slice(0, 10);
 
@@ -126,9 +160,10 @@ function buildInventoryRows() {
     }
 
     const row = groups.get(key);
-    row.total += 1;
-    if (isSold(device)) row.sold += 1;
-    else row.available += 1;
+    if (isSold(device)) {
+      row.sold += 1;
+      row.total = Math.max(row.total, row.available + row.sold);
+    }
 
     if (!row.latestImportedAt || importedAt >= row.latestImportedAt) {
       row.latestImportedAt = importedAt;
@@ -143,8 +178,9 @@ function renderDevices() {
   const tableBody = document.querySelector('.admin-table tbody');
   const countEl = document.getElementById('deviceCount');
   const rows = buildInventoryRows();
+  const totalDevices = rows.reduce((sum, row) => sum + (Number(row.total) || 0), 0);
 
-  if (countEl) countEl.textContent = `${rows.length} dòng / ${devices.length} thiết bị`;
+  if (countEl) countEl.textContent = `${rows.length} dòng / ${totalDevices} thiết bị`;
   if (!tableBody) return;
 
   if (!rows.length) {
@@ -200,6 +236,49 @@ function clearImportMessage() {
   message.className = 'form-message';
 }
 
+function setupImportSuggestions() {
+  const productInput = document.getElementById('importProductName');
+  const variantInput = document.getElementById('variantId');
+  if (!productInput || !variantInput) return;
+
+  let productList = document.getElementById('productNameOptions');
+  if (!productList) {
+    productList = document.createElement('datalist');
+    productList.id = 'productNameOptions';
+    document.body.appendChild(productList);
+  }
+
+  let variantList = document.getElementById('variantIdOptions');
+  if (!variantList) {
+    variantList = document.createElement('datalist');
+    variantList.id = 'variantIdOptions';
+    document.body.appendChild(variantList);
+  }
+
+  productInput.setAttribute('list', productList.id);
+  variantInput.setAttribute('list', variantList.id);
+  productList.innerHTML = '';
+  variantList.innerHTML = '';
+
+  HTAdminCatalog.normalizeProducts(productCatalog).forEach((product) => {
+    const productName = HTAdminCatalog.baseProductName(product) || product.name;
+    if (productName) {
+      const option = document.createElement('option');
+      option.value = productName;
+      productList.appendChild(option);
+    }
+
+    (product.variants || []).forEach((variant) => {
+      const option = document.createElement('option');
+      const variantId = variant.product_variant_id || variant.productVariantId || variant.variant_id || variant.id || '';
+      const storage = HTAdminCatalog.storageText(variant);
+      option.value = variantId;
+      option.label = `${productName}${storage ? ` - ${storage}` : ''}${variant.color ? ` - ${variant.color}` : ''}`;
+      variantList.appendChild(option);
+    });
+  });
+}
+
 async function importDevices(event) {
   event.preventDefault();
   clearImportMessage();
@@ -216,6 +295,28 @@ async function importDevices(event) {
     return;
   }
 
+  const variantEntryById = HTAdminCatalog.buildVariantIndex(productCatalog).get(HTAdminCatalog.normalizedId(variantId));
+  if (!variantEntryById) {
+    setImportMessage('Sản phẩm này chưa tồn tại. Vui lòng thêm sản phẩm mới trước khi nhập kho.', 'error');
+    await showAdminWarning({
+      title: 'Sản phẩm chưa tồn tại',
+      message: 'Sản phẩm hoặc mã biến thể này chưa có trong danh sách sản phẩm. Vui lòng thêm sản phẩm mới trước khi nhập kho.',
+      confirmText: 'OK'
+    });
+    return;
+  }
+
+  const variantEntry = HTAdminCatalog.findVariant(productCatalog, variantId, productName);
+  if (!variantEntry) {
+    setImportMessage('Tên sản phẩm không khớp với mã biến thể đã chọn.', 'error');
+    await showAdminWarning({
+      title: 'Sai sản phẩm hoặc mã biến thể',
+      message: 'Tên sản phẩm không khớp với mã biến thể. Hãy chọn đúng sản phẩm đã có trong danh sách.',
+      confirmText: 'OK'
+    });
+    return;
+  }
+
   const uniqueImeis = Array.from(new Set(imeis.map((imei) => imei.toUpperCase())));
   if (uniqueImeis.length !== imeis.length) {
     setImportMessage('Danh sách IMEI đang bị trùng.', 'error');
@@ -229,11 +330,12 @@ async function importDevices(event) {
   }
 
   const today = new Date().toISOString().slice(0, 10);
+  const catalogProductName = HTAdminCatalog.baseProductName(variantEntry.product) || productName;
   const importedDevices = uniqueImeis.map((imei) => ({
     imei,
     product_variant_id: variantId,
-    product_name: productName,
-    color,
+    product_name: catalogProductName,
+    color: color || variantEntry.variant.color || '',
     status: 'AVAILABLE',
     imported_at: today,
     warranty_months: warrantyMonths
@@ -247,23 +349,27 @@ async function importDevices(event) {
       });
       const apiDevices = Array.isArray(response?.devices) ? response.devices.map(HTApi.mapDevice) : importedDevices;
       devices = [
-        ...apiDevices.map((device) => ({ ...device, product_name: productName, color, warranty_months: warrantyMonths })),
+        ...apiDevices.map((device) => ({ ...device, product_name: catalogProductName, color: color || variantEntry.variant.color || '', warranty_months: warrantyMonths })),
         ...devices
       ];
+      productCatalog = HTAdminCatalog.increaseVariantStock(productCatalog, variantId, uniqueImeis.length);
     } catch (error) {
       setImportMessage(error.message || 'Không nhập được IMEI qua API.', 'error');
       return;
     }
   } else {
     devices = [...importedDevices, ...devices];
+    productCatalog = HTAdminCatalog.increaseVariantStock(productCatalog, variantId, uniqueImeis.length);
+    HTAdminCatalog.writeProducts(productCatalog);
   }
 
   saveDevices();
+  setupImportSuggestions();
   renderDevices();
   event.currentTarget.reset();
   const warrantyInput = document.getElementById('warrantyMonths');
   if (warrantyInput) warrantyInput.value = '12';
-  setImportMessage(`Đã nhập ${uniqueImeis.length} thiết bị cho ${productName}.`);
+  setImportMessage(`Đã nhập ${uniqueImeis.length} thiết bị cho ${catalogProductName}.`);
 }
 
 async function lookupDevice() {
@@ -287,10 +393,12 @@ async function lookupDevice() {
   renderLookup(devices.find((device) => String(device.imei || '').toUpperCase() === value));
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   initCommonUI();
   devices = readDevices();
+  await loadProductCatalog();
   saveDevices();
+  setupImportSuggestions();
   renderDevices();
 
   document.getElementById('importDeviceForm')?.addEventListener('submit', importDevices);

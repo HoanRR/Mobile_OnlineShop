@@ -3,7 +3,6 @@
  */
 
 const STAFF_PAGE_TITLES = {
-  'dashboard.html': 'Tổng quan',
   'pos.html': 'POS Bán Hàng',
   'checkout-info.html': 'Thanh toán POS',
   'orders.html': 'Quản lý Đơn hàng',
@@ -17,7 +16,7 @@ let staffLayoutPromise = null;
 let staffSidebarBound = false;
 
 function currentPageFile() {
-  return window.location.pathname.split('/').pop() || 'dashboard.html';
+  return window.location.pathname.split('/').pop() || 'pos.html';
 }
 
 function setStaffPageTitle() {

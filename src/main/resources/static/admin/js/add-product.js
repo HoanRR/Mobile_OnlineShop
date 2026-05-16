@@ -15,19 +15,34 @@ function useAddProductApi() {
   return Boolean(window.HTApi?.isEnabled());
 }
 
-function readProducts() {
-  try {
-    const raw = localStorage.getItem(PRODUCTS_STORAGE_KEY);
-    if (!raw) return [...addProductDefaultProducts];
-    const saved = JSON.parse(raw);
-    return Array.isArray(saved) ? saved : [...addProductDefaultProducts];
-  } catch (error) {
-    return [...addProductDefaultProducts];
+async function showAddProductWarning(message) {
+  if (typeof showAdminWarning === 'function') {
+    await showAdminWarning({ message, confirmText: 'OK' });
   }
 }
 
+async function showAddProductError(message) {
+  if (typeof showAdminError === 'function') {
+    await showAdminError({ message, confirmText: 'OK' });
+  }
+}
+
+async function showAddProductSuccess(message) {
+  if (typeof showAdminNotice === 'function') {
+    await showAdminNotice({
+      title: 'Lưu sản phẩm thành công',
+      message,
+      confirmText: 'OK'
+    });
+  }
+}
+
+function readProducts() {
+  return HTAdminCatalog.readProducts(addProductDefaultProducts);
+}
+
 function saveProducts(products) {
-  localStorage.setItem(PRODUCTS_STORAGE_KEY, JSON.stringify(products));
+  HTAdminCatalog.writeProducts(products);
 }
 
 function createInputCell(placeholder, type = 'text', field = '') {
@@ -112,18 +127,18 @@ async function handleProductSubmit(event) {
   const variants = collectVariants();
 
   if (!name || !brand) {
-    alert('Vui l\u00f2ng nh\u1eadp t\u00ean s\u1ea3n ph\u1ea9m v\u00e0 ch\u1ecdn h\u00e3ng.');
+    await showAddProductWarning('Vui lòng nhập tên sản phẩm và chọn hãng.');
     return;
   }
 
   if (!variants.length) {
-    alert('Vui l\u00f2ng th\u00eam \u00edt nh\u1ea5t m\u1ed9t phi\u00ean b\u1ea3n c\u1ea5u h\u00ecnh.');
+    await showAddProductWarning('Vui lòng thêm ít nhất một phiên bản cấu hình.');
     return;
   }
 
   const invalidVariant = variants.some((variant) => Number.isNaN(variant.price) || variant.price <= 0 || variant.total_available < 0);
   if (invalidVariant) {
-    alert('Gi\u00e1 b\u00e1n ph\u1ea3i l\u1edbn h\u01a1n 0 v\u00e0 t\u1ed3n kho kh\u00f4ng \u0111\u01b0\u1ee3c \u00e2m.');
+    await showAddProductWarning('Giá bán phải lớn hơn 0 và tồn kho không được âm.');
     return;
   }
 
@@ -141,13 +156,14 @@ async function handleProductSubmit(event) {
     try {
       await HTApi.admin.products.create(apiPayload);
     } catch (error) {
-      alert(error.message || 'Không lưu được sản phẩm qua API.');
+      await showAddProductError(error.message || 'Không lưu được sản phẩm qua API.');
       return;
     }
   }
 
-  products.unshift({
-    id: getNextProductId(products),
+  const newProductId = getNextProductId(products);
+  const newProduct = HTAdminCatalog.normalizeProducts([{
+    id: newProductId,
     product_name: name,
     name: `${name}${firstVariant.storage ? ` ${firstVariant.storage}` : ''}`.trim(),
     brand,
@@ -155,10 +171,12 @@ async function handleProductSubmit(event) {
     price: firstVariant.price,
     stock: variants.reduce((sum, variant) => sum + Number(variant.total_available || 0), 0),
     variants
-  });
+  }])[0];
+
+  products.unshift(newProduct);
 
   saveProducts(products);
-  alert(useAddProductApi() ? '\u0110\u00e3 g\u1eedi s\u1ea3n ph\u1ea9m l\u00ean API v\u00e0 l\u01b0u b\u1ea3n d\u00f9ng th\u1eed.' : '\u0110\u00e3 l\u01b0u s\u1ea3n ph\u1ea9m v\u00e0o d\u1eef li\u1ec7u d\u00f9ng th\u1eed.');
+  await showAddProductSuccess(useAddProductApi() ? 'Đã gửi sản phẩm lên API và lưu bản dùng thử.' : 'Đã lưu sản phẩm vào dữ liệu dùng thử.');
   form.reset();
 
   const tableBody = document.querySelector('#variantTable tbody');

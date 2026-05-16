@@ -328,14 +328,12 @@ async function saveStatus() {
 function applyStaffOrderQuery() {
   const params = new URLSearchParams(window.location.search);
   const query = params.get('q') || '';
-  const storedStatus = sessionStorage.getItem('ht_staff_order_filter_status') || '';
-  const status = statusKey(params.get('status') || storedStatus);
+  const status = statusKey(params.get('status') || '');
   const searchInput = document.querySelector('.filter-bar input[type="text"]');
   const statusSelect = document.querySelector('.filter-bar select');
 
   if (query && searchInput) searchInput.value = query;
   if (status && statusSelect) statusSelect.value = status;
-  sessionStorage.removeItem('ht_staff_order_filter_status');
 }
 
 function initStaffOrderEvents() {
