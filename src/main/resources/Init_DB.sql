@@ -68,11 +68,7 @@ CREATE TABLE IF NOT EXISTS `product` (
   `product_id`         BIGINT       NOT NULL AUTO_INCREMENT,
   `product_name`       VARCHAR(255) NOT NULL,
   `brand`              VARCHAR(255) DEFAULT NULL,
-<<<<<<< HEAD
-  `description`        TEXT         DEFAULT NULL,
-=======
   `description`        VARCHAR(1000) DEFAULT NULL,
->>>>>>> customer-ui
   `product_image_link` VARCHAR(500) DEFAULT NULL,
   PRIMARY KEY (`product_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
@@ -89,11 +85,7 @@ CREATE TABLE IF NOT EXISTS `product_variant` (
   `battery_capacity`   BIGINT       DEFAULT NULL,
   `resolution`         VARCHAR(100) DEFAULT NULL,
   `screen_size`        VARCHAR(100) DEFAULT NULL,
-<<<<<<< HEAD
-  `front_camera`       VARCHAR(255) DEFAULT NULL,
-=======
   `front_camera`       VARCHAR(100) DEFAULT NULL,
->>>>>>> customer-ui
   `rear_camera`        VARCHAR(255) DEFAULT NULL,
   `sim_card`           VARCHAR(100) DEFAULT NULL,
   `price`              DOUBLE       NOT NULL,

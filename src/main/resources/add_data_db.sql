@@ -36,13 +36,6 @@ UNLOCK TABLES;
 -- ============================================================
 LOCK TABLES `product` WRITE;
 INSERT IGNORE INTO `product` (`product_id`, `product_name`, `brand`, `description`, `product_image_link`) VALUES
-<<<<<<< HEAD
-(1, 'iPhone 15 Pro Max', 'Apple',   'iPhone 15 Pro Max sở hữu chip A17 Pro mạnh mẽ, camera 48MP chụp ảnh chuyên nghiệp, khung viền titan bền bỉ và thời lượng pin ấn tượng.', 'https://example.com/iphone15promax.jpg'),
-(2, 'Samsung Galaxy S24 Ultra', 'Samsung', 'Samsung Galaxy S24 Ultra trang bị bút S Pen tích hợp AI, camera 200MP zoom quang học 5x, chip Snapdragon 8 Gen 3 hiệu năng hàng đầu.', 'https://example.com/s24ultra.jpg'),
-(3, 'Xiaomi 14 Ultra',   'Xiaomi',  'Xiaomi 14 Ultra với hệ thống camera Leica chuyên nghiệp, chip Snapdragon 8 Gen 3 mạnh mẽ, sạc nhanh 90W và thiết kế cao cấp.', 'https://example.com/xiaomi14ultra.jpg'),
-(4, 'OPPO Find X7 Pro',  'OPPO',    'OPPO Find X7 Pro nổi bật với camera Hasselblad, chip Dimensity 9300, màn hình AMOLED 2K sắc nét và pin 5000mAh bền bỉ.', 'https://example.com/findx7pro.jpg'),
-(5, 'Google Pixel 9 Pro','Google',  'Google Pixel 9 Pro với chip Tensor G4, camera AI thông minh, trải nghiệm Android thuần và cập nhật phần mềm lâu dài từ Google.', 'https://example.com/pixel9pro.jpg');
-=======
 (1, 'iPhone 17 Pro', 'Apple',
 'Điện thoại flagship cao cấp với chip Apple A19 Pro mạnh mẽ, thiết kế sang trọng và hiệu năng vượt trội.',
 'https://res.cloudinary.com/durs02or1/image/upload/v1778659199/pbl3_mobileshop/iphone-17-pro.webp'),
@@ -86,7 +79,6 @@ INSERT IGNORE INTO `product` (`product_id`, `product_name`, `brand`, `descriptio
 (11, 'OPPO Find X9 Pro', 'OPPO',
 'Điện thoại flagship OPPO với camera cao cấp, công nghệ sạc nhanh và thiết kế sang trọng.',
 'https://res.cloudinary.com/durs02or1/image/upload/v1778659200/pbl3_mobileshop/oppo-find-x9-pro.webp');
->>>>>>> customer-ui
 UNLOCK TABLES;
 
 -- ============================================================
@@ -94,15 +86,6 @@ UNLOCK TABLES;
 -- ============================================================
 LOCK TABLES `product_variant` WRITE;
 INSERT IGNORE INTO `product_variant` (`product_variant_id`, `product_id`, `color`, `storage_capacity`, `ram`, `chip`, `battery_capacity`, `resolution`, `screen_size`, `front_camera`, `rear_camera`, `sim_card`, `price`, `total_available`, `variant_image_link`) VALUES
-<<<<<<< HEAD
-(1, 1, 'Black Titanium',  256, '8GB',  'A17 Pro',              4422, '2796x1290', '6.7 inch',  '12MP',          '48MP + 12MP + 12MP',            'Nano SIM + eSIM',   34990000, 50, 'https://example.com/ip15pm_black.jpg'),
-(2, 1, 'White Titanium',  512, '8GB',  'A17 Pro',              4422, '2796x1290', '6.7 inch',  '12MP',          '48MP + 12MP + 12MP',            'Nano SIM + eSIM',   38990000, 30, 'https://example.com/ip15pm_white.jpg'),
-(3, 2, 'Titanium Gray',   256, '12GB', 'Snapdragon 8 Gen 3',   5000, '3088x1440', '6.8 inch',  '12MP',          '200MP + 12MP + 10MP + 50MP',    'Nano SIM + eSIM',   33990000, 40, 'https://example.com/s24u_gray.jpg'),
-(4, 2, 'Titanium Yellow', 512, '12GB', 'Snapdragon 8 Gen 3',   5000, '3088x1440', '6.8 inch',  '12MP',          '200MP + 12MP + 10MP + 50MP',    'Nano SIM + eSIM',   37990000, 20, 'https://example.com/s24u_yellow.jpg'),
-(5, 3, 'Black',           256, '16GB', 'Snapdragon 8 Gen 3',   5000, '3200x1440', '6.73 inch', '32MP',          '50MP + 50MP + 50MP',            'Dual Nano SIM',     29990000, 35, 'https://example.com/xm14u_black.jpg'),
-(6, 4, 'Silver',          256, '12GB', 'Dimensity 9300',        5000, '3168x1440', '6.82 inch', '32MP',          '50MP + 50MP + 64MP',            'Dual Nano SIM',     27990000, 25, 'https://example.com/findx7_silver.jpg'),
-(7, 5, 'Hazel',           128, '12GB', 'Tensor G4',             4700, '2992x1344', '6.3 inch',  '42MP',          '50MP + 48MP + 48MP',            'Nano SIM + eSIM',   24990000, 45, 'https://example.com/pixel9pro_hazel.jpg');
-=======
 -- iPhone 17 Pro
 (1, 1, 'Xanh đậm', '512GB', '12GB', 'Apple A19 Pro', '4700mAh', '2868x1320', '6.3 inch', '24MP', '48MP + 12MP + 12MP', '1 Nano SIM/eSIM', 36990000, 10,
 'https://res.cloudinary.com/durs02or1/image/upload/v1778659254/pbl3_mobileshop/iphone-17-pro-deep-blue-variant.jpg'),
@@ -173,7 +156,6 @@ INSERT IGNORE INTO `product_variant` (`product_variant_id`, `product_id`, `color
  'https://res.cloudinary.com/durs02or1/image/upload/v1778659257/pbl3_mobileshop/oppo-find-x9-pro-white-variant.jpg'),
 (25, 11, 'Hồng ánh tím', '1TB', '16GB', 'Dimensity 9500', '5400mAh', '3168x1440', '6.82 inch', '32MP', '50MP + 50MP + 50MP', '2 Nano SIM', 37990000, 4,
  'https://res.cloudinary.com/durs02or1/image/upload/v1778659256/pbl3_mobileshop/oppo-find-x9-pro-magenta-variant.jpg');
->>>>>>> customer-ui
 UNLOCK TABLES;
 
 -- ============================================================
