@@ -3,8 +3,6 @@ package com.PBL3.Mobile_OnlineShop.dto.request;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
-import java.awt.*;
-
 @Data
 @NoArgsConstructor
 @AllArgsConstructor

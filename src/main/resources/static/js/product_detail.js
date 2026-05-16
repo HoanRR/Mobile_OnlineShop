@@ -42,6 +42,13 @@ function renderProductDetailToHTML(data) {
     document.getElementById('header-danh-gia').innerText = `Hỏi đáp & đánh giá ${data.product_name} chính hãng`;
     renderVariantButtons(data.variant);
     renderReviews(data.review);
+    
+    // Hiển thị mô tả sản phẩm
+    const moTaContainer = document.querySelector(".noi-dung-mo-ta");
+    if (moTaContainer) {
+        moTaContainer.innerHTML = data.description ? `<p>${data.description}</p>` : '<p>Chưa có mô tả chi tiết cho sản phẩm này.</p>';
+    }
+
     updateDynamicUI();
 
 
@@ -88,10 +95,14 @@ function updateDynamicUI() {
     let thongSo = document.querySelector(".thong-so-ky-thuat");
     if (thongSo && activateVariant) {
         const htmlCard = `
-                  <tr><td>Chip</td><td>${activateVariant.chip}</td></tr>
-                    <tr><td>Ram</td><td>${activateVariant.ram}</td></tr>
-                    <tr><td>Bộ nhớ</td><td>${activateVariant.storageCapacity}</td></tr>
-                    <tr><td>Pin</td><td>${activateVariant.batteryCapacity}</td></tr>
+                  <tr><td>Màn hình</td><td>${activateVariant.screenSize || 'N/A'}</td></tr>
+                  <tr><td>Chip</td><td>${activateVariant.chip || 'N/A'}</td></tr>
+                  <tr><td>Ram</td><td>${activateVariant.ram || 'N/A'}</td></tr>
+                  <tr><td>Bộ nhớ</td><td>${activateVariant.storageCapacity || 'N/A'}</td></tr>
+                  <tr><td>Camera trước</td><td>${activateVariant.frontCamera || 'N/A'}</td></tr>
+                  <tr><td>Camera sau</td><td>${activateVariant.rearCamera || 'N/A'}</td></tr>
+                  <tr><td>Sim</td><td>${activateVariant.simCard || 'N/A'}</td></tr>
+                  <tr><td>Pin</td><td>${activateVariant.batteryCapacity || 'N/A'}</td></tr>
             `
         thongSo.innerHTML = htmlCard;
     }
@@ -102,6 +113,47 @@ function updateDynamicUI() {
 function renderReviews(reviews) {
     const container = document.querySelector('.danh-sach-binh-luan-mc');
     container.innerHTML = '';
+    
+    // Thống kê đánh giá
+    let totalReviews = reviews ? reviews.length : 0;
+    let sumRating = 0;
+    let counts = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
+    
+    if (totalReviews > 0) {
+        reviews.forEach(r => {
+            sumRating += r.rating;
+            counts[r.rating] = (counts[r.rating] || 0) + 1;
+        });
+    }
+    
+    let avgRating = totalReviews > 0 ? (sumRating / totalReviews).toFixed(1) : 0;
+    let roundedAvg = Math.round(avgRating) || 0;
+    let avgStars = '⭐'.repeat(roundedAvg) + '☆'.repeat(5 - roundedAvg);
+    
+    // Cập nhật thẻ hiển thị trên cùng
+    const ratingEl = document.getElementById('rating');
+    if (ratingEl) ratingEl.innerText = `${avgStars} (${totalReviews} đánh giá)`;
+    
+    // Cập nhật khu vực tổng quan đánh giá
+    const diemSoEl = document.querySelector('.diem-so');
+    if (diemSoEl) diemSoEl.innerText = `${avgRating}/5`;
+    const saoTongEl = document.querySelector('.sao-tong');
+    if (saoTongEl) saoTongEl.innerText = avgStars;
+    const tongSoDanhGiaEl = document.querySelector('.tong-so-danh-gia');
+    if (tongSoDanhGiaEl) tongSoDanhGiaEl.innerText = `${totalReviews} đánh giá`;
+    
+    const starBars = document.querySelectorAll('.cot-thanh-sao .dong-sao');
+    if (starBars.length === 5) {
+        for (let i = 5; i >= 1; i--) {
+            let row = starBars[5 - i]; // 5 sao ở index 0
+            let count = counts[i];
+            let percent = totalReviews > 0 ? (count / totalReviews * 100) : 0;
+            let phanTramEl = row.querySelector('.phan-tram');
+            if (phanTramEl) phanTramEl.style.width = `${percent}%`;
+            let countSpan = row.querySelectorAll('span')[1];
+            if (countSpan) countSpan.innerText = count;
+        }
+    }
 
     if (!reviews || reviews.length === 0) {
         container.innerHTML = '<div style="padding: 20px; text-align: center;">Chưa có đánh giá nào cho sản phẩm này.</div>';
@@ -122,14 +174,6 @@ function renderReviews(reviews) {
         }
 
         const userName = `Khách hàng #${review.user_id}`;
-
-        const container = document.querySelector('.danh-sach-binh-luan-mc');
-        container.innerHTML = '';
-
-        if (!reviews || reviews.length === 0) {
-            container.innerHTML = '<div style="padding: 20px; text-align: center;">Chưa có đánh giá nào cho sản phẩm này.</div>';
-            return;
-        }
 
         const htmlItem = `
             <div class="item-binh-luan-mc">

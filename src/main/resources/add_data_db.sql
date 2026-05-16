@@ -1,3 +1,4 @@
+
 -- ============================================================
 -- add_data_db.sql
 -- Mục đích: Chèn dữ liệu mẫu vào CSDL
@@ -35,11 +36,57 @@ UNLOCK TABLES;
 -- ============================================================
 LOCK TABLES `product` WRITE;
 INSERT IGNORE INTO `product` (`product_id`, `product_name`, `brand`, `description`, `product_image_link`) VALUES
+<<<<<<< HEAD
 (1, 'iPhone 15 Pro Max', 'Apple',   'iPhone 15 Pro Max sở hữu chip A17 Pro mạnh mẽ, camera 48MP chụp ảnh chuyên nghiệp, khung viền titan bền bỉ và thời lượng pin ấn tượng.', 'https://example.com/iphone15promax.jpg'),
 (2, 'Samsung Galaxy S24 Ultra', 'Samsung', 'Samsung Galaxy S24 Ultra trang bị bút S Pen tích hợp AI, camera 200MP zoom quang học 5x, chip Snapdragon 8 Gen 3 hiệu năng hàng đầu.', 'https://example.com/s24ultra.jpg'),
 (3, 'Xiaomi 14 Ultra',   'Xiaomi',  'Xiaomi 14 Ultra với hệ thống camera Leica chuyên nghiệp, chip Snapdragon 8 Gen 3 mạnh mẽ, sạc nhanh 90W và thiết kế cao cấp.', 'https://example.com/xiaomi14ultra.jpg'),
 (4, 'OPPO Find X7 Pro',  'OPPO',    'OPPO Find X7 Pro nổi bật với camera Hasselblad, chip Dimensity 9300, màn hình AMOLED 2K sắc nét và pin 5000mAh bền bỉ.', 'https://example.com/findx7pro.jpg'),
 (5, 'Google Pixel 9 Pro','Google',  'Google Pixel 9 Pro với chip Tensor G4, camera AI thông minh, trải nghiệm Android thuần và cập nhật phần mềm lâu dài từ Google.', 'https://example.com/pixel9pro.jpg');
+=======
+(1, 'iPhone 17 Pro', 'Apple',
+'Điện thoại flagship cao cấp với chip Apple A19 Pro mạnh mẽ, thiết kế sang trọng và hiệu năng vượt trội.',
+'https://res.cloudinary.com/durs02or1/image/upload/v1778659199/pbl3_mobileshop/iphone-17-pro.webp'),
+
+(2, 'iPhone 16 Pro', 'Apple',
+'Mẫu iPhone cao cấp sở hữu màn hình ProMotion mượt mà, camera chuyên nghiệp và hiệu năng mạnh mẽ.',
+'https://res.cloudinary.com/durs02or1/image/upload/v1778659199/pbl3_mobileshop/iphone-16-pro.webp'),
+
+(3, 'Samsung Galaxy S26 Ultra', 'Samsung',
+'Smartphone Android cao cấp với camera độ phân giải lớn, bút S Pen tiện lợi và màn hình AMOLED sắc nét.',
+'https://res.cloudinary.com/durs02or1/image/upload/v1778659201/pbl3_mobileshop/samsung-galaxy-s26-ultra.jpg'),
+
+(4, 'Xiaomi Redmi Note 15 Pro', 'Xiaomi',
+'Điện thoại tầm trung nổi bật với màn hình tần số quét cao, pin lớn và hiệu năng ổn định.',
+'https://res.cloudinary.com/durs02or1/image/upload/v1778659202/pbl3_mobileshop/xiaomi-redmi-note-15-pro.jpg'),
+
+(5, 'OPPO Reno 14 5G', 'OPPO',
+'Điện thoại 5G thiết kế thời trang, camera AI hiện đại và khả năng chụp chân dung ấn tượng.',
+'https://example.com/images/oppo-reno14-5g.jpg'),
+
+(6, 'Samsung Galaxy A57 5G', 'Samsung',
+'Smartphone 5G giá hợp lý với pin bền, màn hình đẹp và hiệu năng đáp ứng tốt nhu cầu hằng ngày.',
+'https://res.cloudinary.com/durs02or1/image/upload/v1778659201/pbl3_mobileshop/samsung-galaxy-a57-5g.jpg'),
+
+(7, 'Xiaomi Redmi A5', 'Xiaomi',
+'Điện thoại phổ thông phù hợp cho nhu cầu cơ bản với thời lượng pin tốt và thiết kế gọn nhẹ.',
+'https://res.cloudinary.com/durs02or1/image/upload/v1778659202/pbl3_mobileshop/xiaomi-redmi-a5.webp '),
+
+(8, 'Samsung Galaxy Z Fold 7', 'Samsung',
+'Điện thoại màn hình gập cao cấp hỗ trợ đa nhiệm mạnh mẽ và trải nghiệm hiển thị đẳng cấp.',
+'https://res.cloudinary.com/durs02or1/image/upload/v1778659202/pbl3_mobileshop/samsung-galaxy-z-fold-7.webp'),
+
+(9, 'ASUS ROG Phone 9', 'ASUS',
+'Điện thoại gaming hiệu năng cao với hệ thống tản nhiệt tối ưu và trải nghiệm chơi game mượt mà.',
+'https://res.cloudinary.com/durs02or1/image/upload/v1778659199/pbl3_mobileshop/asus-rog-phone-9.webp'),
+
+(10, 'Honor 400 Lite', 'Honor',
+'Smartphone tầm trung với thiết kế trẻ trung, camera AI hiện đại và hiệu năng ổn định.',
+'https://res.cloudinary.com/durs02or1/image/upload/v1778659199/pbl3_mobileshop/honor-400-lite.webp'),
+
+(11, 'OPPO Find X9 Pro', 'OPPO',
+'Điện thoại flagship OPPO với camera cao cấp, công nghệ sạc nhanh và thiết kế sang trọng.',
+'https://res.cloudinary.com/durs02or1/image/upload/v1778659200/pbl3_mobileshop/oppo-find-x9-pro.webp');
+>>>>>>> customer-ui
 UNLOCK TABLES;
 
 -- ============================================================
@@ -47,6 +94,7 @@ UNLOCK TABLES;
 -- ============================================================
 LOCK TABLES `product_variant` WRITE;
 INSERT IGNORE INTO `product_variant` (`product_variant_id`, `product_id`, `color`, `storage_capacity`, `ram`, `chip`, `battery_capacity`, `resolution`, `screen_size`, `front_camera`, `rear_camera`, `sim_card`, `price`, `total_available`, `variant_image_link`) VALUES
+<<<<<<< HEAD
 (1, 1, 'Black Titanium',  256, '8GB',  'A17 Pro',              4422, '2796x1290', '6.7 inch',  '12MP',          '48MP + 12MP + 12MP',            'Nano SIM + eSIM',   34990000, 50, 'https://example.com/ip15pm_black.jpg'),
 (2, 1, 'White Titanium',  512, '8GB',  'A17 Pro',              4422, '2796x1290', '6.7 inch',  '12MP',          '48MP + 12MP + 12MP',            'Nano SIM + eSIM',   38990000, 30, 'https://example.com/ip15pm_white.jpg'),
 (3, 2, 'Titanium Gray',   256, '12GB', 'Snapdragon 8 Gen 3',   5000, '3088x1440', '6.8 inch',  '12MP',          '200MP + 12MP + 10MP + 50MP',    'Nano SIM + eSIM',   33990000, 40, 'https://example.com/s24u_gray.jpg'),
@@ -54,6 +102,78 @@ INSERT IGNORE INTO `product_variant` (`product_variant_id`, `product_id`, `color
 (5, 3, 'Black',           256, '16GB', 'Snapdragon 8 Gen 3',   5000, '3200x1440', '6.73 inch', '32MP',          '50MP + 50MP + 50MP',            'Dual Nano SIM',     29990000, 35, 'https://example.com/xm14u_black.jpg'),
 (6, 4, 'Silver',          256, '12GB', 'Dimensity 9300',        5000, '3168x1440', '6.82 inch', '32MP',          '50MP + 50MP + 64MP',            'Dual Nano SIM',     27990000, 25, 'https://example.com/findx7_silver.jpg'),
 (7, 5, 'Hazel',           128, '12GB', 'Tensor G4',             4700, '2992x1344', '6.3 inch',  '42MP',          '50MP + 48MP + 48MP',            'Nano SIM + eSIM',   24990000, 45, 'https://example.com/pixel9pro_hazel.jpg');
+=======
+-- iPhone 17 Pro
+(1, 1, 'Xanh đậm', '512GB', '12GB', 'Apple A19 Pro', '4700mAh', '2868x1320', '6.3 inch', '24MP', '48MP + 12MP + 12MP', '1 Nano SIM/eSIM', 36990000, 10,
+'https://res.cloudinary.com/durs02or1/image/upload/v1778659254/pbl3_mobileshop/iphone-17-pro-deep-blue-variant.jpg'),
+(2, 1, 'Bạc', '256GB', '12GB', 'Apple A19 Pro', '4700mAh', '2868x1320', '6.3 inch', '24MP', '48MP + 12MP + 12MP', '1 Nano SIM/eSIM', 40990000, 8,
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778659255/pbl3_mobileshop/iphone-17-pro-silver-variant.jpg'),
+(3, 1, 'Cam vũ trụ', '1TB', '12GB', 'Apple A19 Pro', '4700mAh', '2868x1320', '6.3 inch', '24MP', '48MP + 12MP + 12MP', '1 Nano SIM/eSIM', 46990000, 5,
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778659254/pbl3_mobileshop/iphone-17-pro-cosmic-orange-variant.jpg'),
+-- iPhone 16 Pro
+(4, 2, 'Titan đen', '128GB', '8GB', 'Apple A18 Pro', '3582mAh', '2622x1206', '6.3 inch', '12MP', '48MP + 12MP + 12MP', '1 Nano SIM/eSIM', 28990000, 12,
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778659252/pbl3_mobileshop/iphone-16-pro-black-titanium-variant.jpg'),
+(5, 2, 'Titan tự nhiên', '512GB', '8GB', 'Apple A18 Pro', '3582mAh', '2622x1206', '6.3 inch', '12MP', '48MP + 12MP + 12MP', '1 Nano SIM/eSIM', 32990000, 7,
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778659253/pbl3_mobileshop/iphone-16-pro-natural-titanium-variant.jpg'),
+(6, 2, 'Titan sa mạc', '512GB', '8GB', 'Apple A18 Pro', '3582mAh', '2622x1206', '6.3 inch', '12MP', '48MP + 12MP + 12MP', '1 Nano SIM/eSIM', 32990000, 6,
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778659252/pbl3_mobileshop/iphone-16-pro-desert-titanium-variant.jpg'),
+
+-- Samsung Galaxy S26 Ultra
+(7, 3, 'Xanh da trời', '512GB', '12GB', 'Snapdragon 8 Gen 5', '5500mAh', '3120x1440', '6.9 inch', '40MP', '200MP + 50MP + 50MP + 12MP', '2 Nano SIM', 33990000, 9,
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778659249/pbl3_mobileshop/galaxy-s26-ultra-sky-blue-variant.jpg'),
+(8, 3, 'Trắng', '512GB', '12GB', 'Snapdragon 8 Gen 5', '5500mAh', '3120x1440', '6.9 inch', '40MP', '200MP + 50MP + 50MP + 12MP', '2 Nano SIM', 33990000, 8,
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778659250/pbl3_mobileshop/galaxy-s26-ultra-white-variant.jpg'),
+(9, 3, 'Đen', '512GB', '12GB', 'Snapdragon 8 Gen 5', '5500mAh', '3120x1440', '6.9 inch', '40MP', '200MP + 50MP + 50MP + 12MP', '2 Nano SIM', 33990000, 10,
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778659249/pbl3_mobileshop/galaxy-s26-ultra-black-variant.jpg'),
+
+-- Xiaomi Redmi Note 15 Pro
+(10, 4, 'Xanh Aurora', '256GB', '8GB', 'MediaTek Dimensity 8300', '5100mAh', '2712x1220', '6.67 inch', '16MP', '200MP + 8MP + 2MP', '2 Nano SIM', 8990000, 15,
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778659263/pbl3_mobileshop/xiaomi-redmi-note-15-pro-aurora-blue-variant.jpg'),
+(11, 4, 'Đen Midnight', '512GB', '12GB', 'MediaTek Dimensity 8300', '5100mAh', '2712x1220', '6.67 inch', '16MP', '200MP + 8MP + 2MP', '2 Nano SIM', 10990000, 12,
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778659264/pbl3_mobileshop/xiaomi-redmi-note-15-pro-midnight-black-variant.jpg'),
+
+-- OPPO Reno14 5G
+(12, 5, 'Trắng', '256GB', '12GB', 'Dimensity 8350', '5000mAh', '2412x1080', '6.7 inch', '32MP', '50MP + 8MP + 2MP', '2 Nano SIM', 11990000, 14,
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778659258/pbl3_mobileshop/oppo-reno-14-5g-white-variant.jpg'),
+(13, 5, 'Đen', '512GB', '12GB', 'Dimensity 8350', '5000mAh', '2412x1080', '6.7 inch', '32MP', '50MP + 8MP + 2MP', '2 Nano SIM', 13990000, 9,
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778659257/pbl3_mobileshop/oppo-reno-14-5g-black-variant.jpg'),
+
+-- Samsung Galaxy A57 5G
+(14, 6, 'Đen', '256GB', '8GB', 'Exynos 1680', '5000mAh', '2340x1080', '6.6 inch', '32MP', '50MP + 12MP + 5MP', '2 Nano SIM', 11490000, 11,
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778659258/pbl3_mobileshop/samsung-galaxy-a57-5g-black-variant.jpg'),
+(15, 6, 'Trắng', '256GB', '8GB', 'Exynos 1680', '5000mAh', '2340x1080', '6.6 inch', '32MP', '50MP + 12MP + 5MP', '2 Nano SIM', 11490000, 10,
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778659259/pbl3_mobileshop/samsung-galaxy-a57-5g-white-variant.jpg'),
+
+-- Xiaomi Redmi A5
+(16, 7, 'Xanh dương', '64GB', '3GB', 'Helio G36', '5000mAh', '1600x720', '6.52 inch', '8MP', '13MP', '2 Nano SIM', 2990000, 18,
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778659262/pbl3_mobileshop/xiaomi-redmi-a5-blue-variant.jpg'),
+(17, 7, 'Đen', '128GB', '4GB', 'Helio G36', '5000mAh', '1600x720', '6.52 inch', '8MP', '13MP', '2 Nano SIM', 3690000, 15,
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778659262/pbl3_mobileshop/xiaomi-redmi-a5-black-variant.jpg'),
+
+-- Samsung Galaxy Z Fold 7
+(18, 8, 'Đen', '512GB', '12GB', 'Snapdragon 8 Elite', '4800mAh', '2176x1812', '7.8 inch', '16MP', '200MP + 12MP + 10MP', '2 Nano SIM/eSIM', 46990000, 5,
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778659260/pbl3_mobileshop/samsung-galaxy-z-fold-7-black-variant.jpg'),
+(19, 8, 'Bạc', '1TB', '16GB', 'Snapdragon 8 Elite', '4800mAh', '2176x1812', '7.8 inch', '16MP', '200MP + 12MP + 10MP', '2 Nano SIM/eSIM', 52990000, 3,
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778659261/pbl3_mobileshop/samsung-galaxy-z-fold-7-silver-variant.jpg'),
+
+-- ASUS ROG Phone 9
+(20, 9, 'Đen Phantom', '512GB', '16GB', 'Snapdragon 8 Gen 4', '6000mAh', '2448x1080', '6.78 inch', '32MP', '50MP + 13MP + 5MP', '2 Nano SIM', 29990000, 7,
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778659246/pbl3_mobileshop/asus-rog-phone-9-phantom-black-variant.jpg'),
+(21, 9, 'Trắng Phantom', '1TB', '24GB', 'Snapdragon 8 Gen 4', '6000mAh', '2448x1080', '6.78 inch', '32MP', '50MP + 13MP + 5MP', '2 Nano SIM', 39990000, 4,
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778659248/pbl3_mobileshop/asus-rog-phone-9-phantom-white-variant.jpg'),
+
+-- Honor 400 Lite
+(22, 10, 'Trắng', '256GB', '12GB', 'MediaTek Dimensity 7025', '5000mAh', '2412x1080', '6.7 inch', '16MP', '108MP + 5MP', '2 Nano SIM', 7990000, 13,
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778659251/pbl3_mobileshop/honor-400-lite-white-variant.jpg'),
+(23, 10, 'Xanh Marrs', '256GB', '12GB', 'MediaTek Dimensity 7025', '5000mAh', '2412x1080', '6.7 inch', '16MP', '108MP + 5MP', '2 Nano SIM', 7990000, 10,
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778659251/pbl3_mobileshop/honor-400-lite-marrs-green-variant.jpg'),
+
+-- OPPO Find X9 Pro
+(24, 11, 'Trắng', '512GB', '16GB', 'Dimensity 9500', '5400mAh', '3168x1440', '6.82 inch', '32MP', '50MP + 50MP + 50MP', '2 Nano SIM', 32990000, 6,
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778659257/pbl3_mobileshop/oppo-find-x9-pro-white-variant.jpg'),
+(25, 11, 'Hồng ánh tím', '1TB', '16GB', 'Dimensity 9500', '5400mAh', '3168x1440', '6.82 inch', '32MP', '50MP + 50MP + 50MP', '2 Nano SIM', 37990000, 4,
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778659256/pbl3_mobileshop/oppo-find-x9-pro-magenta-variant.jpg');
+>>>>>>> customer-ui
 UNLOCK TABLES;
 
 -- ============================================================

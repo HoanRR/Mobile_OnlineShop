@@ -22,5 +22,6 @@ public class ProductVariantResponse {
     String simCard;
     Double price;
     String variantImageLink;
+
     Long totalAvailable; // Để FE biết còn hàng hay không (Out of stock)
 }
