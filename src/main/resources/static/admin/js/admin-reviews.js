@@ -234,11 +234,20 @@ function hideProduct() {
   const button = document.querySelector('.btn-hide');
   if (!button) return;
 
-  if (!confirm('Thay \u0111\u1ed5i tr\u1ea1ng th\u00e1i hi\u1ec3n th\u1ecb c\u1ee7a s\u1ea3n ph\u1ea9m n\u00e0y?')) return;
-
   const hidden = button.dataset.hidden === '1';
-  button.dataset.hidden = hidden ? '0' : '1';
-  button.textContent = hidden ? 'T\u1ea1m \u1ea9n s\u1ea3n ph\u1ea9m' : 'Hi\u1ec3n th\u1ecb l\u1ea1i s\u1ea3n ph\u1ea9m';
+  showAdminConfirm({
+    title: hidden ? 'Hiển thị lại sản phẩm?' : 'Ẩn sản phẩm?',
+    message: hidden ? 'Bạn có muốn hiển thị lại sản phẩm không?' : 'Bạn có muốn ẩn sản phẩm không?',
+    confirmText: hidden ? 'Hiển thị lại' : 'Ẩn',
+    cancelText: 'Hủy',
+    tone: 'warning',
+    icon: hidden ? 'fa-eye' : 'fa-eye-slash'
+  }).then((confirmed) => {
+    if (!confirmed) return;
+
+    button.dataset.hidden = hidden ? '0' : '1';
+    button.textContent = hidden ? 'Tạm ẩn sản phẩm' : 'Hiển thị lại sản phẩm';
+  });
 }
 
 document.addEventListener('DOMContentLoaded', async () => {

@@ -52,6 +52,15 @@
     gap: 16px; overflow-y: auto; 
     padding-right: 5px; 
 }
+.pos-api-warning {
+    color: #f59e0b;
+    background: rgba(245, 158, 11, 0.08);
+    border: 1px solid rgba(245, 158, 11, 0.25);
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin-bottom: 14px;
+    font-size: 13px;
+}
 .pos-item { 
     background: var(--surface2); 
     padding: 20px; 
@@ -62,6 +71,15 @@
     display: flex; 
     flex-direction: column; 
     align-items: center;
+}
+.pos-item.is-disabled {
+    cursor: not-allowed;
+    opacity: 0.58;
+}
+.pos-item.is-disabled:hover {
+    transform: none;
+    border-color: var(--border);
+    box-shadow: none;
 }
 .pos-item:hover { 
     border-color: var(--red); 
@@ -90,6 +108,15 @@
     color: var(--green); 
     font-weight: 700; font-size: 16px; 
     margin: 0; 
+}
+.pos-stock {
+    margin-top: 8px;
+    color: var(--muted);
+    font-size: 12px;
+    font-weight: 600;
+}
+.pos-stock.out {
+    color: var(--red);
 }
 
 /* Cột giỏ hàng */

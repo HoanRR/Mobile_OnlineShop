@@ -16,6 +16,14 @@ function useVouchersApi() {
   return Boolean(window.HTApi?.isEnabled());
 }
 
+async function showVoucherWarning(message) {
+  await showAdminWarning({ message, confirmText: 'OK' });
+}
+
+async function showVoucherError(message) {
+  await showAdminError({ message, confirmText: 'OK' });
+}
+
 function loadVouchers() {
   try {
     const saved = JSON.parse(localStorage.getItem(VOUCHERS_STORAGE_KEY) || 'null');
@@ -141,27 +149,27 @@ async function handleVoucherSubmit(event) {
   const type = normalizeText(typeText).includes('phan tram') ? 'percent' : 'fixed';
 
   if (!code || value <= 0 || maxUses <= 0 || minOrder < 0) {
-    alert('Vui l\u00f2ng nh\u1eadp th\u00f4ng tin voucher h\u1ee3p l\u1ec7.');
+    await showVoucherWarning('Vui lòng nhập thông tin voucher hợp lệ.');
     return;
   }
 
   if (!startDate || Number.isNaN(new Date(`${startDate}T00:00:00`).getTime())) {
-    alert('Vui l\u00f2ng ch\u1ecdn ng\u00e0y b\u1eaft \u0111\u1ea7u h\u1ee3p l\u1ec7.');
+    await showVoucherWarning('Vui lòng chọn ngày bắt đầu hợp lệ.');
     return;
   }
 
   if (!expiresAt || Number.isNaN(new Date(`${expiresAt}T00:00:00`).getTime())) {
-    alert('Vui l\u00f2ng ch\u1ecdn h\u1ea1n s\u1eed d\u1ee5ng h\u1ee3p l\u1ec7.');
+    await showVoucherWarning('Vui lòng chọn hạn sử dụng hợp lệ.');
     return;
   }
 
   if (new Date(`${startDate}T00:00:00`) > new Date(`${expiresAt}T00:00:00`)) {
-    alert('H\u1ea1n s\u1eed d\u1ee5ng ph\u1ea3i sau ng\u00e0y b\u1eaft \u0111\u1ea7u.');
+    await showVoucherWarning('Hạn sử dụng phải sau ngày bắt đầu.');
     return;
   }
 
   if (vouchers.some((voucher) => voucherCode(voucher) === code)) {
-    alert('M\u00e3 voucher n\u00e0y \u0111\u00e3 t\u1ed3n t\u1ea1i.');
+    await showVoucherWarning('Mã voucher này đã tồn tại.');
     return;
   }
 
@@ -182,7 +190,7 @@ async function handleVoucherSubmit(event) {
     try {
       apiVoucher = await HTApi.admin.vouchers.create(payload);
     } catch (error) {
-      alert(error.message || 'Không tạo được voucher qua API.');
+      await showVoucherError(error.message || 'Không tạo được voucher qua API.');
       return;
     }
   }
@@ -249,12 +257,12 @@ async function handleExtendVoucherSubmit(event) {
   const usageLimit = Number(document.getElementById('extendUsageLimit')?.value);
 
   if (!/^\d{4}-\d{2}-\d{2}$/.test(nextDate) || Number.isNaN(new Date(`${nextDate}T00:00:00`).getTime())) {
-    alert('Ng\u00e0y h\u1ebft h\u1ea1n kh\u00f4ng h\u1ee3p l\u1ec7.');
+    await showVoucherWarning('Ngày hết hạn không hợp lệ.');
     return;
   }
 
   if (!Number.isFinite(usageLimit) || usageLimit <= 0) {
-    alert('S\u1ed1 l\u01b0\u1ee3t d\u00f9ng kh\u00f4ng h\u1ee3p l\u1ec7.');
+    await showVoucherWarning('Số lượt dùng không hợp lệ.');
     return;
   }
 
@@ -265,7 +273,7 @@ async function handleExtendVoucherSubmit(event) {
         usage_limit: usageLimit
       });
     } catch (error) {
-      alert(error.message || 'Không gia hạn được voucher qua API.');
+      await showVoucherError(error.message || 'Không gia hạn được voucher qua API.');
       return;
     }
   }
@@ -279,8 +287,18 @@ async function handleExtendVoucherSubmit(event) {
   closeExtendVoucherModal();
 }
 
-function deleteVoucher(code) {
-  if (!confirm(`X\u00f3a voucher ${code}?`)) return;
+async function deleteVoucher(code) {
+  const confirmed = await showAdminConfirm({
+    title: 'Xóa voucher?',
+    message: `Voucher "${code}" sẽ bị xóa khỏi danh sách.`,
+    confirmText: 'Xóa',
+    cancelText: 'Hủy',
+    tone: 'danger',
+    icon: 'fa-trash-can'
+  });
+
+  if (!confirmed) return;
+
   vouchers = vouchers.filter((voucher) => voucherCode(voucher) !== code);
   saveVouchers();
   renderVouchers();

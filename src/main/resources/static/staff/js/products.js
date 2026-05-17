@@ -12,18 +12,28 @@ const staffDefaultProducts = [
 ];
 
 let staffProducts = [];
+let staffProductsApiError = '';
 
 function useStaffProductsApi() {
   return Boolean(window.HTApi?.isEnabled());
 }
 
+function escapeHtml(value) {
+  const div = document.createElement('div');
+  div.textContent = value ?? '';
+  return div.innerHTML;
+}
+
 async function loadStaffProducts(query = {}) {
+  staffProductsApiError = '';
+
   if (useStaffProductsApi()) {
     try {
       const response = await HTApi.products.list({ page: 1, limit: 100, ...query });
       staffProducts = HTApi.listData(response).map(HTApi.mapProduct);
       return;
     } catch (error) {
+      staffProductsApiError = error.message || 'Kh\u00f4ng l\u1ea5y \u0111\u01b0\u1ee3c s\u1ea3n ph\u1ea9m t\u1eeb API.';
       console.warn('Không lấy được sản phẩm từ API, dùng dữ liệu mock.', error);
     }
   }
@@ -63,9 +73,19 @@ function renderStaffProducts() {
   if (!tableBody) return;
 
   const products = getFilteredStaffProducts();
+  const warningRow = staffProductsApiError
+    ? `
+      <tr>
+        <td colspan="5" style="color:#f59e0b; background:rgba(245,158,11,0.08);">
+          API /api/products l\u1ed7i: ${escapeHtml(staffProductsApiError)}. \u0110ang hi\u1ec3n th\u1ecb d\u1eef li\u1ec7u mock.
+        </td>
+      </tr>
+    `
+    : '';
 
   if (!products.length) {
     tableBody.innerHTML = `
+      ${warningRow}
       <tr>
         <td colspan="5" style="text-align:center; color:var(--muted); padding:28px;">Kh\u00f4ng t\u00ecm th\u1ea5y s\u1ea3n ph\u1ea9m ph\u00f9 h\u1ee3p</td>
       </tr>
@@ -73,22 +93,27 @@ function renderStaffProducts() {
     return;
   }
 
-  tableBody.innerHTML = products.map((product) => {
-    const stock = Number(product.stock) || 0;
-    const stockHtml = stock > 0
-      ? `<span class="stock-available">${stock}</span> chi\u1ebfc`
-      : '<span class="stock-outofstock">H\u1ebft h\u00e0ng</span>';
+  const rows = products.map((product) => {
+    const stockKnown = product.stock_known !== false;
+    const stock = Number(product.stock);
+    const stockHtml = !stockKnown
+      ? '<span class="stock-unknown">Ch\u01b0a c\u00f3 d\u1eef li\u1ec7u</span>'
+      : stock > 0
+        ? `<span class="stock-available">${stock}</span> chi\u1ebfc`
+        : '<span class="stock-outofstock">H\u1ebft h\u00e0ng</span>';
 
     return `
       <tr>
-        <td class="cell-muted">#${product.id}</td>
-        <td><strong>${product.name}</strong></td>
-        <td><span class="category-badge">${product.brand}</span></td>
+        <td class="cell-muted">#${escapeHtml(product.id)}</td>
+        <td><strong>${escapeHtml(product.name)}</strong></td>
+        <td><span class="category-badge">${escapeHtml(product.brand || '-')}</span></td>
         <td class="price-cell">${formatMoney(product.price)}</td>
         <td>${stockHtml}</td>
       </tr>
     `;
   }).join('');
+
+  tableBody.innerHTML = `${warningRow}${rows}`;
 }
 
 function initStaffProductEvents() {

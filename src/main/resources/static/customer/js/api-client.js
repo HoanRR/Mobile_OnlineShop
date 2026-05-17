@@ -13,6 +13,22 @@
   const API_BASE_URL_KEY = 'ht_api_base_url';
   const TOKEN_KEYS = ['jwt_token', 'access_token', 'token'];
 
+  function applyUrlConfig() {
+    if (!global.location) return;
+
+    const params = new URLSearchParams(global.location.search);
+    if (params.has('api')) {
+      const value = String(params.get('api') || '').toLowerCase();
+      localStorage.setItem(API_ENABLED_KEY, ['1', 'true', 'yes', 'on'].includes(value) ? '1' : '0');
+    }
+
+    if (params.has('apiBaseUrl')) {
+      localStorage.setItem(API_BASE_URL_KEY, params.get('apiBaseUrl') || '');
+    }
+  }
+
+  applyUrlConfig();
+
   function isEnabled() {
     return localStorage.getItem(API_ENABLED_KEY) === '1';
   }
@@ -22,7 +38,9 @@
   }
 
   function getBaseUrl() {
-    return (localStorage.getItem(API_BASE_URL_KEY) || '').replace(/\/$/, '');
+    const metaBaseUrl = document.querySelector('meta[name="ht-api-base-url"]')?.content || '';
+    const globalBaseUrl = global.HT_API_BASE_URL || '';
+    return (localStorage.getItem(API_BASE_URL_KEY) || globalBaseUrl || metaBaseUrl || '').replace(/\/$/, '');
   }
 
   function getToken() {
@@ -81,7 +99,7 @@
       snakeBody = false
     } = options;
 
-    const fetchHeaders = { ...headers };
+    const fetchHeaders = { Accept: 'application/json', ...headers };
     const fetchOptions = { method, headers: fetchHeaders };
     const token = getToken();
 
@@ -139,7 +157,9 @@
 
   function idValue(value, prefix = '') {
     if (value === undefined || value === null || value === '') return '';
-    return `${prefix}${String(value).replace(/^#/, '')}`;
+    const raw = String(value).replace(/^#/, '');
+    if (prefix && raw.toUpperCase().startsWith(prefix.toUpperCase())) return raw;
+    return `${prefix}${raw}`;
   }
 
   function dateOnly(value) {
@@ -150,7 +170,12 @@
   function mapProduct(product) {
     const variants = product.variants || [];
     const firstVariant = variants[0] || {};
-    const stock = variants.reduce((sum, variant) => sum + Number(variant.total_available ?? variant.totalAvailable ?? 0), 0);
+    const stockFromVariants = variants.reduce((sum, variant) => sum + Number(variant.total_available ?? variant.totalAvailable ?? variant.stock ?? 0), 0);
+    const stockValue = product.stock
+      ?? product.total_available
+      ?? product.totalAvailable
+      ?? (variants.length ? stockFromVariants : undefined);
+    const stockKnown = stockValue !== undefined && stockValue !== null;
     const minPrice = product.min_price ?? product.minPrice ?? firstVariant.price ?? product.price ?? 0;
 
     return {
@@ -161,9 +186,38 @@
       product_name: product.product_name || product.productName || product.name || '',
       brand: product.brand || '',
       price: Number(minPrice) || 0,
-      stock: Number(product.stock ?? stock ?? firstVariant.total_available ?? firstVariant.totalAvailable ?? 0) || 0,
+      min_price: Number(minPrice) || 0,
+      product_image_link: product.product_image_link || product.productImageLink || product.image || firstVariant.variant_image_link || firstVariant.variantImageLink || '',
+      stock: stockKnown ? Number(stockValue) || 0 : null,
+      stock_known: stockKnown,
       variants
     };
+  }
+
+  function productApiId(product) {
+    const raw = product?.product_id ?? product?.productId ?? product?.id;
+    if (raw === undefined || raw === null || raw === '') return '';
+    const text = String(raw);
+    return text.replace(/\D/g, '') || text;
+  }
+
+  async function listProductsWithDetails(query = {}, options = {}) {
+    const payload = await request('/api/products', { query });
+    const products = listData(payload);
+    const limit = Number(options.limit ?? products.length);
+    const hydrated = await Promise.all(products.map(async (product, index) => {
+      const id = productApiId(product);
+      if (!id || index >= limit) return product;
+
+      try {
+        return await request(`/api/products/${id}`);
+      } catch (error) {
+        return product;
+      }
+    }));
+
+    if (Array.isArray(payload)) return hydrated;
+    return { ...payload, data: hydrated };
   }
 
   function mapOrder(order) {
@@ -243,6 +297,7 @@
 
     products: {
       list: (query) => request('/api/products', { query }),
+      listWithDetails: (query, options) => listProductsWithDetails(query, options),
       detail: (productId) => request(`/api/products/${productId}`),
       reviews: (productId, query) => request(`/api/products/${productId}/reviews`, { query }),
       createReview: (productId, body) => request(`/api/products/${productId}/reviews`, { method: 'POST', body, snakeBody: true })
@@ -301,6 +356,9 @@
       reports: {
         revenue: (query) => request('/api/admin/reports/revenue', { query }),
         topProducts: (query) => request('/api/admin/reports/top-products', { query })
+      },
+      orders: {
+        updateStatus: (orderId, body) => request(`/api/staff/orders/${orderId}/status`, { method: 'PATCH', body, snakeBody: true })
       },
       vouchers: {
         create: (body) => request('/api/admin/vouchers', { method: 'POST', body, snakeBody: true }),

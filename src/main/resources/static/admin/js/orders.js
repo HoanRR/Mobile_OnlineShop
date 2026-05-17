@@ -362,17 +362,23 @@ async function saveStatus() {
   const nextStatus = getStatusKey(statusSelect ? statusSelect.value : '');
 
   if (!nextStatus) {
-    alert('Vui l\u00f2ng ch\u1ecdn tr\u1ea1ng th\u00e1i m\u1edbi.');
+    await showAdminWarning({
+      message: 'Vui lòng chọn trạng thái mới.',
+      confirmText: 'OK'
+    });
     return;
   }
 
   if (useOrdersApi()) {
     try {
-      await HTApi.staff.orders.updateStatus(String(selectedOrderId).replace(/\D/g, '') || selectedOrderId, {
+      await HTApi.admin.orders.updateStatus(String(selectedOrderId).replace(/\D/g, '') || selectedOrderId, {
         order_status: nextStatus
       });
     } catch (error) {
-      alert(error.message || 'Không cập nhật được trạng thái qua API.');
+      await showAdminError({
+        message: error.message || 'Không cập nhật được trạng thái qua API.',
+        confirmText: 'OK'
+      });
       return;
     }
   }
@@ -381,7 +387,11 @@ async function saveStatus() {
   saveOrders();
   renderOrders();
   closeModal();
-  alert('\u0110\u00e3 c\u1eadp nh\u1eadt tr\u1ea1ng th\u00e1i \u0111\u01a1n h\u00e0ng.');
+  await showAdminNotice({
+    title: 'Cập nhật đơn hàng thành công',
+    message: 'Đã cập nhật trạng thái đơn hàng.',
+    confirmText: 'OK'
+  });
 }
 
 function applyStatusFromQuery() {

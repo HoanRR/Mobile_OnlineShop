@@ -39,6 +39,18 @@ function useUsersApi() {
   return Boolean(window.HTApi?.isEnabled());
 }
 
+async function showUserWarning(message) {
+  if (typeof showAdminWarning === 'function') {
+    await showAdminWarning({ message, confirmText: 'OK' });
+  }
+}
+
+async function showUserError(message) {
+  if (typeof showAdminError === 'function') {
+    await showAdminError({ message, confirmText: 'OK' });
+  }
+}
+
 async function loadUsers(query = {}) {
   if (useUsersApi()) {
     try {
@@ -250,7 +262,7 @@ async function handleStaffFormSubmit(event) {
   const permission = fields[5] ? fields[5].value.trim() : 'Nh\u00e2n vi\u00ean b\u00e1n h\u00e0ng';
 
   if (!name || !username || !email || !phoneNumber) {
-    alert('Vui l\u00f2ng nh\u1eadp \u0111\u1ea7y \u0111\u1ee7 h\u1ecd t\u00ean, username, email v\u00e0 s\u1ed1 \u0111i\u1ec7n tho\u1ea1i.');
+    await showUserWarning('Vui lòng nhập đầy đủ họ tên, username, email và số điện thoại.');
     return;
   }
 
@@ -261,7 +273,7 @@ async function handleStaffFormSubmit(event) {
       || normalizeText(user.phone_number) === normalizeText(phoneNumber)
     ));
   if (duplicated) {
-    alert('Username, email ho\u1eb7c s\u1ed1 \u0111i\u1ec7n tho\u1ea1i n\u00e0y \u0111\u00e3 t\u1ed3n t\u1ea1i.');
+    await showUserWarning('Username, email hoặc số điện thoại này đã tồn tại.');
     return;
   }
 
@@ -275,7 +287,7 @@ async function handleStaffFormSubmit(event) {
           role: 'EMPLOYEE'
         });
       } catch (error) {
-        alert(error.message || 'Không cập nhật được người dùng qua API.');
+        await showUserError(error.message || 'Không cập nhật được người dùng qua API.');
         return;
       }
     }
@@ -284,23 +296,25 @@ async function handleStaffFormSubmit(event) {
       ? { ...user, name, username, email, phone_number: phoneNumber, contact: email, permission, ...(password ? { password } : {}) }
       : user);
   } else {
-    const newUserId = Date.now();
+    let apiUser = null;
     if (useUsersApi()) {
       try {
-        await HTApi.admin.users.createStaff({
+        apiUser = HTApi.mapUser(await HTApi.admin.users.createStaff({
           username,
           email,
           phone_number: phoneNumber,
           password,
           role: 'EMPLOYEE'
-        });
+        }));
       } catch (error) {
-        alert(error.message || 'Không tạo được nhân viên qua API.');
+        await showUserError(error.message || 'Không tạo được nhân viên qua API.');
         return;
       }
     }
 
+    const newUserId = apiUser?.id || Date.now();
     users.unshift({
+      ...(apiUser || {}),
       id: newUserId,
       user_id: newUserId,
       name,
@@ -318,10 +332,18 @@ async function handleStaffFormSubmit(event) {
   saveUsers();
   renderUsers();
   closeStaffModal();
-  alert(wasEditing ? '\u0110\u00e3 c\u1eadp nh\u1eadt nh\u00e2n vi\u00ean.' : '\u0110\u00e3 t\u1ea1o nh\u00e2n vi\u00ean m\u1edbi.');
+
+  const successMessage = wasEditing ? 'Đã cập nhật nhân viên.' : 'Đã tạo nhân viên mới.';
+  if (typeof showAdminNotice === 'function') {
+    await showAdminNotice({
+      title: wasEditing ? 'Cập nhật nhân viên thành công' : 'Thêm nhân viên thành công',
+      message: successMessage,
+      confirmText: 'OK'
+    });
+  }
 }
 
-function handleTableAction(event) {
+async function handleTableAction(event) {
   const button = event.target.closest('button[data-action]');
   if (!button) return;
 
@@ -336,11 +358,18 @@ function handleTableAction(event) {
 
   if (button.dataset.action === 'toggle') {
     const nextActive = !user.active;
-    const message = nextActive
-      ? `M\u1edf kh\u00f3a t\u00e0i kho\u1ea3n ${user.name}?`
-      : `Kh\u00f3a t\u00e0i kho\u1ea3n ${user.name}?`;
+    const confirmed = await showAdminConfirm({
+      title: nextActive ? 'Mở khóa tài khoản?' : 'Khóa tài khoản?',
+      message: nextActive
+        ? `Tài khoản "${user.name}" sẽ được phép hoạt động trở lại.`
+        : `Tài khoản "${user.name}" sẽ bị tạm khóa.`,
+      confirmText: nextActive ? 'Mở khóa' : 'Khóa',
+      cancelText: 'Hủy',
+      tone: nextActive ? 'success' : 'danger',
+      icon: nextActive ? 'fa-unlock' : 'fa-lock'
+    });
 
-    if (confirm(message)) {
+    if (confirmed) {
       user.active = nextActive;
       saveUsers();
       renderUsers();
