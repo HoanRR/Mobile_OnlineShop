@@ -54,7 +54,7 @@ INSERT IGNORE INTO `product` (`product_id`, `product_name`, `brand`, `descriptio
 
 (5, 'OPPO Reno 14 5G', 'OPPO',
 'Điện thoại 5G thiết kế thời trang, camera AI hiện đại và khả năng chụp chân dung ấn tượng.',
-'https://example.com/images/oppo-reno14-5g.jpg'),
+'https://res.cloudinary.com/durs02or1/image/upload/v1778659200/pbl3_mobileshop/oppo-reno-14-5g.webp'),
 
 (6, 'Samsung Galaxy A57 5G', 'Samsung',
 'Smartphone 5G giá hợp lý với pin bền, màn hình đẹp và hiệu năng đáp ứng tốt nhu cầu hằng ngày.',
@@ -78,7 +78,83 @@ INSERT IGNORE INTO `product` (`product_id`, `product_name`, `brand`, `descriptio
 
 (11, 'OPPO Find X9 Pro', 'OPPO',
 'Điện thoại flagship OPPO với camera cao cấp, công nghệ sạc nhanh và thiết kế sang trọng.',
-'https://res.cloudinary.com/durs02or1/image/upload/v1778659200/pbl3_mobileshop/oppo-find-x9-pro.webp');
+'https://res.cloudinary.com/durs02or1/image/upload/v1778659200/pbl3_mobileshop/oppo-find-x9-pro.webp'),
+
+(12, 'iPhone 16 Plus', 'Apple',
+'Điện thoại cao cấp với màn hình lớn, hiệu năng mạnh mẽ và thời lượng pin ấn tượng.',
+'https://res.cloudinary.com/durs02or1/image/upload/v1778955145/pbl3_mobileshop/iphone-16-plus.webp'),
+
+(13, 'Samsung Galaxy S26 Plus', 'Samsung',
+'Smartphone flagship sở hữu màn hình AMOLED sắc nét, camera cao cấp và hiệu năng vượt trội.',
+'https://res.cloudinary.com/durs02or1/image/upload/v1778955147/pbl3_mobileshop/samsung-galaxy-s26-plus.webp'),
+
+(14, 'Samsung Galaxy Z Flip 6', 'Samsung',
+'Điện thoại gập thời trang với thiết kế nhỏ gọn, màn hình linh hoạt và hiệu năng mạnh.',
+'https://res.cloudinary.com/durs02or1/image/upload/v1778955148/pbl3_mobileshop/samsung-galaxy-z-flip-6.webp'),
+
+(15, 'Xiaomi 15 Pro', 'Xiaomi',
+'Smartphone cao cấp với camera chất lượng cao, sạc nhanh và hiệu năng mạnh mẽ.',
+'https://res.cloudinary.com/durs02or1/image/upload/v1778955149/pbl3_mobileshop/xiaomi-15-pro.webp'),
+
+(16, 'Sony Xperia 1 VII', 'Sony',
+'Điện thoại cao cấp dành cho giải trí và nhiếp ảnh với màn hình chất lượng điện ảnh.',
+'https://res.cloudinary.com/durs02or1/image/upload/v1778955148/pbl3_mobileshop/sony-xperia-1-VII.webp'),
+
+(17, 'Google Pixel 10 Pro', 'Google',
+'Điện thoại Pixel với Android thuần, camera AI thông minh và trải nghiệm mượt mà.',
+'https://res.cloudinary.com/durs02or1/image/upload/v1778955142/pbl3_mobileshop/goolgle-pixel-10-pro.webp'),
+
+(18, 'Oppo F33 Pro', 'OPPO',
+'Smartphone tầm trung với thiết kế đẹp, camera AI hiện đại và pin dung lượng lớn.',
+'https://res.cloudinary.com/durs02or1/image/upload/v1778955146/pbl3_mobileshop/oppo-f33-pro.webp'),
+
+(19, 'Vivo Y6', 'Vivo',
+'Điện thoại phổ thông phù hợp nhu cầu học tập, giải trí và sử dụng hằng ngày.',
+'https://res.cloudinary.com/durs02or1/image/upload/v1778955149/pbl3_mobileshop/vivo-y6.webp'),
+
+(20, 'Realme C100 5G', 'Realme',
+'Smartphone giá rẻ hỗ trợ 5G với hiệu năng ổn định và thiết kế trẻ trung.',
+'https://res.cloudinary.com/durs02or1/image/upload/v1778955146/pbl3_mobileshop/realme-c100-5g.webp'),
+
+(21, 'Samsung Galaxy A36', 'Samsung',
+'Điện thoại tầm trung với màn hình đẹp, pin tốt và hỗ trợ 5G hiện đại.',
+'https://res.cloudinary.com/durs02or1/image/upload/v1778955147/pbl3_mobileshop/samsung-galaxy-a36.webp'),
+
+(22, 'Xiaomi Poco F7 Pro', 'Xiaomi',
+'Smartphone hiệu năng cao dành cho gaming với chip mạnh và màn hình tốc độ cao.',
+'https://res.cloudinary.com/durs02or1/image/upload/v1778955151/pbl3_mobileshop/xiaomi-poco-f7-pro.webp'),
+
+(23, 'Infinix GT 50 Pro', 'Infinix',
+'Điện thoại gaming giá tốt với cấu hình mạnh và thiết kế hiện đại.',
+'https://res.cloudinary.com/durs02or1/image/upload/v1778955144/pbl3_mobileshop/infinix-gt-50-pro.webp'),
+
+(24, 'ZTE Nubia Red Magic 10 Pro', 'ZTE',
+'Gaming phone cao cấp với hệ thống tản nhiệt mạnh mẽ và hiệu năng vượt trội.',
+'https://res.cloudinary.com/durs02or1/image/upload/v1778955150/pbl3_mobileshop/zte-nubia-red-magic-10-pro.webp'),
+
+(25, 'Honor 600 Pro', 'Honor',
+'Smartphone cao cấp với camera AI hiện đại và thiết kế sang trọng.',
+'https://res.cloudinary.com/durs02or1/image/upload/v1778955143/pbl3_mobileshop/honor-600-pro.webp'),
+
+(26, 'Huawei Pura 90 Pro Max', 'Huawei',
+'Điện thoại flagship nổi bật với camera cao cấp, thiết kế tinh tế và hiệu năng mạnh.',
+'https://res.cloudinary.com/durs02or1/image/upload/v1778955143/pbl3_mobileshop/huawei-pure-90-pro-max.webp'),
+
+(27, 'Blackview Shark 6', 'Blackview',
+'Điện thoại giá rẻ với độ bền cao và thời lượng pin ổn định.',
+'https://res.cloudinary.com/durs02or1/image/upload/v1778955142/pbl3_mobileshop/blackview-shark-6.webp'),
+
+(28, 'Motorola Razr Ultra 2026', 'Motorola',
+'Điện thoại gập cao cấp với thiết kế độc đáo và hiệu năng mạnh mẽ.',
+'https://res.cloudinary.com/durs02or1/image/upload/v1778955145/pbl3_mobileshop/motorola-razr-ultra-2026.webp'),
+
+(29, 'Cubot X100', 'Cubot',
+'Smartphone giá rẻ phù hợp nhu cầu cơ bản với thiết kế nhỏ gọn.',
+'https://res.cloudinary.com/durs02or1/image/upload/v1778955142/pbl3_mobileshop/cubot-x100.webp'),
+
+(30, 'OnePlus Nord CE6', 'OnePlus',
+'Điện thoại tầm trung với hiệu năng tốt, màn hình đẹp và sạc nhanh.',
+'https://res.cloudinary.com/durs02or1/image/upload/v1778955145/pbl3_mobileshop/oneplus-nord-ce6.webp');
 UNLOCK TABLES;
 
 -- ============================================================
@@ -155,7 +231,139 @@ INSERT IGNORE INTO `product_variant` (`product_variant_id`, `product_id`, `color
 (24, 11, 'Trắng', '512GB', '16GB', 'Dimensity 9500', '5400mAh', '3168x1440', '6.82 inch', '32MP', '50MP + 50MP + 50MP', '2 Nano SIM', 32990000, 6,
  'https://res.cloudinary.com/durs02or1/image/upload/v1778659257/pbl3_mobileshop/oppo-find-x9-pro-white-variant.jpg'),
 (25, 11, 'Hồng ánh tím', '1TB', '16GB', 'Dimensity 9500', '5400mAh', '3168x1440', '6.82 inch', '32MP', '50MP + 50MP + 50MP', '2 Nano SIM', 37990000, 4,
- 'https://res.cloudinary.com/durs02or1/image/upload/v1778659256/pbl3_mobileshop/oppo-find-x9-pro-magenta-variant.jpg');
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778659256/pbl3_mobileshop/oppo-find-x9-pro-magenta-variant.jpg'),
+
+-- iPhone 16 Plus (product_id: 12)
+(26, 12, 'Đen', '128GB', '8GB', 'Apple A18', '4674mAh', '2796x1290', '6.7 inch', '12MP', '48MP + 12MP', '1 Nano SIM/eSIM', 16990000, 15,
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778955219/pbl3_mobileshop/iphone-16-plus-black-variant.webp'),
+(27, 12, 'Trắng', '256GB', '8GB', 'Apple A18', '4674mAh', '2796x1290', '6.7 inch', '12MP', '48MP + 12MP', '1 Nano SIM/eSIM', 16990000, 12,
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778955220/pbl3_mobileshop/iphone-16-plus-white-variant.webp'),
+(28, 12, 'Xanh lá', '256GB', '8GB', 'Apple A18', '4674mAh', '2796x1290', '6.7 inch', '12MP', '48MP + 12MP', '1 Nano SIM/eSIM', 16990000, 10,
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778955219/pbl3_mobileshop/iphone-16-plus-green-variant.webp'),
+
+-- Samsung Galaxy S26 Plus (product_id: 13)
+(29, 13, 'Trắng', '128GB', '8GB', 'Snapdragon 8 Gen 5', '4900mAh', '2340x1080', '6.7 inch', '12MP', '50MP + 10MP + 12MP', '2 Nano SIM', 21990000, 8,
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778955230/pbl3_mobileshop/samsung-galaxy-s26-plus-white-variant.webp'),
+(30, 13, 'Đen', '256GB', '12GB', 'Snapdragon 8 Gen 5', '4900mAh', '2340x1080', '6.7 inch', '12MP', '50MP + 10MP + 12MP', '2 Nano SIM', 25990000, 14,
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778955229/pbl3_mobileshop/samsung-galaxy-s26-plus-black-variant.webp'),
+(31, 13, 'Tím', '512GB', '12GB', 'Snapdragon 8 Gen 5', '4900mAh', '2340x1080', '6.7 inch', '12MP', '50MP + 10MP + 12MP', '2 Nano SIM', 31990000, 6,
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778955230/pbl3_mobileshop/samsung-galaxy-s26-plus-purple-variant.webp'),
+
+-- Samsung Galaxy Z Flip 6 (product_id: 14)
+(32, 14, 'Đen', '256GB', '12GB', 'Snapdragon 8 Gen 3', '4000mAh', '2640x1080', '6.7 inch', '10MP', '50MP + 12MP', '1 Nano SIM + 1 eSIM', 17490000, 11,
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778955231/pbl3_mobileshop/samsung-galaxy-z-flip-6-black-variant.webp'),
+(33, 14, 'Trắng', '512GB', '12GB', 'Snapdragon 8 Gen 3', '4000mAh', '2640x1080', '6.7 inch', '10MP', '50MP + 12MP', '1 Nano SIM + 1 eSIM', 21990000, 7,
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778955232/pbl3_mobileshop/samsung-galaxy-z-flip-6-white-variant.webp'),
+(34, 14, 'Xanh dương', '512GB', '12GB', 'Snapdragon 8 Gen 3', '4000mAh', '2640x1080', '6.7 inch', '10MP', '50MP + 12MP', '1 Nano SIM + 1 eSIM', 21990000, 9,
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778955232/pbl3_mobileshop/samsung-galaxy-z-flip-6-blue-variant.webp'),
+
+-- Xiaomi 15 Pro (product_id: 15)
+(35, 15, 'Bạc', '512GB', '16GB', 'Snapdragon 8 Gen 4', '5400mAh', '3200x1440', '6.73 inch', '32MP', '50MP + 50MP + 50MP', '2 Nano SIM', 17990000, 10,
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778955237/pbl3_mobileshop/xiaomi-15-pro-silver-variant.webp'),
+(36, 15, 'Trắng', '1TB', '16GB', 'Snapdragon 8 Gen 4', '5400mAh', '3200x1440', '6.73 inch', '32MP', '50MP + 50MP + 50MP', '2 Nano SIM', 18990000, 8,
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778955239/pbl3_mobileshop/xiaomi-15-pro-white-variant.webp'),
+(37, 15, 'Đen', '1TB', '16GB', 'Snapdragon 8 Gen 4', '5400mAh', '3200x1440', '6.73 inch', '32MP', '50MP + 50MP + 50MP', '2 Nano SIM', 18990000, 12,
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778955236/pbl3_mobileshop/xiaomi-15-pro-black-variant.webp'),
+
+-- Sony Xperia 1 VII (product_id: 16)
+(38, 16, 'Nâu', '256GB', '12GB', 'Snapdragon 8 Gen 5', '5200mAh', '3840x1644', '6.5 inch', '12MP', '48MP + 48MP + 48MP', '2 Nano SIM', 27990000, 5,
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778955233/pbl3_mobileshop/sony-xperia-1-VII-brown-variant.webp'),
+(39, 16, 'Đỏ', '512GB', '16GB', 'Snapdragon 8 Gen 5', '5200mAh', '3840x1644', '6.5 inch', '12MP', '48MP + 48MP + 48MP', '2 Nano SIM', 30990000, 4,
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778955234/pbl3_mobileshop/sony-xperia-1-VII-red-variant.webp'),
+
+-- Google Pixel 10 Pro (product_id: 17)
+(40, 17, 'Đen', '256GB', '16GB', 'Google Tensor G5', '5050mAh', '2992x1344', '6.7 inch', '42MP', '50MP + 48MP + 48MP', '1 Nano SIM + 1 eSIM', 26990000, 7,
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778955211/pbl3_mobileshop/google-pixel-10-pro-black-variant.webp'),
+(41, 17, 'Trắng', '512GB', '16GB', 'Google Tensor G5', '5050mAh', '2992x1344', '6.7 inch', '42MP', '50MP + 48MP + 48MP', '1 Nano SIM + 1 eSIM', 29900000, 6,
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778955211/pbl3_mobileshop/google-pixel-10-pro-white-variant.webp'),
+(42, 17, 'Xanh lá', '1TB', '16GB', 'Google Tensor G5', '5050mAh', '2992x1344', '6.7 inch', '42MP', '50MP + 48MP + 48MP', '1 Nano SIM + 1 eSIM', 36990000, 3,
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778955211/pbl3_mobileshop/google-pixel-10-pro-green-variant.webp'),
+
+-- Oppo F33 Pro (product_id: 18)
+(43, 18, 'Đỏ', '128GB', '8GB', 'Dimensity 7300', '5000mAh', '2412x1080', '6.67 inch', '32MP', '50MP + 8MP + 2MP', '2 Nano SIM', 10990000, 20,
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778955225/pbl3_mobileshop/oppo-f33-pro-red-variant.webp'),
+(44, 18, 'Trắng', '256GB', '8GB', 'Dimensity 7300', '5000mAh', '2412x1080', '6.67 inch', '32MP', '50MP + 8MP + 2MP', '2 Nano SIM', 11990000, 18,
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778955226/pbl3_mobileshop/oppo-f33-pro-white-variant.webp'),
+(45, 18, 'Xanh', '256GB', '8GB', 'Dimensity 7300', '5000mAh', '2412x1080', '6.67 inch', '32MP', '50MP + 8MP + 2MP', '2 Nano SIM', 11990000, 15,
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778955224/pbl3_mobileshop/oppo-f33-pro-blue-variant.webp'),
+
+-- Vivo Y6 (product_id: 19)
+(46, 19, 'Trắng', '256GB', '8GB', 'Snapdragon 685', '5000mAh', '2400x1080', '6.64 inch', '16MP', '50MP + 2MP', '2 Nano SIM', 7990000, 25,
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778955235/pbl3_mobileshop/vivo-y6-white-variant.webp'),
+(47, 19, 'Đen', '512GB', '8GB', 'Snapdragon 685', '5000mAh', '2400x1080', '6.64 inch', '16MP', '50MP + 2MP', '2 Nano SIM', 9490000, 22,
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778955235/pbl3_mobileshop/vivo-y6-black-variant.webp'),
+
+-- Realme C100 5G (product_id: 20)
+(48, 20, 'Xanh dương', '128GB', '4GB', 'Snapdragon 4 Gen 2', '5000mAh', '2400x1080', '6.72 inch', '8MP', '50MP + 2MP', '2 Nano SIM', 5990000, 30,
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778955227/pbl3_mobileshop/realme-c100-5g-blue-variant.webp'),
+(49, 20, 'Đen', '128GB', '6GB', 'Snapdragon 4 Gen 2', '5000mAh', '2400x1080', '6.72 inch', '8MP', '50MP + 2MP', '2 Nano SIM', 6990000, 28,
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778955226/pbl3_mobileshop/realme-c100-5g-black-variant.webp'),
+
+-- Samsung Galaxy A36 (product_id: 21)
+(50, 21, 'Trắng', '128GB', '8GB', 'Exynos 1480', '5000mAh', '2340x1080', '6.5 inch', '13MP', '50MP + 8MP + 5MP', '2 Nano SIM', 6990000, 15,
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778955229/pbl3_mobileshop/samsung-galaxy-a36-white-variant.webp'),
+(51, 21, 'Đen', '256GB', '8GB', 'Exynos 1480', '5000mAh', '2340x1080', '6.5 inch', '13MP', '50MP + 8MP + 5MP', '2 Nano SIM', 7990000, 18,
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778955228/pbl3_mobileshop/samsung-galaxy-a36-black-variant.webp'),
+
+-- Xiaomi Poco F7 Pro (product_id: 22)
+(52, 22, 'Đen Carbon', '256GB', '12GB', 'Snapdragon 8 Gen 3', '5000mAh', '3200x1440', '6.67 inch', '16MP', '50MP + 8MP + 2MP', '2 Nano SIM', 11990000, 14,
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778955239/pbl3_mobileshop/xiaomi-poco-f7-pro-black-variant.webp'),
+(53, 22, 'Bạc', '512GB', '12GB', 'Snapdragon 8 Gen 3', '5000mAh', '3200x1440', '6.67 inch', '16MP', '50MP + 8MP + 2MP', '2 Nano SIM', 13490000, 11,
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778955240/pbl3_mobileshop/xiaomi-poco-f7-pro-silver-variant.webp'),
+
+-- Infinix GT 50 Pro (product_id: 23)
+(54, 23, 'Bạc', '256GB', '12GB', 'Dimensity 8200 Ultimate', '5000mAh', '2436x1080', '6.78 inch', '32MP', '108MP + 2MP + 2MP', '2 Nano SIM', 8490000, 16,
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778955216/pbl3_mobileshop/infinix-gt-50-pro-silver-variant.webp'),
+(55, 23, 'Đen', '512GB', '12GB', 'Dimensity 8200 Ultimate', '5000mAh', '2436x1080', '6.78 inch', '32MP', '108MP + 2MP + 2MP', '2 Nano SIM', 9490000, 12,
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778955215/pbl3_mobileshop/infinix-gt-50-pro-black-variant.webp'),
+(56, 23, 'Đỏ', '512GB', '12GB', 'Dimensity 8200 Ultimate', '5000mAh', '2436x1080', '6.78 inch', '32MP', '108MP + 2MP + 2MP', '2 Nano SIM', 9490000, 10,
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778955216/pbl3_mobileshop/infinix-gt-50-pro-red-variant.webp'),
+
+-- ZTE Nubia Red Magic 10 Pro (product_id: 24)
+(57, 24, 'Đen', '256GB', '12GB', 'Snapdragon 8 Gen 5', '6500mAh', '2480x1116', '6.8 inch', '16MP', '50MP + 50MP + 2MP', '2 Nano SIM', 17990000, 8,
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778955299/pbl3_mobileshop/zte-nubia-red-magic-10-pro-black-variant.webp'),
+(58, 24, 'Bạc', '512GB', '16GB', 'Snapdragon 8 Gen 5', '6500mAh', '2480x1116', '6.8 inch', '16MP', '50MP + 50MP + 2MP', '2 Nano SIM', 21990000, 5,
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778955299/pbl3_mobileshop/zte-nubia-red-magic-10-pro-silver-variant.webp'),
+
+-- Honor 600 Pro (product_id: 25)
+(59, 25, 'Đen', '256GB', '12GB', 'Snapdragon 8s Gen 4', '5200mAh', '2700x1224', '6.78 inch', '50MP', '50MP + 32MP + 12MP', '2 Nano SIM', 20990000, 9,
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778955212/pbl3_mobileshop/honor-600-pro-black-variant.webp'),
+(60, 25, 'Trắng', '512GB', '16GB', 'Snapdragon 8s Gen 4', '5200mAh', '2700x1224', '6.78 inch', '50MP', '50MP + 32MP + 12MP', '2 Nano SIM', 21990000, 6,
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778955213/pbl3_mobileshop/honor-600-pro-white-variant.webp'),
+
+-- Huawei Pura 90 Pro Max (product_id: 26)
+(61, 26, 'Xanh lá', '256GB', '12GB', 'Kirin 9020', '5100mAh', '2844x1260', '6.8 inch', '13MP', '50MP + 50MP + 40MP', '2 Nano SIM', 25990000, 6,
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778955214/pbl3_mobileshop/huawei-pure-90-pro-max-green-variant.webp'),
+(62, 26, 'Đen', '512GB', '16GB', 'Kirin 9020', '5100mAh', '2844x1260', '6.8 inch', '13MP', '50MP + 50MP + 40MP', '2 Nano SIM', 33990000, 8,
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778955214/pbl3_mobileshop/huawei-pure-90-pro-max-black-variant.webp'),
+(63, 26, 'Cam', '1TB', '16GB', 'Kirin 9020', '5100mAh', '2844x1260', '6.8 inch', '13MP', '50MP + 50MP + 40MP', '2 Nano SIM', 37990000, 4,
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778955215/pbl3_mobileshop/huawei-pure-90-pro-max-orange-variant.webp'),
+
+-- Blackview Shark 6 (product_id: 27)
+(64, 27, 'Xanh lá', '128GB', '4GB', 'Unisoc T606', '5000mAh', '1600x720', '6.6 inch', '8MP', '13MP + 2MP', '2 Nano SIM', 2990000, 40,
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778955209/pbl3_mobileshop/blackview-shark-6-green-variant.webp'),
+(65, 27, 'Xanh dương', '128GB', '4GB', 'Unisoc T606', '5000mAh', '1600x720', '6.6 inch', '8MP', '13MP + 2MP', '2 Nano SIM', 2990000, 35,
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778955208/pbl3_mobileshop/blackview-shark-6-blue-variant.webp'),
+(66, 27, 'Đen', '128GB', '4GB', 'Unisoc T606', '5000mAh', '1600x720', '6.6 inch', '8MP', '13MP + 2MP', '2 Nano SIM', 2990000, 38,
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778955207/pbl3_mobileshop/blackview-shark-6-black-variant.webp'),
+
+-- Motorola Razr Ultra 2026 (product_id: 28)
+(67, 28, 'Nâu gỗ', '512GB', '16GB', 'Snapdragon 8 Gen 5', '4500mAh', '2640x1080', '6.9 inch', '32MP', '50MP + 50MP', '1 Nano SIM + 1 eSIM', 27999000, 5,
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778955222/pbl3_mobileshop/motorola-razr-ultra-2026-brown-variant.webp'),
+(68, 28, 'Xanh dương', '512GB', '16GB', 'Snapdragon 8 Gen 5', '4500mAh', '2640x1080', '6.9 inch', '32MP', '50MP + 50MP', '1 Nano SIM + 1 eSIM', 27999000, 7,
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778955221/pbl3_mobileshop/motorola-razr-ultra-2026-blue-variant.webp'),
+
+-- Cubot X100 (product_id: 29)
+(69, 29, 'Gold', '128GB', '8GB', 'MediaTek Helio G99', '5100mAh', '2408x1080', '6.57 inch', '16MP', '64MP + 8MP', '2 Nano SIM', 39990000, 15,
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778955210/pbl3_mobileshop/cubot-x100-gold-variant.webp'),
+
+-- OnePlus Nord CE6 (product_id: 30)
+(70, 30, 'Trắng', '256GB', '8GB', 'Snapdragon 7s Gen 2', '5500mAh', '2412x1080', '6.7 inch', '16MP', '50MP + 8MP', '2 Nano SIM', 8999000, 20,
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778955224/pbl3_mobileshop/oneplus-nord-ce6-white-variant.webp'),
+(71, 30, 'Đen', '256GB', '8GB', 'Snapdragon 7s Gen 2', '5500mAh', '2412x1080', '6.7 inch', '16MP', '50MP + 8MP', '2 Nano SIM', 8999000, 22,
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778955222/pbl3_mobileshop/oneplus-nord-ce6-black-variant.webp'),
+(72, 30, 'Xanh dương', '256GB', '8GB', 'Snapdragon 7s Gen 2', '5500mAh', '2412x1080', '6.7 inch', '16MP', '50MP + 8MP', '2 Nano SIM', 8999000, 18,
+ 'https://res.cloudinary.com/durs02or1/image/upload/v1778955223/pbl3_mobileshop/oneplus-nord-ce6-blue-variant.webp');
 UNLOCK TABLES;
 
 -- ============================================================
