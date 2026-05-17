@@ -12,18 +12,28 @@ const defaultProducts = [
 ];
 
 let products = [];
+let productsApiError = '';
 
 function useProductsApi() {
   return Boolean(window.HTApi?.isEnabled());
 }
 
+function escapeHtml(value) {
+  const div = document.createElement('div');
+  div.textContent = value ?? '';
+  return div.innerHTML;
+}
+
 async function loadProducts(query = {}) {
+  productsApiError = '';
+
   if (useProductsApi()) {
     try {
-      const response = await HTApi.products.list({ page: 1, limit: 100, ...query });
+      const response = await HTApi.products.listWithDetails({ page: 1, limit: 100, ...query });
       products = HTApi.listData(response).map(HTApi.mapProduct);
       return;
     } catch (error) {
+      productsApiError = error.message || 'Kh\u00f4ng l\u1ea5y \u0111\u01b0\u1ee3c s\u1ea3n ph\u1ea9m t\u1eeb API.';
       console.warn('Không lấy được sản phẩm từ API, dùng dữ liệu mock.', error);
     }
   }
@@ -58,6 +68,10 @@ function getFilteredProducts() {
 }
 
 function stockText(product) {
+  if (product.stock_known === false) {
+    return '<span style="color:var(--muted); font-weight:600;">Ch\u01b0a c\u00f3 d\u1eef li\u1ec7u</span>';
+  }
+
   const stock = Number(product.stock) || 0;
   if (stock <= 0) {
     return '<span style="color:#ef4444; font-weight:600;">H\u1ebft h\u00e0ng</span>';
@@ -96,9 +110,19 @@ function renderProducts() {
   if (!tableBody) return;
 
   const filteredProducts = getFilteredProducts();
+  const warningRow = productsApiError
+    ? `
+      <tr>
+        <td colspan="6" style="color:#f59e0b; background:rgba(245,158,11,0.08);">
+          API /api/products l\u1ed7i: ${escapeHtml(productsApiError)}. \u0110ang hi\u1ec3n th\u1ecb d\u1eef li\u1ec7u mock.
+        </td>
+      </tr>
+    `
+    : '';
 
   if (!filteredProducts.length) {
     tableBody.innerHTML = `
+      ${warningRow}
       <tr>
         <td colspan="6" style="text-align:center; color:var(--muted); padding:28px;">Kh\u00f4ng t\u00ecm th\u1ea5y s\u1ea3n ph\u1ea9m ph\u00f9 h\u1ee3p</td>
       </tr>
@@ -106,33 +130,35 @@ function renderProducts() {
     return;
   }
 
-  tableBody.innerHTML = filteredProducts.map((product) => `
+  const rows = filteredProducts.map((product) => `
     <tr>
-      <td style="color:var(--muted);">#${product.id}</td>
-      <td style="color:var(--text); font-weight:500;">${product.name}</td>
-      <td><span style="background:rgba(255,255,255,0.1); padding:4px 10px; border-radius:6px; font-size:12px;">${product.brand}</span></td>
+      <td style="color:var(--muted);">#${escapeHtml(product.id)}</td>
+      <td style="color:var(--text); font-weight:500;">${escapeHtml(product.name)}</td>
+      <td><span style="background:rgba(255,255,255,0.1); padding:4px 10px; border-radius:6px; font-size:12px;">${escapeHtml(product.brand || '-')}</span></td>
       <td style="color:#FF3D00; font-weight:bold;">${formatCurrency(product.price)}</td>
       <td>${stockText(product)}</td>
       <td>
         <div class="action-btns">
-          <button class="btn-edit" data-action="edit" data-id="${product.id}">S\u1eeda</button>
-          <button class="btn-delete" data-action="delete" data-id="${product.id}">X\u00f3a</button>
+          <button class="btn-edit" data-action="edit" data-id="${escapeHtml(product.id)}">S\u1eeda</button>
+          <button class="btn-delete" data-action="delete" data-id="${escapeHtml(product.id)}">X\u00f3a</button>
         </div>
       </td>
     </tr>
   `).join('');
+
+  tableBody.innerHTML = `${warningRow}${rows}`;
 }
 
 function createEditVariantRow(variant = {}) {
   const row = document.createElement('tr');
   row.dataset.variantId = variant.product_variant_id || variant.productVariantId || variant.variant_id || variant.id || '';
   row.innerHTML = `
-    <td><input type="text" data-field="ram" value="${variant.ram || ''}" placeholder="8GB"></td>
-    <td><input type="text" data-field="storage_capacity" value="${variantStorageText(variant)}" placeholder="256GB"></td>
-    <td><input type="text" data-field="color" value="${variant.color || ''}" placeholder="Titan"></td>
+    <td><input type="text" data-field="ram" value="${escapeHtml(variant.ram || '')}" placeholder="8GB"></td>
+    <td><input type="text" data-field="storage_capacity" value="${escapeHtml(variantStorageText(variant))}" placeholder="256GB"></td>
+    <td><input type="text" data-field="color" value="${escapeHtml(variant.color || '')}" placeholder="Titan"></td>
     <td><input type="number" data-field="price" value="${Number(variant.price) || 0}" min="0" placeholder="29990000"></td>
     <td><input type="number" data-field="total_available" value="${Number(variant.total_available ?? variant.totalAvailable ?? productStockFromVariant(variant)) || 0}" min="0" placeholder="12"></td>
-    <td><input type="url" data-field="variant_image_link" value="${variant.variant_image_link || variant.variantImageLink || ''}" placeholder="https://..."></td>
+    <td><input type="url" data-field="variant_image_link" value="${escapeHtml(variant.variant_image_link || variant.variantImageLink || '')}" placeholder="https://..."></td>
     <td><button type="button" class="btn-delete" data-action="remove-edit-variant"><i class="fa-solid fa-trash"></i></button></td>
   `;
   return row;
@@ -238,8 +264,7 @@ async function saveEditedProduct(event) {
       await HTApi.admin.products.update(apiProductId(product), {
         product_name: nextName,
         brand: nextBrand,
-        product_image_link: productImageLink,
-        variants
+        product_image_link: productImageLink
       });
     } catch (error) {
       await showAdminError({

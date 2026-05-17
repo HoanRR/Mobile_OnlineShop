@@ -15,6 +15,7 @@ const checkoutDefaultOrders = [
 ];
 
 let checkoutCart = [];
+let isCreatingOfflineOrder = false;
 
 function useCheckoutApi() {
   return Boolean(window.HTApi?.isEnabled());
@@ -23,6 +24,12 @@ function useCheckoutApi() {
 function formatMoney(amount) {
   if (typeof formatCurrency === 'function') return formatCurrency(Number(amount) || 0);
   return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(Number(amount) || 0);
+}
+
+function escapeHtml(value) {
+  const div = document.createElement('div');
+  div.textContent = value ?? '';
+  return div.innerHTML;
 }
 
 function readJson(key, fallback) {
@@ -137,10 +144,12 @@ function renderImeiInputs() {
   const rows = [];
   checkoutCart.forEach((item) => {
     const qty = Number(item.qty || 0);
+    const safeName = escapeHtml(item.name);
+    item = { ...item, name: safeName };
     for (let index = 1; index <= qty; index += 1) {
       rows.push(`
         <div class="imei-row">
-          <label>${item.name} ${qty > 1 ? `#${index}` : ''}</label>
+          <label>${safeName} ${qty > 1 ? `#${index}` : ''}</label>
           <input type="text" class="imei-input" data-product-name="${item.name}" placeholder="Nhập IMEI thiết bị" required>
         </div>
       `);
@@ -172,7 +181,7 @@ function renderSummary() {
       return `
         <div class="summary-item">
           <div>
-            <div class="summary-item-name">${item.name}</div>
+            <div class="summary-item-name">${escapeHtml(item.name)}</div>
             <div class="summary-item-meta">${formatMoney(item.price)} x ${item.qty}</div>
           </div>
           <div class="summary-item-price">${formatMoney(lineTotal)}</div>
@@ -196,6 +205,14 @@ function renderReceipt(order, imeis) {
   const orderIdEl = document.getElementById('receiptOrderId');
   if (!body) return;
 
+  order = {
+    ...order,
+    customerName: escapeHtml(order.customerName),
+    customerPhone: escapeHtml(order.customerPhone || '-'),
+    paymentMethod: escapeHtml(order.paymentMethod),
+    shipping_address: escapeHtml(order.shipping_address)
+  };
+
   if (orderIdEl) orderIdEl.textContent = `Mã đơn ${order.id}`;
 
   const items = order.cartItems || [];
@@ -207,9 +224,9 @@ function renderReceipt(order, imeis) {
     imeiOffset += qty;
     return `
       <tr>
-        <td>${item.name}</td>
+        <td>${escapeHtml(item.name)}</td>
         <td>${qty}</td>
-        <td>${itemImeis || '-'}</td>
+        <td>${escapeHtml(itemImeis || '-')}</td>
         <td style="text-align:right; font-weight:700;">${formatMoney(lineTotal)}</td>
       </tr>
     `;
@@ -261,6 +278,8 @@ function toggleAddressField() {
 async function handleSubmit(event) {
   event.preventDefault();
 
+  if (isCreatingOfflineOrder) return;
+
   if (!checkoutCart.length) {
     alert('Giỏ hàng đang trống.');
     window.location.href = 'pos.html';
@@ -295,6 +314,14 @@ async function handleSubmit(event) {
     return;
   }
 
+  isCreatingOfflineOrder = true;
+  const submitButton = event.submitter || document.querySelector('#checkoutForm .btn-submit');
+  if (submitButton) {
+    submitButton.disabled = true;
+    submitButton.dataset.originalText = submitButton.innerHTML;
+    submitButton.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> \u0110ang t\u1ea1o \u0111\u01a1n';
+  }
+
   const orders = readOrders();
   let orderId = createOrderId(orders);
   const apiPayload = {
@@ -303,7 +330,7 @@ async function handleSubmit(event) {
     shipping_address: receiveType === 'delivery' ? customerAddress : 'Tại cửa hàng',
     payment_method: paymentMethod,
     is_paid: true,
-    items: imeis.map((imei) => ({ imei }))
+    items: imeis.map((imei) => ({ imei: imei.toUpperCase() }))
   };
 
   let apiOrder = null;
@@ -312,10 +339,21 @@ async function handleSubmit(event) {
       apiOrder = HTApi.mapOrder(await HTApi.staff.orders.createOffline(apiPayload));
       orderId = apiOrder.id || orderId;
     } catch (error) {
+      isCreatingOfflineOrder = false;
+      if (submitButton) {
+        submitButton.disabled = false;
+        submitButton.innerHTML = submitButton.dataset.originalText || '<i class="fa-solid fa-check"></i> X\u00e1c nh\u1eadn thanh to\u00e1n';
+      }
       alert(error.message || 'Không tạo được đơn qua API.');
       return;
     }
   }
+
+  const backendTotal = Number(apiOrder?.total_amount ?? apiOrder?.totalAmount ?? apiOrder?.total);
+  const finalTotal = Number.isFinite(backendTotal) && backendTotal > 0 ? backendTotal : total;
+  const responseItems = Array.isArray(apiOrder?.items) && apiOrder.items.length
+    ? apiOrder.items
+    : imeis.map((imei) => ({ imei: imei.toUpperCase() }));
 
   const newOrder = {
     id: orderId,
@@ -333,14 +371,14 @@ async function handleSubmit(event) {
     is_paid: true,
     note,
     date: new Date().toISOString().slice(0, 10),
-    total,
-    total_amount: total,
+    total: finalTotal,
+    total_amount: finalTotal,
     discount,
-    status: 'DELIVERED',
-    order_status: 'DELIVERED',
+    status: apiOrder?.status || 'DELIVERED',
+    order_status: apiOrder?.order_status || apiOrder?.orderStatus || 'DELIVERED',
     source: 'POS',
     cartItems: checkoutCart.map((item) => ({ ...item })),
-    items: imeis.map((imei) => ({ imei })),
+    items: responseItems,
     apiResponse: apiOrder
   };
 
@@ -350,6 +388,7 @@ async function handleSubmit(event) {
   sessionStorage.removeItem(CHECKOUT_CART_KEY);
   sessionStorage.removeItem(CHECKOUT_PENDING_CART_KEY);
   showOrderSuccessModal(newOrder, imeis);
+  isCreatingOfflineOrder = false;
 }
 
 function initCheckoutPage() {

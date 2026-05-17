@@ -7,6 +7,7 @@ const POS_CART_STORAGE_KEY = 'ht_pos_cart';
 const POS_PENDING_CART_KEY = 'ht_pos_pending_cart';
 
 let cart = [];
+let posApiError = '';
 
 function usePosApi() {
   return Boolean(window.HTApi?.isEnabled());
@@ -37,7 +38,8 @@ function saveCart() {
 }
 
 function addToCart(name, price, variantId = '', imei = '') {
-  const item = cart.find((cartItem) => cartItem.name === name);
+  const resolvedVariantId = variantId || `PV-${normalizeText(name).replace(/\s+/g, '-').toUpperCase()}`;
+  const item = cart.find((cartItem) => String(cartItem.variantId) === String(resolvedVariantId));
   if (item) {
     item.qty += 1;
   } else {
@@ -45,7 +47,7 @@ function addToCart(name, price, variantId = '', imei = '') {
       name,
       price: Number(price) || 0,
       qty: 1,
-      variantId: variantId || `PV-${normalizeText(name).replace(/\s+/g, '-').toUpperCase()}`,
+      variantId: resolvedVariantId,
       imei
     });
   }
@@ -96,7 +98,7 @@ function renderCart() {
   cartItemsEl.innerHTML = cart.map((item, index) => `
     <div class="cart-item">
       <div class="cart-item-info">
-        <div class="cart-item-name">${item.name}</div>
+        <div class="cart-item-name">${escapeHtml(item.name)}</div>
         <div class="cart-item-price">${formatMoney(item.price)}</div>
       </div>
       <div class="cart-item-qty">
@@ -119,6 +121,28 @@ function checkout() {
 
   sessionStorage.setItem(POS_PENDING_CART_KEY, JSON.stringify(cart));
   window.location.href = 'checkout-info.html';
+}
+
+function setPOSApiError(message = '') {
+  posApiError = message;
+
+  const productsPanel = document.querySelector('.pos-products');
+  const grid = document.querySelector('.product-grid');
+  if (!productsPanel || !grid) return;
+
+  let warning = productsPanel.querySelector('.pos-api-warning');
+  if (!message) {
+    warning?.remove();
+    return;
+  }
+
+  if (!warning) {
+    warning = document.createElement('div');
+    warning.className = 'pos-api-warning';
+    productsPanel.insertBefore(warning, grid);
+  }
+
+  warning.textContent = `API /api/products loi: ${message}. Dang dung danh sach hien tai.`;
 }
 
 function productImage(product) {
@@ -148,12 +172,19 @@ function renderPOSProducts(products) {
     const mapped = HTApi.mapProduct(product);
     const firstVariant = mapped.variants?.[0] || {};
     const variantId = firstVariant.product_variant_id || firstVariant.productVariantId || mapped.product_id || mapped.id;
+    const stockKnown = mapped.stock_known !== false;
+    const stock = Number(mapped.stock);
+    const outOfStock = stockKnown && stock <= 0;
+    const stockText = stockKnown
+      ? (outOfStock ? 'H\u1ebft h\u00e0ng' : `C\u00f2n ${stock}`)
+      : 'T\u1ed3n kho theo IMEI';
 
     return `
-      <div class="pos-item" data-add-cart="1" data-name="${escapeHtml(mapped.name)}" data-price="${Number(mapped.price) || 0}" data-variant-id="${escapeHtml(variantId)}">
-        <img src="${escapeHtml(productImage(mapped))}" alt="${escapeHtml(mapped.name)}">
+      <div class="pos-item ${outOfStock ? 'is-disabled' : ''}" data-add-cart="1" data-name="${escapeHtml(mapped.name)}" data-price="${Number(mapped.price) || 0}" data-variant-id="${escapeHtml(variantId)}">
+        <img src="${escapeHtml(productImage(mapped))}" alt="${escapeHtml(mapped.name)}" onerror="this.src='../../static/staff/img/iphone-15-plus_1__1.webp'">
         <h4>${escapeHtml(mapped.name)}</h4>
         <p>${formatMoney(mapped.price)}</p>
+        <span class="pos-stock ${outOfStock ? 'out' : ''}">${stockText}</span>
       </div>
     `;
   }).join('');
@@ -163,10 +194,13 @@ async function loadPOSProducts(keyword = '') {
   if (!usePosApi()) return;
 
   try {
+    setPOSApiError('');
     const response = await HTApi.products.list({ page: 1, limit: 24, keyword });
     renderPOSProducts(HTApi.listData(response));
   } catch (error) {
+    setPOSApiError(error.message || 'Khong tai duoc san pham');
     console.warn('Khong tai duoc san pham POS tu API:', error);
+    filterPOSProducts();
   }
 }
 
@@ -214,6 +248,7 @@ function initPOSEvents() {
     productGrid.addEventListener('click', (event) => {
       const item = event.target.closest('.pos-item[data-add-cart="1"]');
       if (!item) return;
+      if (item.classList.contains('is-disabled')) return;
       addToCart(item.dataset.name, item.dataset.price, item.dataset.variantId);
     });
   }

@@ -55,7 +55,7 @@ function saveDevices() {
 async function loadProductCatalog() {
   if (useDevicesApi()) {
     try {
-      const response = await HTApi.products.list({ page: 1, limit: 100 });
+      const response = await HTApi.products.listWithDetails({ page: 1, limit: 100 });
       productCatalog = HTApi.listData(response).map(HTApi.mapProduct);
       return;
     } catch (error) {

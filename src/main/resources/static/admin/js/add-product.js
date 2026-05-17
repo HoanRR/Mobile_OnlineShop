@@ -152,25 +152,28 @@ async function handleProductSubmit(event) {
     variants
   };
 
+  let apiProduct = null;
   if (useAddProductApi()) {
     try {
-      await HTApi.admin.products.create(apiPayload);
+      apiProduct = HTApi.mapProduct(await HTApi.admin.products.create(apiPayload));
     } catch (error) {
       await showAddProductError(error.message || 'Không lưu được sản phẩm qua API.');
       return;
     }
   }
 
-  const newProductId = getNextProductId(products);
+  const newProductId = apiProduct?.id || getNextProductId(products);
+  const savedVariants = apiProduct?.variants?.length ? apiProduct.variants : variants;
   const newProduct = HTAdminCatalog.normalizeProducts([{
     id: newProductId,
+    product_id: apiProduct?.product_id,
     product_name: name,
     name: `${name}${firstVariant.storage ? ` ${firstVariant.storage}` : ''}`.trim(),
     brand,
     product_image_link: productImageLink,
-    price: firstVariant.price,
-    stock: variants.reduce((sum, variant) => sum + Number(variant.total_available || 0), 0),
-    variants
+    price: apiProduct?.price || firstVariant.price,
+    stock: savedVariants.reduce((sum, variant) => sum + Number(variant.total_available || variant.totalAvailable || 0), 0),
+    variants: savedVariants
   }])[0];
 
   products.unshift(newProduct);

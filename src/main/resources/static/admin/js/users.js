@@ -296,23 +296,25 @@ async function handleStaffFormSubmit(event) {
       ? { ...user, name, username, email, phone_number: phoneNumber, contact: email, permission, ...(password ? { password } : {}) }
       : user);
   } else {
-    const newUserId = Date.now();
+    let apiUser = null;
     if (useUsersApi()) {
       try {
-        await HTApi.admin.users.createStaff({
+        apiUser = HTApi.mapUser(await HTApi.admin.users.createStaff({
           username,
           email,
           phone_number: phoneNumber,
           password,
           role: 'EMPLOYEE'
-        });
+        }));
       } catch (error) {
         await showUserError(error.message || 'Không tạo được nhân viên qua API.');
         return;
       }
     }
 
+    const newUserId = apiUser?.id || Date.now();
     users.unshift({
+      ...(apiUser || {}),
       id: newUserId,
       user_id: newUserId,
       name,

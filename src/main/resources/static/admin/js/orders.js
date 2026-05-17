@@ -371,7 +371,7 @@ async function saveStatus() {
 
   if (useOrdersApi()) {
     try {
-      await HTApi.staff.orders.updateStatus(String(selectedOrderId).replace(/\D/g, '') || selectedOrderId, {
+      await HTApi.admin.orders.updateStatus(String(selectedOrderId).replace(/\D/g, '') || selectedOrderId, {
         order_status: nextStatus
       });
     } catch (error) {
