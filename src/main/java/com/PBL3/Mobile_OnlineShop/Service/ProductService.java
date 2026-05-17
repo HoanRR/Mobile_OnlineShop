@@ -119,6 +119,7 @@ public class ProductService {
                     .brand(request.getBrand())
                     .description(request.getDescription())
                     .productImageLink(request.getProduct_image_link())
+                    .description(request.getDescription())
                     .build();
             productRepository.save(product);
             for (VariantRequest variantRequest : request.getVariants()){
@@ -220,6 +221,10 @@ public class ProductService {
                         .simCard(pv.getSimCard())
                         .totalAvailable(pv.getTotalAvailable())
                         .color(pv.getColor())
+                        .screenSize(pv.getScreenSize())
+                        .frontCamera(pv.getFrontCamera())
+                        .rearCamera(pv.getRearCamera())
+                        .simCard(pv.getSimCard())
                         .build()).toList();
         List<ReviewResponse> reviews = new ArrayList<>();
         for (ProductReview pr : product.getReviews()){
@@ -247,6 +252,7 @@ public class ProductService {
                 .product_name(product.getProductName())
                 .description(product.getDescription())
                 .product_image_link(product.getProductImageLink())
+                .description(product.getDescription())
                 .variant(variants)
                 .review(reviews)
                 .build();

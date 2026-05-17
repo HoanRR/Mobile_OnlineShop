@@ -8,19 +8,19 @@ async function loadPhones() {
     try {
         const urlParams = new URLSearchParams(window.location.search);
         const searchQuery = urlParams.get('search');
-        const brandQuery  = urlParams.get('brand');
+        const brandQuery = urlParams.get('brand');
 
         let url = API_URL + '?limit=100'; // lay nhieu de loc client-side
-        const mainContent    = document.getElementById('khu-vuc-trang-chu');
-        const sliderWrapper  = document.querySelector('.slider-wrapper');
-        const categorySection= document.getElementById('home-categories');
-        const filterBar      = document.getElementById('filter-bar');
+        const mainContent = document.getElementById('khu-vuc-trang-chu');
+        const sliderWrapper = document.querySelector('.slider-wrapper');
+        const categorySection = document.getElementById('home-categories');
+        const filterBar = document.getElementById('filter-bar');
 
         if (searchQuery) {
             url = `${API_URL}?keyword=${encodeURIComponent(searchQuery)}&limit=100`;
-            if (sliderWrapper)   sliderWrapper.style.display   = 'none';
+            if (sliderWrapper) sliderWrapper.style.display = 'none';
             if (categorySection) categorySection.style.display = 'none';
-            if (filterBar)       filterBar.style.display       = 'none';
+            if (filterBar) filterBar.style.display = 'none';
 
             const searchTitle = document.createElement('h2');
             searchTitle.className = 'search-result-title';
@@ -29,7 +29,7 @@ async function loadPhones() {
 
         } else if (brandQuery) {
             url = `${API_URL}?brand=${encodeURIComponent(brandQuery)}&limit=100`;
-            if (sliderWrapper)   sliderWrapper.style.display   = 'none';
+            if (sliderWrapper) sliderWrapper.style.display = 'none';
             if (categorySection) categorySection.style.display = 'none';
 
             const brandSelect = document.getElementById('filter-brand');
@@ -57,9 +57,9 @@ async function loadPhones() {
 // Ap dung bo loc + sap xep (client-side)
 // ============================================================
 function applyFilters() {
-    const brand     = (document.getElementById('filter-brand')?.value || '').toLowerCase();
-    const priceRange= document.getElementById('filter-price')?.value || '';
-    const sortBy    = document.getElementById('sort-by')?.value || 'price-asc';
+    const brand = (document.getElementById('filter-brand')?.value || '').toLowerCase();
+    const priceRange = document.getElementById('filter-price')?.value || '';
+    const sortBy = document.getElementById('sort-by')?.value || 'price-asc';
 
     let filtered = [...allProducts];
 
@@ -79,9 +79,9 @@ function applyFilters() {
 
     // Sap xep
     filtered.sort((a, b) => {
-        if (sortBy === 'price-asc')  return (a.min_price || 0) - (b.min_price || 0);
+        if (sortBy === 'price-asc') return (a.min_price || 0) - (b.min_price || 0);
         if (sortBy === 'price-desc') return (b.min_price || 0) - (a.min_price || 0);
-        if (sortBy === 'name-asc')   return (a.product_name || '').localeCompare(b.product_name || '');
+        if (sortBy === 'name-asc') return (a.product_name || '').localeCompare(b.product_name || '');
         return 0;
     });
 
@@ -98,25 +98,25 @@ function applyFilters() {
 function resetFilters() {
     const brand = document.getElementById('filter-brand');
     const price = document.getElementById('filter-price');
-    const sort  = document.getElementById('sort-by');
+    const sort = document.getElementById('sort-by');
     if (brand) brand.value = '';
     if (price) price.value = '';
-    if (sort)  sort.value  = 'price-asc';
+    if (sort) sort.value = 'price-asc';
     applyFilters();
 }
 
 // ============================================================
 // Slider
 // ============================================================
-document.addEventListener("DOMContentLoaded", function() {
+document.addEventListener("DOMContentLoaded", function () {
     const track = document.querySelector('.slider-track');
-    if(!track) return;
+    if (!track) return;
 
-    const slides     = Array.from(track.children);
+    const slides = Array.from(track.children);
     const nextButton = document.getElementById('btn-next');
     const prevButton = document.getElementById('btn-prv');
-    const dotsNav    = document.querySelector('.slider-dots');
-    const dots       = Array.from(dotsNav.children);
+    const dotsNav = document.querySelector('.slider-dots');
+    const dots = Array.from(dotsNav.children);
 
     let currentIndex = 0;
     const slideIntervalTime = 5000;
@@ -131,8 +131,8 @@ document.addEventListener("DOMContentLoaded", function() {
         currentIndex = index;
     }
 
-    if(nextButton) nextButton.addEventListener('click', () => { moveToSlide(currentIndex + 1); resetTimer(); });
-    if(prevButton) prevButton.addEventListener('click', () => { moveToSlide(currentIndex - 1); resetTimer(); });
+    if (nextButton) nextButton.addEventListener('click', () => { moveToSlide(currentIndex + 1); resetTimer(); });
+    if (prevButton) prevButton.addEventListener('click', () => { moveToSlide(currentIndex - 1); resetTimer(); });
 
     dots.forEach((dot, index) => {
         dot.addEventListener('click', () => { moveToSlide(index); resetTimer(); });
@@ -155,7 +155,7 @@ function renderPhonesToHTML(phones) {
     const khoSanPham = document.getElementById("danh-sach-sp");
 
     phones.forEach(function (item) {
-        const price = (item.min_price || 0).toLocaleString('vi-VN') + 'd';
+        const price = (item.min_price || 0).toLocaleString('vi-VN') + 'đ';
         const htmlCard = `
     <div class="the-san-pham">
     <a href="product-detail.html?id=${item.product_id}" class="product-link">
@@ -177,5 +177,5 @@ function renderPhonesToHTML(phones) {
 }
 
 window.addEventListener('DOMContentLoaded', loadPhones);
-window.applyFilters  = applyFilters;
-window.resetFilters  = resetFilters;
+window.applyFilters = applyFilters;
+window.resetFilters = resetFilters;

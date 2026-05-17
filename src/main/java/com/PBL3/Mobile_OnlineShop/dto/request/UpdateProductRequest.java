@@ -13,6 +13,6 @@ import lombok.experimental.FieldDefaults;
 public class UpdateProductRequest {
     String product_name;
     String brand;
-    String description;
     String product_image_link;
+    String description;
 }

@@ -31,6 +31,8 @@ public class SecurityConfig {
             "/api/auth/refresh",
             "/api/auth/introspect",
             "/api/auth/logout",
+            "/api/auth/forgot-password",
+            "/api/auth/reset-password",
             "/api/products",
             "/api/products/{product_id}"
 

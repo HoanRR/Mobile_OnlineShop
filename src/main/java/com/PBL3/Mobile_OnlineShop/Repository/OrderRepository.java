@@ -19,12 +19,9 @@ import java.util.Optional;
 @Repository
 public interface OrderRepository extends JpaRepository<Order, Long> {
 
-    @Query("SELECT o FROM Order o WHERE o.user = :user " +
-            "AND (:status IS NULL OR o.orderStatus = :status) " +
-            "ORDER BY o.orderDate DESC")
-    Page<Order> findByUserWithStatusFilter(@Param("user") User user,
-                                           @Param("status") OrderStatus status,
-                                           Pageable pageable);
+    Page<Order> findByUserOrderByOrderDateDesc(User user, Pageable pageable);
+
+    Page<Order> findByUserAndOrderStatusOrderByOrderDateDesc(User user, OrderStatus status, Pageable pageable);
 
     @Query("SELECT o FROM Order o WHERE o.user = :user " +
             "AND (o.orderId = :orderId) ")

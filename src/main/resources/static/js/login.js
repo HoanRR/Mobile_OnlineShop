@@ -39,7 +39,7 @@ async function xuLyDangNhap(event) {
             localStorage.setItem('accessToken', data.access_token || data.token);
             localStorage.setItem('userInfo', JSON.stringify(data));
             
-            showToast ? showToast("Đăng nhập thành công!", "success") : alert("Đăng nhập thành công!");
+            typeof showToast !== 'undefined' ? showToast("Đăng nhập thành công!", "success") : alert("Đăng nhập thành công!");
             
             let userRole = "CUSTOMER";
             if (data.user && data.user.role) {
@@ -109,7 +109,7 @@ async function xuLyDangKy(event) {
         });
 
         if (response.ok) {
-            showToast ? showToast("Đăng ký thành công! Vui lòng đăng nhập.", "success") : alert("Đăng ký thành công!");
+            typeof showToast !== 'undefined' ? showToast("Đăng ký thành công! Vui lòng đăng nhập.", "success") : alert("Đăng ký thành công!");
             setTimeout(() => {
                 window.location.href = 'login.html';
             }, 1500);

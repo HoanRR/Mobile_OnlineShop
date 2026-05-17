@@ -142,7 +142,7 @@ function recalculateCheckoutTotal(subtotalParam) {
 
     if (appliedVoucher && appliedVoucher.discount_percentage > 0) {
         const discountAmt = subtotal * (appliedVoucher.discount_percentage / 100);
-        const finalTotal  = Math.max(0, subtotal - discountAmt);
+        const finalTotal = Math.max(0, subtotal - discountAmt);
 
         discountRow.style.display = 'flex';
         document.getElementById('checkout-discount-amount').innerText =
@@ -161,7 +161,7 @@ function recalculateCheckoutTotal(subtotalParam) {
 // --------------------------------------------------------
 window.applyDiscountCheckout = async function () {
     const code = document.getElementById('checkout-coupon-code').value.trim().toUpperCase();
-    const msg  = document.getElementById('checkout-discount-message');
+    const msg = document.getElementById('checkout-discount-message');
 
     if (!code) {
         msg.style.color = '#d70018';
@@ -243,8 +243,8 @@ function fillUserData() {
 // Validate form
 // --------------------------------------------------------
 function validateCheckoutForm() {
-    const hoTen  = document.getElementById('ho-ten').value.trim();
-    const sdt    = document.getElementById('so-dien-thoai').value.trim();
+    const hoTen = document.getElementById('ho-ten').value.trim();
+    const sdt = document.getElementById('so-dien-thoai').value.trim();
     const diaChi = document.getElementById('dia-chi').value.trim();
     const errors = [];
 
@@ -281,9 +281,9 @@ async function xuLyDatHang() {
         return;
     }
 
-    const hoTen      = document.getElementById('ho-ten').value.trim();
-    const sdt        = document.getElementById('so-dien-thoai').value.trim();
-    const diaChi     = document.getElementById('dia-chi').value.trim();
+    const hoTen = document.getElementById('ho-ten').value.trim();
+    const sdt = document.getElementById('so-dien-thoai').value.trim();
+    const diaChi = document.getElementById('dia-chi').value.trim();
     const phuongThuc = document.querySelector('input[name="payment"]:checked').value;
 
     const items = cartData.items.map(item => ({
@@ -292,11 +292,11 @@ async function xuLyDatHang() {
     }));
 
     const orderRequest = {
-        receiver_name:    hoTen,
-        receiver_phone:   sdt,
+        receiver_name: hoTen,
+        receiver_phone: sdt,
         shipping_address: diaChi,
-        payment_method:   phuongThuc,
-        items:            items
+        payment_method: phuongThuc,
+        items: items
     };
 
     // Gắn voucher_code nếu đã áp dụng
