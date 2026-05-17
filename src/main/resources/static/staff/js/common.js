@@ -1,8 +1,7 @@
-/**
- * Shared Staff layout and utilities.
- */
 
-const STAFF_PAGE_TITLES = {
+
+// Danh sách tiêu đề trang tương ứng với từng file HTML
+const DANH_SACH_TIEU_DE = {
   'dashboard.html': 'Tổng quan',
   'pos.html': 'POS Bán Hàng',
   'checkout-info.html': 'Thanh toán POS',
@@ -13,124 +12,104 @@ const STAFF_PAGE_TITLES = {
   'review-detail.html': 'Chi tiết Đánh giá'
 };
 
-let staffLayoutPromise = null;
-let staffSidebarBound = false;
+document.addEventListener('DOMContentLoaded', async function () {
+  await taiGiaoDienChung();
+});
 
-function currentPageFile() {
+
+async function taiGiaoDienChung() {
+  try {
+    // Tải Sidebar
+    const sidebarContainer = document.getElementById('sidebar-container');
+    if (sidebarContainer) {
+      const sidebarResponse = await fetch('sidebar.html', { cache: 'no-cache' });
+      if (sidebarResponse.ok) {
+        sidebarContainer.innerHTML = await sidebarResponse.text();
+      }
+    }
+
+    //  Tải Header
+    const headerContainer = document.getElementById('header-container');
+    if (headerContainer) {
+      const headerResponse = await fetch('header.html', { cache: 'no-cache' });
+      if (headerResponse.ok) {
+        headerContainer.innerHTML = await headerResponse.text();
+      }
+    }
+
+    // Sau khi HTML của sidebar và header đã được nạp vào DOM, gọi các hàm thiết lập giao diện
+    lamNoiBatTrangHienTai();
+    capNhatTieuDeTrang();
+
+  } catch (error) {
+    console.error("Lỗi khi tải giao diện chung:", error);
+  }
+}
+
+/**
+ * Hàm lấy tên file hiện tại (ví dụ: 'orders.html')
+ */
+function layTenFileHienTai() {
   return window.location.pathname.split('/').pop() || 'dashboard.html';
 }
 
-function setStaffPageTitle() {
-  const titleEl = document.getElementById('topbarPageTitle');
-  if (titleEl) titleEl.textContent = STAFF_PAGE_TITLES[currentPageFile()] || 'Staff';
-}
-
-async function loadStaffFragment(containerId, fileName) {
-  const container = document.getElementById(containerId);
-  if (!container || container.dataset.loaded === '1') return;
-
-  try {
-    const response = await fetch(fileName, { cache: 'no-cache' });
-    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-    container.innerHTML = await response.text();
-    container.dataset.loaded = '1';
-  } catch (error) {
-    console.warn(`Không tải được ${fileName}:`, error);
+/**
+ * Hàm cập nhật tiêu đề trên thanh Header (topbar)
+ */
+function capNhatTieuDeTrang() {
+  const tieuDeElement = document.getElementById('topbarPageTitle');
+  if (tieuDeElement) {
+    const tenFile = layTenFileHienTai();
+    tieuDeElement.textContent = DANH_SACH_TIEU_DE[tenFile] || 'Quản lý';
   }
 }
 
-async function ensureStaffLayout() {
-  if (!staffLayoutPromise) {
-    staffLayoutPromise = Promise.all([
-      loadStaffFragment('sidebar-container', 'sidebar.html'),
-      loadStaffFragment('header-container', 'header.html')
-    ]).then(() => {
-      displayCurrentDate();
-      highlightActivePage();
-      setupSidebarToggle();
-      setupLogout();
-      setStaffPageTitle();
-    });
-  }
 
-  return staffLayoutPromise;
-}
 
-function initCommonUI() {
-  ensureStaffLayout();
-}
 
-function displayCurrentDate() {
-  const dateEl = document.getElementById('currentDate');
-  if (!dateEl) return;
+/**
+ * Hàm làm nổi bật menu ở Sidebar tương ứng với trang đang mở
+ */
+function lamNoiBatTrangHienTai() {
+  const fileHienTai = layTenFileHienTai();
+  const danhSachMenu = document.querySelectorAll('.nav-item');
 
-  dateEl.textContent = new Date().toLocaleDateString('vi-VN', {
-    weekday: 'long',
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric'
+  danhSachMenu.forEach(menu => {
+    // Thuộc tính data-page có thể chứa nhiều file cách nhau bằng dấu phẩy
+    const cacTrang = (menu.dataset.page || '').split(',').map(p => p.trim());
+    if (cacTrang.includes(fileHienTai)) {
+      menu.classList.add('active');
+    } else {
+      menu.classList.remove('active');
+    }
   });
 }
 
-function highlightActivePage() {
-  const currentFile = currentPageFile();
 
-  document.querySelectorAll('.nav-item').forEach((item) => {
-    const pages = (item.dataset.page || '').split(',').map((page) => page.trim());
-    item.classList.toggle('active', pages.includes(currentFile));
-  });
-}
 
-function setupSidebarToggle() {
-  if (staffSidebarBound) return;
 
-  const sidebar = document.getElementById('sidebar');
-  const mainContent = document.getElementById('mainContent');
-  const toggleBtn = document.getElementById('sidebarToggle');
-  if (!sidebar || !mainContent || !toggleBtn) return;
-
-  const collapsedKey = 'ht_staff_sidebar_collapsed';
-  if (localStorage.getItem(collapsedKey) === '1') {
-    sidebar.classList.add('collapsed');
-    mainContent.classList.add('expanded');
-  }
-
-  toggleBtn.addEventListener('click', () => {
-    const isCollapsed = sidebar.classList.toggle('collapsed');
-    mainContent.classList.toggle('expanded', isCollapsed);
-    localStorage.setItem(collapsedKey, isCollapsed ? '1' : '0');
-  });
-
-  staffSidebarBound = true;
-}
-
-function clearAuthSession() {
-  localStorage.removeItem('jwt_token');
-  localStorage.removeItem('access_token');
+function XuLyDangXuat() {
+  localStorage.removeItem('accessToken');
   localStorage.removeItem('refresh_token');
-  localStorage.removeItem('user_role');
+  localStorage.removeItem('userInfo');
+  
+  window.location.href = '../customer/login.html';
 }
 
-function normalizeText(value) {
-  return String(value || '')
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .toLowerCase()
-    .trim();
+/**
+ * Hàm loại bỏ dấu tiếng Việt để dễ dàng tìm kiếm (Ví dụ: "Hà Nội" -> "ha noi")
+ */
+function normalizeText(text) {
+  return String(text || '')
+    .normalize('NFD') // Tách dấu ra khỏi ký tự
+    .replace(/[\u0300-\u036f]/g, '') // Xóa các dấu
+    .toLowerCase() // Chuyển về chữ thường
+    .trim(); // Xóa khoảng trắng 2 đầu
 }
 
-function setupLogout() {
-  const logoutBtn = document.querySelector('.logout a');
-  if (!logoutBtn || logoutBtn.dataset.bound === '1') return;
-
-  logoutBtn.dataset.bound = '1';
-  logoutBtn.addEventListener('click', (event) => {
-    event.preventDefault();
-    clearAuthSession();
-    window.location.href = '../login.html';
-  });
-}
-
+/**
+ * Hàm định dạng số tiền sang chuẩn VNĐ (Ví dụ: 10000 -> 10.000 ₫)
+ */
 function formatCurrency(number) {
   return new Intl.NumberFormat('vi-VN', {
     style: 'currency',
@@ -138,4 +117,35 @@ function formatCurrency(number) {
   }).format(Number(number) || 0);
 }
 
-document.addEventListener('DOMContentLoaded', initCommonUI);
+/**
+ * Hàm hiển thị thông báo góc màn hình (Toast Message)
+ * @param {string} message - Nội dung thông báo
+ * @param {string} type - Loại thông báo ('success', 'error', 'warning')
+ */
+function showToast(message, type = 'success') {
+  // Kiểm tra xem đã có container chứa toast chưa, nếu chưa thì tạo mới
+  let toastContainer = document.getElementById('toast-container');
+  if (!toastContainer) {
+    toastContainer = document.createElement('div');
+    toastContainer.id = 'toast-container';
+    document.body.appendChild(toastContainer);
+  }
+
+  // Tạo phần tử thông báo mới
+  const toast = document.createElement('div');
+  toast.classList.add('toast-msg', type);
+  toast.innerText = message;
+
+  // Đưa thông báo vào vùng chứa trên màn hình
+  toastContainer.appendChild(toast);
+
+  // Tự động xóa thông báo sau 3 giây (3000 milliseconds)
+  setTimeout(() => {
+    toast.classList.add('fade-out'); // Thêm class tạo hiệu ứng mờ dần
+
+    // Đợi hiệu ứng mờ dần chạy xong (400ms) rồi mới xóa DOM hoàn toàn
+    setTimeout(() => {
+      toast.remove();
+    }, 400);
+  }, 3000);
+}

@@ -1,5 +1,26 @@
 /* ========== STAFF REVIEWS PAGE STYLING ========== */
 
+.filter-bar {
+    display: flex; gap: 15px; margin-bottom: 24px;
+    background: var(--surface); padding: 20px; 
+    border-radius: 14px; border: 1px solid var(--border);
+}
+.filter-bar input, .filter-bar select {
+    padding: 10px 14px; background: var(--bg); color: var(--text);
+    border: 1px solid var(--border); border-radius: 8px; outline: none;
+    font-family: inherit;
+}
+.filter-bar input:focus, .filter-bar select:focus { border-color: var(--red); }
+.filter-bar button {
+    padding: 10px 24px; background: var(--red); color: white;
+    border: none; border-radius: 8px; cursor: pointer; font-weight: 600;
+    transition: var(--transition);
+}
+.filter-bar button:hover { background: var(--red-dark); box-shadow: 0 4px 12px var(--red-glow); }
+
+.btn-add { background: var(--red); color: white; padding: 10px 20px; border: none; border-radius: 8px; font-weight: 600; cursor: pointer; transition: var(--transition); }
+.btn-add:hover { background: var(--red-dark); }
+
 /* === PRODUCT INFO PANEL === */
 .product-info-panel {
     padding: 20px;

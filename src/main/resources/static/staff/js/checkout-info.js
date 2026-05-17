@@ -1,394 +1,323 @@
 /**
- * Checkout info page script
- * Creates a mock POS order from the pending cart.
+ * CHECKOUT-INFO.JS – Trang xác nhận và tạo đơn hàng tại quầy (POS)
+ * -----------------------------------------------------------------------
+ * Luồng hoạt động:
+ *  1. Đọc dữ liệu giỏ hàng từ sessionStorage (được pos.js lưu vào).
+ *  2. Hiển thị tóm tắt sản phẩm, voucher, và tổng tiền.
+ *  3. Render ô nhập IMEI cho từng thiết bị trong đơn.
+ *  4. Khi nhân viên bấm "Xác nhận", gọi API POST /api/staff/orders/offline để tạo đơn thật.
+ *  5. Hiển thị modal hóa đơn thành công.
  */
 
-const CHECKOUT_CART_KEY = 'ht_pos_cart';
-const CHECKOUT_PENDING_CART_KEY = 'ht_pos_pending_cart';
-const CHECKOUT_ORDERS_KEY = 'ht_orders';
-const CHECKOUT_DEVICES_KEY = 'ht_devices';
+// Key đọc giỏ hàng từ sessionStorage (phải khớp với KEY_GIO_HANG_POS trong pos.js)
+const KEY_PENDING_CART = 'ht_pos_pending_cart';
 
-const checkoutDefaultOrders = [
-  { id: 'DH1001', customerName: 'Nguyễn Văn Quang', date: '2026-04-06', total: 29990000, status: 'WAIT', order_status: 'WAIT' },
-  { id: 'DH1002', customerName: 'Trần Thị B', date: '2026-04-05', total: 15500000, status: 'SHIPPING', order_status: 'SHIPPING' },
-  { id: 'DH1003', customerName: 'Lê Hoàng C', date: '2026-04-04', total: 33990000, status: 'DELIVERED', order_status: 'DELIVERED' }
-];
+// Dữ liệu giỏ hàng (đọc từ sessionStorage)
+let danhSachHang = [];
+let soTienGiam = 0;
+let thanhTienCuoi = 0;
+let maVoucher = null;
 
-let checkoutCart = [];
+/**
+ * Hàm khởi tạo – chạy khi trang tải xong
+ */
+document.addEventListener('DOMContentLoaded', async () => {
+  if (typeof taiGiaoDienChung === 'function') await taiGiaoDienChung();
 
-function useCheckoutApi() {
-  return Boolean(window.HTApi?.isEnabled());
-}
+  docGioHangTuSession();
+  hienThiTomTatDonHang();
+});
 
-function formatMoney(amount) {
-  if (typeof formatCurrency === 'function') return formatCurrency(Number(amount) || 0);
-  return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(Number(amount) || 0);
-}
-
-function readJson(key, fallback) {
+/**
+ * Đọc dữ liệu giỏ hàng từ sessionStorage
+ * pos.js lưu dạng: { items, discount, totalAfterDiscount, voucherId, voucherCode }
+ */
+function docGioHangTuSession() {
   try {
-    const saved = JSON.parse(sessionStorage.getItem(key) || localStorage.getItem(key) || 'null');
-    return Array.isArray(saved) ? saved : fallback;
-  } catch (error) {
-    return fallback;
-  }
-}
-
-function readOrders() {
-  try {
-    const raw = localStorage.getItem(CHECKOUT_ORDERS_KEY);
-    if (!raw) return [...checkoutDefaultOrders];
-    const saved = JSON.parse(raw);
-    return Array.isArray(saved) ? saved : [...checkoutDefaultOrders];
-  } catch (error) {
-    return [...checkoutDefaultOrders];
-  }
-}
-
-function createOrderId(orders) {
-  const maxNumber = orders.reduce((max, order) => {
-    const value = Number(String(order.id || '').replace(/\D/g, ''));
-    return Number.isNaN(value) ? max : Math.max(max, value);
-  }, 1000);
-  return `DH${maxNumber + 1}`;
-}
-
-function addMonths(dateValue, months) {
-  const date = new Date(`${dateValue}T00:00:00`);
-  date.setMonth(date.getMonth() + months);
-  return date.toISOString().slice(0, 10);
-}
-
-function syncSoldDevices(imeis, orderId) {
-  let devices = [];
-  try {
-    const saved = JSON.parse(localStorage.getItem(CHECKOUT_DEVICES_KEY) || '[]');
-    devices = Array.isArray(saved) ? saved : [];
-  } catch (error) {
-    devices = [];
-  }
-
-  const today = new Date().toISOString().slice(0, 10);
-  const expandedItems = getExpandedCartItems();
-  imeis.forEach((imei, index) => {
-    const normalizedImei = imei.toUpperCase();
-    const cartItem = expandedItems[index] || checkoutCart[0] || {};
-    const existing = devices.find((device) => String(device.imei || '').toUpperCase() === normalizedImei);
-    const warrantyMonths = Number(existing?.warranty_months || 12);
-    const payload = {
-      imei: normalizedImei,
-      product_variant_id: existing?.product_variant_id || cartItem.variantId || cartItem.id || `PV-${index + 1}`,
-      product_name: existing?.product_name || cartItem.name || 'Thiết bị HT Mobile',
-      status: 'SOLD',
-      order_id: orderId,
-      sold_at: today,
-      warranty_start: today,
-      warranty_end: addMonths(today, warrantyMonths),
-      warranty_months: warrantyMonths
-    };
-
-    if (existing) {
-      Object.assign(existing, payload);
-    } else {
-      devices.unshift({ ...payload, imported_at: today });
+    const raw = sessionStorage.getItem(KEY_PENDING_CART);
+    if (!raw) {
+      canhBaoGioHangTrong();
+      return;
     }
-  });
 
-  localStorage.setItem(CHECKOUT_DEVICES_KEY, JSON.stringify(devices));
-}
+    const duLieu = JSON.parse(raw);
 
-function getSubtotal() {
-  return checkoutCart.reduce((sum, item) => sum + Number(item.price || 0) * Number(item.qty || 0), 0);
-}
-
-function getDiscount() {
-  const input = document.getElementById('discountAmount');
-  const value = Number(input ? input.value : 0);
-  return Number.isFinite(value) && value > 0 ? value : 0;
-}
-
-function getTotalQuantity() {
-  return checkoutCart.reduce((sum, item) => sum + Number(item.qty || 0), 0);
-}
-
-function getExpandedCartItems() {
-  const items = [];
-  checkoutCart.forEach((item) => {
-    const qty = Number(item.qty || 0);
-    for (let index = 0; index < qty; index += 1) {
-      items.push(item);
+    
+    if (duLieu.items && Array.isArray(duLieu.items)) {
+      // Format mới: object
+      danhSachHang = duLieu.items;
+      soTienGiam = duLieu.discount || 0;
+      thanhTienCuoi = duLieu.totalAfterDiscount || 0;
+      maVoucher = duLieu.voucherCode || null;
     }
-  });
-  return items;
+
+    if (danhSachHang.length === 0) {
+      canhBaoGioHangTrong();
+    }
+  } catch (err) {
+    console.error('Lỗi đọc giỏ hàng POS:', err);
+    canhBaoGioHangTrong();
+  }
 }
 
-function renderImeiInputs() {
-  const imeiList = document.getElementById('imeiList');
-  if (!imeiList) return;
-  const requiredCount = getTotalQuantity();
+function canhBaoGioHangTrong() {
+  if (typeof showToast === 'function') showToast('Giỏ hàng trống! Đang chuyển về trang POS...', 'warning');
+  setTimeout(() => { window.location.href = 'pos.html'; }, 1500);
+}
 
-  if (!checkoutCart.length) {
-    imeiList.innerHTML = '<div style="color:var(--muted);">Chưa có sản phẩm cần nhập IMEI.</div>';
+function dinhDangTien(soTien) {
+  if (typeof formatCurrency === 'function') return formatCurrency(soTien);
+  return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(Number(soTien) || 0);
+}
+
+
+function hienThiTomTatDonHang() {
+  const vungHang = document.getElementById('summaryItems');
+  const lbTamTinh = document.getElementById('summarySubtotal');
+  const lbGiamGia = document.getElementById('summaryDiscount');
+  const lbThanhTien = document.getElementById('summaryTotal');
+  const rowGiamGia = document.getElementById('discountRow');
+  const voucherRow = document.getElementById('voucher-info-row');
+  const voucherText = document.getElementById('voucher-info-text');
+
+  if (!vungHang) return;
+
+  if (danhSachHang.length === 0) {
+    vungHang.innerHTML = `<div style="color: var(--muted); text-align: center; padding: 20px;">Chưa có sản phẩm nào.</div>`;
     return;
   }
 
-  if (imeiList.querySelectorAll('.imei-input').length === requiredCount) return;
+  // Tính tổng tạm tính
+  const tongTamTinh = danhSachHang.reduce((sum, item) => sum + (Number(item.price) || 0) * (Number(item.qty) || 1), 0);
+  const tongSauGiam = thanhTienCuoi > 0 ? thanhTienCuoi : Math.max(0, tongTamTinh - soTienGiam);
 
-  const rows = [];
-  checkoutCart.forEach((item) => {
-    const qty = Number(item.qty || 0);
-    for (let index = 1; index <= qty; index += 1) {
-      rows.push(`
-        <div class="imei-row">
-          <label>${item.name} ${qty > 1 ? `#${index}` : ''}</label>
-          <input type="text" class="imei-input" data-product-name="${item.name}" placeholder="Nhập IMEI thiết bị" required>
+  // Render từng sản phẩm
+  const html = danhSachHang.map(item => {
+    const tongDong = (Number(item.price) || 0) * (Number(item.qty) || 1);
+    return `
+      <div class="summary-item">
+        <div class="summary-item-info">
+          <div class="summary-item-name">${item.name || 'Sản phẩm'}</div>
+          <div class="summary-item-meta">${dinhDangTien(item.price)} × ${item.qty}</div>
         </div>
-      `);
-    }
-  });
+        <div class="summary-item-price">${dinhDangTien(tongDong)}</div>
+      </div>
+    `;
+  }).join('');
 
-  imeiList.innerHTML = rows.join('');
-}
+  vungHang.innerHTML = html;
 
-function collectImeis() {
-  return Array.from(document.querySelectorAll('.imei-input'))
-    .map((input) => input.value.trim())
-    .filter(Boolean);
-}
+  // Cập nhật số liệu
+  if (lbTamTinh) lbTamTinh.textContent = dinhDangTien(tongTamTinh);
+  if (lbGiamGia) lbGiamGia.textContent = `- ${dinhDangTien(soTienGiam)}`;
+  if (lbThanhTien) lbThanhTien.textContent = dinhDangTien(tongSauGiam);
 
-function renderSummary() {
-  const summaryItems = document.getElementById('summaryItems');
-  const subtotalEl = document.getElementById('summarySubtotal');
-  const discountEl = document.getElementById('summaryDiscount');
-  const totalEl = document.getElementById('summaryTotal');
-
-  if (!summaryItems || !subtotalEl || !discountEl || !totalEl) return;
-
-  if (!checkoutCart.length) {
-    summaryItems.innerHTML = '<div style="color:var(--muted);">Chưa có sản phẩm trong giỏ hàng.</div>';
-  } else {
-    summaryItems.innerHTML = checkoutCart.map((item) => {
-      const lineTotal = Number(item.price || 0) * Number(item.qty || 0);
-      return `
-        <div class="summary-item">
-          <div>
-            <div class="summary-item-name">${item.name}</div>
-            <div class="summary-item-meta">${formatMoney(item.price)} x ${item.qty}</div>
-          </div>
-          <div class="summary-item-price">${formatMoney(lineTotal)}</div>
-        </div>
-      `;
-    }).join('');
+  // Hiển thị dòng giảm giá nếu có
+  if (soTienGiam > 0 && rowGiamGia) {
+    rowGiamGia.style.display = 'flex';
   }
 
-  const subtotal = getSubtotal();
-  const discount = Math.min(getDiscount(), subtotal);
-  const total = subtotal - discount;
-
-  subtotalEl.textContent = formatMoney(subtotal);
-  discountEl.textContent = formatMoney(discount);
-  totalEl.textContent = formatMoney(total);
-  renderImeiInputs();
+  // Hiển thị thông tin voucher nếu có
+  if (maVoucher && voucherRow && voucherText) {
+    voucherRow.style.display = 'block';
+    voucherText.textContent = `Đã áp dụng voucher: ${maVoucher}`;
+  }
 }
 
-function renderReceipt(order, imeis) {
+
+/**
+ * Bật/tắt ô địa chỉ dựa theo lựa chọn hình thức nhận hàng
+ */
+function toggleAddressField() {
+  const kieuNhan = document.querySelector('input[name="receiveType"]:checked')?.value;
+  const nhomDiaChi = document.getElementById('addressGroup');
+  const inputDiaChi = document.getElementById('customerAddress');
+
+  if (nhomDiaChi) nhomDiaChi.style.display = kieuNhan === 'delivery' ? '' : 'none';
+  if (inputDiaChi) inputDiaChi.required = (kieuNhan === 'delivery');
+}
+
+function thongBaoLoi(msg) {
+  if (typeof showToast === 'function') {
+    showToast(msg, 'error');
+  } else {
+    alert(msg);
+  }
+}
+
+/**
+ * Kiểm tra tính hợp lệ của form trước khi gửi
+ */
+function kiemTraForm() {
+  const ten = document.getElementById('customerName').value.trim();
+  const sdt = document.getElementById('customerPhone').value.trim();
+  const kieuNhan = document.querySelector('input[name="receiveType"]:checked')?.value;
+  const diaChi = document.getElementById('customerAddress').value.trim();
+
+  if (!ten) {
+    thongBaoLoi('Vui lòng nhập họ tên khách hàng.');
+    return false;
+  }
+
+  if (!sdt) {
+    thongBaoLoi('Vui lòng nhập số điện thoại.');
+    return false;
+  }
+
+  if (!/^(0|\+84)[0-9]{9}$/.test(sdt)) {
+    thongBaoLoi('Số điện thoại không hợp lệ (10 chữ số, bắt đầu bằng 0).');
+    return false;
+  }
+
+  if (kieuNhan === 'delivery' && !diaChi) {
+    thongBaoLoi('Vui lòng nhập địa chỉ giao hàng.');
+    return false;
+  }
+
+  return true;
+}
+
+/**
+ * Xử lý tạo đơn hàng khi nhân viên bấm xác nhận
+ * Gọi API POST /api/staff/orders/offline
+ */
+async function xuLyTaodon() {
+  console.log('[POS] xuạtaodon called, danhSachHang =', danhSachHang);
+  
+  if (danhSachHang.length === 0) {
+    thongBaoLoi('Giỏ hàng trống!');
+    return;
+  }
+
+  if (!kiemTraForm()) return;
+
+  const ten = document.getElementById('customerName').value.trim();
+  const sdt = document.getElementById('customerPhone').value.trim();
+  const kieuNhan = document.querySelector('input[name="receiveType"]:checked')?.value;
+  const diaChi = document.getElementById('customerAddress').value.trim();
+  const phuongThucTT = document.querySelector('input[name="payment"]:checked')?.value || 'COD';
+  const itemsGui = danhSachHang.map(item => ({
+    variant_id: Number(item.variantId || item.id), // Backend cần Long, không phải string
+    quantity: Number(item.qty || item.soLuong)
+  }));
+
+  const bodyGui = {
+    receiver_name: ten,
+    receiver_phone: sdt,
+    shipping_address: kieuNhan === 'delivery' ? diaChi : 'Nhận tại cửa hàng',
+    payment_method: phuongThucTT,
+    is_paid: true,
+    items: itemsGui
+  };
+
+  console.log('[POS] Payload gửi lên:', JSON.stringify(bodyGui, null, 2));
+
+  // Disable nút để tránh bấm 2 lần
+  const nutXacNhan = document.getElementById('btnConfirmOrder');
+  if (nutXacNhan) {
+    nutXacNhan.disabled = true;
+    nutXacNhan.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Đang xử lý...';
+  }
+
+  try {
+    const token = localStorage.getItem('accessToken') || localStorage.getItem('jwt_token') || '';
+
+    const response = await fetch('http://localhost:8080/api/staff/orders/offline', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify(bodyGui)
+    });
+
+    const ketQua = await response.json();
+    console.log('[POS] API response:', response.status, ketQua);
+
+    if (response.ok || response.status === 201) {
+      // Xóa giỏ hàng session sau khi tạo đơn thành công
+      sessionStorage.removeItem(KEY_PENDING_CART);
+      // Hiện modal hóa đơn
+      hienThiHoaDon(ketQua);
+    } else {
+      const loi = (ketQua.error && ketQua.error.message)
+        || ketQua.message
+        || JSON.stringify(ketQua)
+        || 'Tạo đơn thất bại. Vui lòng thử lại.';
+      thongBaoLoi('Lỗi ' + response.status + ': ' + loi);
+    }
+  } catch (err) {
+    console.error('Lỗi tạo đơn offline:', err);
+    thongBaoLoi('Lỗi kết nối máy chủ. Vui lòng thử lại.');
+  } finally {
+    if (nutXacNhan) {
+      nutXacNhan.disabled = false;
+      nutXacNhan.innerHTML = '<i class="fa-solid fa-check"></i> Xác nhận thanh toán';
+    }
+  }
+}
+
+/**
+ * Render và hiển thị modal hóa đơn sau khi tạo đơn thành công
+ */
+function hienThiHoaDon(donHang) {
+  const modal = document.getElementById('orderSuccessModal');
   const body = document.getElementById('receiptBody');
-  const orderIdEl = document.getElementById('receiptOrderId');
-  if (!body) return;
+  const lbOrderId = document.getElementById('receiptOrderId');
 
-  if (orderIdEl) orderIdEl.textContent = `Mã đơn ${order.id}`;
+  if (!modal || !body) return;
 
-  const items = order.cartItems || [];
-  let imeiOffset = 0;
-  const itemRows = items.map((item) => {
-    const qty = Number(item.qty || 0);
-    const lineTotal = Number(item.price || 0) * qty;
-    const itemImeis = imeis.slice(imeiOffset, imeiOffset + qty).join(', ');
-    imeiOffset += qty;
+  const madon = donHang.order_id || donHang.id || 'N/A';
+  if (lbOrderId) lbOrderId.textContent = `Mã đơn hàng: #${madon}`;
+
+  // Tính lại tổng tiền để hiển thị trên hóa đơn
+  const tongTamTinh = danhSachHang.reduce((sum, item) => sum + (Number(item.price) || 0) * (Number(item.qty) || 1), 0);
+  const tongSauGiam = thanhTienCuoi > 0 ? thanhTienCuoi : Math.max(0, tongTamTinh - soTienGiam);
+
+  const ten = document.getElementById('customerName').value.trim();
+  const sdt = document.getElementById('customerPhone').value.trim();
+  const phuongThucTT = document.querySelector('input[name="payment"]:checked')?.value || 'COD';
+  const kieuNhan = document.querySelector('input[name="receiveType"]:checked')?.value;
+  const diaChi = kieuNhan === 'delivery'
+    ? document.getElementById('customerAddress').value.trim()
+    : 'Nhận tại cửa hàng';
+
+  const hangHtml = danhSachHang.map(item => {
+    const qty = Number(item.qty) || 1;
+    const tongDong = (Number(item.price) || 0) * qty;
     return `
       <tr>
         <td>${item.name}</td>
-        <td>${qty}</td>
-        <td>${itemImeis || '-'}</td>
-        <td style="text-align:right; font-weight:700;">${formatMoney(lineTotal)}</td>
+        <td style="text-align:center;">${qty}</td>
+        <td style="text-align:right; font-weight:700;">${dinhDangTien(tongDong)}</td>
       </tr>
     `;
   }).join('');
 
   body.innerHTML = `
     <div class="receipt-meta">
-      <div><span>Khách hàng</span><br><strong>${order.customerName}</strong></div>
-      <div><span>Số điện thoại</span><br><strong>${order.customerPhone || '-'}</strong></div>
-      <div><span>Ngày tạo</span><br><strong>${new Date(`${order.date}T00:00:00`).toLocaleDateString('vi-VN')}</strong></div>
-      <div><span>Thanh toán</span><br><strong>${order.paymentMethod}</strong></div>
-      <div><span>Nhận hàng</span><br><strong>${order.shipping_address}</strong></div>
-      <div><span>Trạng thái</span><br><strong>Đã thanh toán</strong></div>
+      <div><span>Khách hàng</span><br><strong>${ten}</strong></div>
+      <div><span>Số điện thoại</span><br><strong>${sdt}</strong></div>
+      <div><span>Ngày tạo</span><br><strong>${new Date().toLocaleDateString('vi-VN')}</strong></div>
+      <div><span>Thanh toán</span><br><strong>${phuongThucTT}</strong></div>
+      <div><span>Nhận hàng</span><br><strong>${diaChi}</strong></div>
     </div>
 
     <table class="receipt-table">
       <thead>
-        <tr><th>Sản phẩm</th><th>SL</th><th>IMEI</th><th style="text-align:right;">Thành tiền</th></tr>
+        <tr>
+          <th>Sản phẩm</th><th>SL</th><th style="text-align:right;">Thành tiền</th>
+        </tr>
       </thead>
-      <tbody>
-        ${itemRows}
-      </tbody>
+      <tbody>${hangHtml}</tbody>
     </table>
 
     <div class="receipt-total">
-      <div class="summary-line"><span>Tạm tính</span><strong>${formatMoney(getSubtotal())}</strong></div>
-      <div class="summary-line"><span>Giảm giá</span><strong>${formatMoney(order.discount)}</strong></div>
-      <div class="summary-line total"><span>Thành tiền</span><strong>${formatMoney(order.total)}</strong></div>
+      <div class="summary-line"><span>Tạm tính</span><strong>${dinhDangTien(tongTamTinh)}</strong></div>
+      ${soTienGiam > 0 ? `<div class="summary-line" style="color:#16a34a;"><span>Giảm giá</span><strong>- ${dinhDangTien(soTienGiam)}</strong></div>` : ''}
+      <div class="summary-line total"><span>Thành tiền</span><strong>${dinhDangTien(tongSauGiam)}</strong></div>
     </div>
   `;
+
+  modal.style.display = 'flex';
 }
-
-function showOrderSuccessModal(order, imeis) {
-  renderReceipt(order, imeis);
-  const modal = document.getElementById('orderSuccessModal');
-  if (modal) modal.style.display = 'flex';
-}
-
-function toggleAddressField() {
-  const receiveType = document.getElementById('receiveType');
-  const addressGroup = document.getElementById('addressGroup');
-  const addressInput = document.getElementById('customerAddress');
-  const isDelivery = receiveType && receiveType.value === 'delivery';
-
-  if (addressGroup) addressGroup.style.display = isDelivery ? '' : 'none';
-  if (addressInput) addressInput.required = isDelivery;
-}
-
-async function handleSubmit(event) {
-  event.preventDefault();
-
-  if (!checkoutCart.length) {
-    alert('Giỏ hàng đang trống.');
-    window.location.href = 'pos.html';
-    return;
-  }
-
-  const customerName = document.getElementById('customerName').value.trim() || 'Khách lẻ';
-  const customerPhone = document.getElementById('customerPhone').value.trim();
-  const customerEmail = document.getElementById('customerEmail').value.trim();
-  const receiveType = document.getElementById('receiveType').value;
-  const customerAddress = document.getElementById('customerAddress').value.trim();
-  const paymentMethod = document.getElementById('paymentMethod').value;
-  const note = document.getElementById('orderNote').value.trim();
-  const subtotal = getSubtotal();
-  const discount = Math.min(getDiscount(), subtotal);
-  const total = subtotal - discount;
-  const imeis = collectImeis();
-  const requiredImeiCount = getTotalQuantity();
-
-  if (receiveType === 'delivery' && !customerAddress) {
-    alert('Vui lòng nhập địa chỉ giao hàng.');
-    return;
-  }
-
-  if (imeis.length !== requiredImeiCount) {
-    alert('Vui lòng nhập đủ IMEI cho từng thiết bị trong đơn.');
-    return;
-  }
-
-  if (new Set(imeis.map((imei) => imei.toUpperCase())).size !== imeis.length) {
-    alert('IMEI trong đơn không được trùng nhau.');
-    return;
-  }
-
-  const orders = readOrders();
-  let orderId = createOrderId(orders);
-  const apiPayload = {
-    receiver_name: customerName,
-    receiver_phone: customerPhone,
-    shipping_address: receiveType === 'delivery' ? customerAddress : 'Tại cửa hàng',
-    payment_method: paymentMethod,
-    is_paid: true,
-    items: imeis.map((imei) => ({ imei }))
-  };
-
-  let apiOrder = null;
-  if (useCheckoutApi()) {
-    try {
-      apiOrder = HTApi.mapOrder(await HTApi.staff.orders.createOffline(apiPayload));
-      orderId = apiOrder.id || orderId;
-    } catch (error) {
-      alert(error.message || 'Không tạo được đơn qua API.');
-      return;
-    }
-  }
-
-  const newOrder = {
-    id: orderId,
-    order_id: orderId,
-    customerName,
-    customerPhone,
-    customerEmail,
-    receiver_name: customerName,
-    receiver_phone: customerPhone,
-    shipping_address: receiveType === 'delivery' ? customerAddress : 'Nhận tại cửa hàng',
-    receiveType,
-    customerAddress,
-    paymentMethod,
-    payment_method: paymentMethod,
-    is_paid: true,
-    note,
-    date: new Date().toISOString().slice(0, 10),
-    total,
-    total_amount: total,
-    discount,
-    status: 'DELIVERED',
-    order_status: 'DELIVERED',
-    source: 'POS',
-    cartItems: checkoutCart.map((item) => ({ ...item })),
-    items: imeis.map((imei) => ({ imei })),
-    apiResponse: apiOrder
-  };
-
-  orders.unshift(newOrder);
-  localStorage.setItem(CHECKOUT_ORDERS_KEY, JSON.stringify(orders));
-  syncSoldDevices(imeis, newOrder.id);
-  sessionStorage.removeItem(CHECKOUT_CART_KEY);
-  sessionStorage.removeItem(CHECKOUT_PENDING_CART_KEY);
-  showOrderSuccessModal(newOrder, imeis);
-}
-
-function initCheckoutPage() {
-  checkoutCart = readJson(CHECKOUT_PENDING_CART_KEY, []);
-
-  if (!checkoutCart.length) {
-    checkoutCart = readJson(CHECKOUT_CART_KEY, []);
-  }
-
-  const form = document.getElementById('checkoutForm');
-  const discountInput = document.getElementById('discountAmount');
-  const receiveType = document.getElementById('receiveType');
-
-  if (form) form.addEventListener('submit', handleSubmit);
-  if (discountInput) discountInput.addEventListener('input', renderSummary);
-  if (receiveType) receiveType.addEventListener('change', toggleAddressField);
-  document.getElementById('orderSuccessModal')?.addEventListener('click', (event) => {
-    const actionButton = event.target.closest('[data-receipt-action]');
-    if (!actionButton) return;
-
-    const action = actionButton.dataset.receiptAction;
-    if (action === 'print') {
-      window.print();
-    } else if (action === 'new') {
-      window.location.href = 'pos.html';
-    } else if (action === 'orders') {
-      const orderId = document.getElementById('receiptOrderId')?.textContent.replace('Mã đơn ', '') || '';
-      window.location.href = `orders.html?q=${encodeURIComponent(orderId)}`;
-    }
-  });
-
-  toggleAddressField();
-  renderSummary();
-}
-
-document.addEventListener('DOMContentLoaded', () => {
-  initCommonUI();
-  displayCurrentDate();
-  highlightActivePage();
-  setupLogout();
-  initCheckoutPage();
-});

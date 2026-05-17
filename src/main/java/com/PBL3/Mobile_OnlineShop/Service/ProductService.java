@@ -191,6 +191,8 @@ public class ProductService {
                         .product_image_link(p.getProduct_image_link())
                         .min_price(p.getMin_price())
                         .avg_rating(p.getAvg_rating())
+                        .total_reviews(p.getTotal_reviews())
+                        .latest_review_date(p.getLatest_review_date() != null ? p.getLatest_review_date().toString() : null)
                         .build()
                 )
                 .toList();

@@ -1,6 +1,4 @@
-// ========================================================
-// orders.js – Quản lý đơn hàng (Trang Nhân viên)
-// ========================================================
+
 
 const ORDER_STATUSES = {
     'WAIT': { label: 'Chờ xác nhận', className: 'status-pending' },
@@ -44,16 +42,15 @@ function DinhDangNgay(chuoiNgay) {
     return d.toLocaleDateString('vi-VN');// Chuyen sang dinh dang ngay theo vietnam dd/MM/yyyy
 }
 
-// --------------------------------------------------------
-// API: Tải và hiển thị đơn hàng
-// --------------------------------------------------------
+
+
 async function taiDanhSachDonHang(timKiemTuKhoa = '', timKiemTrangThai = '') {
     hienThiDangTai();
 
     try {
         const accessToken = localStorage.getItem('accessToken');
         
-        let url = `http://localhost:8080/api/orders?page=1&limit=100`;
+        let url = `http://localhost:8080/api/staff/orders?page=1&limit=100`;
         if (timKiemTuKhoa) url += `&keyword=${encodeURIComponent(timKiemTuKhoa)}`; // ma hoa chuoi để có dấu cách , kí tự đặc biệt -> không lỗi
         if (timKiemTrangThai) url += `&order_status=${encodeURIComponent(timKiemTrangThai)}`;
 
@@ -68,12 +65,7 @@ async function taiDanhSachDonHang(timKiemTuKhoa = '', timKiemTrangThai = '') {
         
         const result = await response.json();
         
-        // Tùy backend trả về result.data hoặc mảng trực tiếp
-        const rawData = result.data || [];
-        
-        // HTApi có sẵn hàm mapOrder để chuẩn hóa dữ liệu từ backend
-        danhSachDonHang = Array.isArray(rawData) ? rawData.map(order => HTApi.mapOrder(order)) : [];
-
+        danhSachDonHang = result.data || [];
         hienThiBangDonHang();
     } catch (loi) {
         console.error('Lỗi tải đơn hàng:', loi);
@@ -98,15 +90,14 @@ function hienThiBangDonHang() {
 
     let html = '';
     
-    // Dùng vòng lặp forEach đơn giản thay vì map().join()
     danhSachDonHang.forEach(donHang => {
-        const maDonHang = donHang.order_id || donHang.id;
+        const maDonHang = donHang.order_id;
         const tenKhachHang = donHang.customerName || donHang.receiver_name || 'Khách lẻ';
-        const ngayDat = DinhDangNgay(donHang.date || donHang.order_date);
-        const tongTien = DinhDangTien(donHang.total_amount || donHang.total);
+        const ngayDat = DinhDangNgay(donHang.order_date);
+        const tongTien = DinhDangTien(donHang.total_amount);
         
         // Trạng thái đơn hàng
-        const trangThaiKey = donHang.order_status || donHang.status || 'WAIT';
+        const trangThaiKey = donHang.order_status || 'WAIT';
         const thongTinTrangThai = ORDER_STATUSES[trangThaiKey] || ORDER_STATUSES['WAIT'];
 
         html += `
@@ -129,48 +120,18 @@ function hienThiBangDonHang() {
     tbody.innerHTML = html;
 }
 
-// --------------------------------------------------------
-// Xử lý Giao diện Đang tải / Lỗi
-// --------------------------------------------------------
-function hienThiDangTai() {
-    const tbody = document.querySelector('.data-table tbody');
-    if (tbody) {
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="6" style="text-align:center; padding: 30px; color: #888;">
-                    Đang tải dữ liệu đơn hàng...
-                </td>
-            </tr>
-        `;
-    }
-}
 
-function hienThiLoi(thongBao) {
-    const tbody = document.querySelector('.data-table tbody');
-    if (tbody) {
-        tbody.innerHTML = `
-            <tr>
-                <td colspan="6" style="text-align:center; padding: 30px; color: red;">
-                    Lỗi: ${thongBao}
-                    <br><br>
-                    <button onclick="taiDanhSachDonHang()">Thử lại</button>
-                </td>
-            </tr>
-        `;
-    }
-}
 
-// --------------------------------------------------------
-// API: Xem chi tiết đơn hàng
-// --------------------------------------------------------
+
+
 async function layChiTietDonHangTuAPI(maDonHang) {
     try {
-        const accessToken = localStorage.getItem('accessToken') || localStorage.getItem('access_token') || localStorage.getItem('jwt_token') || '';
+        const accessToken = localStorage.getItem('accessToken') || '';
         
         // Loại bỏ chữ "DH" nếu có để lấy ID số thực sự
         const idSo = String(maDonHang).replace(/\D/g, '');
         
-        const response = await fetch(`http://localhost:8080/api/orders/${idSo}`, {
+        const response = await fetch(`http://localhost:8080/api/staff/orders/${idSo}`, {
             headers: {
                 'Authorization': `Bearer ${accessToken}`,
                 'Content-Type': 'application/json'
@@ -181,7 +142,7 @@ async function layChiTietDonHangTuAPI(maDonHang) {
         
         const result = await response.json();
         const chiTiet = result.data || result;
-        return HTApi.mapOrder(chiTiet);
+        return chiTiet;
     } catch (loi) {
         console.error('Lỗi lấy chi tiết đơn hàng:', loi);
         return null;
@@ -193,11 +154,9 @@ async function moModalChiTiet(maDonHang) {
     const content = document.getElementById('orderDetailContent');
     if (!modal || !content) return;
 
-    // Hiển thị UI đang tải
     content.innerHTML = `<div style="text-align:center; padding: 30px;">Đang tải chi tiết...</div>`;
     modal.style.display = 'flex';
 
-    // Gọi API
     const donHang = await layChiTietDonHangTuAPI(maDonHang);
 
     if (!donHang) {
@@ -205,36 +164,36 @@ async function moModalChiTiet(maDonHang) {
         return;
     }
 
-    const tenKhachHang = donHang.receiver_name || donHang.customerName || 'Khách lẻ';
-    const soDienThoai = donHang.receiver_phone || '-';
-    const diaChi = donHang.shipping_address || 'Nhận tại cửa hàng';
+    const tenKhachHang = donHang.delivery.receiver_name || 'Khách lẻ';
+    const soDienThoai = donHang.delivery.receiver_phone || '-';
+    const diaChi = donHang.delivery.shipping_address || 'Nhận tại cửa hàng';
     
-    const tongTien = DinhDangTien(donHang.total_amount || donHang.total);
-    const giamGia = DinhDangTien(donHang.discount_amount || donHang.discount);
+    const tongTien = DinhDangTien(donHang.total_amount);
+    const giamGia = DinhDangTien(donHang.discount_amount);
     
-    const phuongThuc = donHang.payment_method || donHang.paymentMethod || '-';
+    const phuongThuc = donHang.payment_method || '-';
     const daThanhToan = donHang.is_paid ? 'Đã thanh toán' : 'Chưa thanh toán';
 
-    const trangThaiKey = donHang.order_status || donHang.status || 'WAIT';
+    const trangThaiKey = donHang.order_status || 'WAIT';
     const thongTinTrangThai = ORDER_STATUSES[trangThaiKey] || ORDER_STATUSES['WAIT'];
 
     // Render danh sách sản phẩm
     let htmlSanPham = '';
-    const danhSachSP = donHang.items || donHang.order_details || [];
+    const danhSachSP = donHang.items || [];
     
     if (danhSachSP.length === 0) {
         htmlSanPham = '<p style="color:#888;">Không có sản phẩm nào.</p>';
     } else {
         danhSachSP.forEach(sp => {
-            const tenSP = sp.product_name || sp.productName || 'Sản phẩm';
-            const giaSP = DinhDangTien(sp.price_at_purchase || sp.priceAtPurchase || sp.price);
+            const tenSP = sp.product_name || 'Sản phẩm';
+            const giaSP = DinhDangTien(sp.price_at_purchase || sp.price);
             
             htmlSanPham += `
                 <div class="detail-item">
                     <div>
                         <strong>${tenSP}</strong>
                         <span>
-                            Màu: ${sp.color || '-'} | Bộ nhớ: ${sp.storage_capacity || sp.storageCapacity || '-'}GB
+                            Màu: ${sp.color || '-'} | Bộ nhớ: ${sp.storage_capacity || '-'}GB
                         </span>
                         ${sp.imei ? `<br><span style="font-size: 12px; color: #555;">IMEI: ${sp.imei}</span>` : ''}
                     </div>
@@ -249,7 +208,7 @@ async function moModalChiTiet(maDonHang) {
         <div class="detail-grid">
             <div><span>Mã đơn:</span> <strong>#${maDonHang}</strong></div>
             <div><span>Trạng thái:</span> <strong><span class="status-badge ${thongTinTrangThai.className}">${thongTinTrangThai.label}</span></strong></div>
-            <div><span>Ngày đặt:</span> <strong>${DinhDangNgay(donHang.date || donHang.order_date)}</strong></div>
+            <div><span>Ngày đặt:</span> <strong>${DinhDangNgay(donHang.order_date)}</strong></div>
             <div><span>Thanh toán:</span> <strong>${daThanhToan} (${phuongThuc})</strong></div>
             <div><span>Người nhận:</span> <strong>${tenKhachHang}</strong></div>
             <div><span>Số ĐT:</span> <strong>${soDienThoai}</strong></div>
@@ -273,9 +232,7 @@ function dongModalChiTiet() {
     if (modal) modal.style.display = 'none';
 }
 
-// --------------------------------------------------------
-// UI: Cập nhật trạng thái
-// --------------------------------------------------------
+
 function moModalTrangThai(maDonHang, trangThaiHienTai, isPaid) {
     donHangHienTai = maDonHang;
 
@@ -289,7 +246,7 @@ function moModalTrangThai(maDonHang, trangThaiHienTai, isPaid) {
     
     if (checkboxThanhToan) {
         // Nếu truyền vào giá trị true/false hoặc nếu trạng thái là Hoàn thành thì check
-        checkboxThanhToan.checked = (isPaid === true || isPaid === 'true' || trangThaiHienTai === 'DELIVERED');
+        checkboxThanhToan.checked = (isPaid === true  || trangThaiHienTai === 'DELIVERED');
     }
 
     if (modal) modal.style.display = 'flex';
@@ -311,7 +268,7 @@ async function luuTrangThaiMoi() {
     const daThanhToanMoi = checkboxThanhToan ? checkboxThanhToan.checked : false;
 
     try {
-        const accessToken = localStorage.getItem('accessToken') || localStorage.getItem('access_token') || localStorage.getItem('jwt_token') || '';
+        const accessToken = localStorage.getItem('accessToken') || '';
         const idSo = String(donHangHienTai).replace(/\D/g, '');
         
         const response = await fetch(`http://localhost:8080/api/staff/orders/${idSo}/status`, {
@@ -327,7 +284,7 @@ async function luuTrangThaiMoi() {
         });
 
         if (!response.ok) {
-            let errorMsg = `Lỗi HTTP: ${response.status}`;
+            let errorMsg = `Chuyển trạng thái không hợp lệ`;
             try {
                 const errorData = await response.json();
                 if (errorData.message) errorMsg = errorData.message;
@@ -411,6 +368,33 @@ function apDungTimKiemTuURL() {
     sessionStorage.removeItem('ht_staff_order_filter_status');
 }
 
+function hienThiDangTai() {
+    const tbody = document.querySelector('.data-table tbody');
+    if (tbody) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="6" style="text-align:center; padding: 30px; color: #888;">
+                    Đang tải dữ liệu đơn hàng...
+                </td>
+            </tr>
+        `;
+    }
+}
+
+function hienThiLoi(thongBao) {
+    const tbody = document.querySelector('.data-table tbody');
+    if (tbody) {
+        tbody.innerHTML = `
+            <tr>
+                <td colspan="6" style="text-align:center; padding: 30px; color: red;">
+                    Lỗi: ${thongBao}
+                    <br><br>
+                    <button onclick="taiDanhSachDonHang()">Thử lại</button>
+                </td>
+            </tr>
+        `;
+    }
+}
 // --------------------------------------------------------
 // Expose ra Global (để gọi từ HTML onclick)
 // --------------------------------------------------------
@@ -420,3 +404,8 @@ window.dongModalChiTiet = dongModalChiTiet;
 window.moModalTrangThai = moModalTrangThai;
 window.dongModalTrangThai = dongModalTrangThai;
 window.luuTrangThaiMoi = luuTrangThaiMoi;
+
+// Map tên tiếng Anh từ orders.html sang các hàm tiếng Việt mới refactor
+window.closeDetailModal = dongModalChiTiet;
+window.closeModal = dongModalTrangThai;
+window.saveStatus = luuTrangThaiMoi;

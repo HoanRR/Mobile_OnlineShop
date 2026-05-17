@@ -26,6 +26,7 @@
     align-items: start;
 }
 
+.checkout-left,
 .checkout-form,
 .order-summary {
     background: var(--surface);
@@ -39,6 +40,107 @@
     font-weight: 700;
     color: var(--text);
     margin-bottom: 20px;
+}
+
+.checkout-section {
+    padding-bottom: 24px;
+    margin-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+}
+
+.checkout-section:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+    margin-bottom: 0;
+}
+
+.checkout-section h3 {
+    font-size: 16px;
+    color: var(--text);
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.step-number {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    background: var(--red);
+    color: white;
+    border-radius: 50%;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.required {
+    color: var(--red);
+}
+
+.payment-methods {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.payment-option {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    background: var(--bg);
+    transition: var(--transition);
+}
+
+.payment-option:hover {
+    border-color: var(--red);
+}
+
+.payment-option input {
+    display: none;
+}
+
+.custom-radio {
+    width: 18px;
+    height: 18px;
+    border: 2px solid var(--border);
+    border-radius: 50%;
+    position: relative;
+    transition: var(--transition);
+}
+
+.payment-option input:checked + .custom-radio {
+    border-color: var(--red);
+}
+
+.payment-option input:checked + .custom-radio::after {
+    content: '';
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background: var(--red);
+    border-radius: 50%;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+.payment-option i {
+    font-size: 20px;
+    color: var(--muted);
+    width: 24px;
+    text-align: center;
+}
+
+.payment-option input:checked ~ i,
+.payment-option input:checked ~ span {
+    color: var(--red);
 }
 
 .imei-title {

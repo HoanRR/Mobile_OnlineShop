@@ -120,6 +120,8 @@ public class ReviewService {
                 .rating(review.getRating())
                 .comment(review.getComment())
                 .review_date(review.getReviewDate() != null ? review.getReviewDate().toString() : null)
+                .staff_reply(review.getStaffReply())
+                .reply_date(review.getReplyDate() != null ? review.getReplyDate().toString() : null)
                 .is_purchased(review.getIsPurchased())
                 .variant(review.getProductVariant() != null ? ReviewResponse.variantInfo.builder()
                         .product_variant_id(review.getProductVariant().getProductVariantId())
@@ -157,6 +159,27 @@ public class ReviewService {
                 .distribution(distribution)
                 .reviews(reviewList)
                 .pagination(meta)
+                .build();
+    }
+
+    public ReviewResponse replyToReview(Long reviewId, String reply) {
+        ProductReview review = productReviewRepository.findById(reviewId)
+                .orElseThrow(() -> new AppException(ErrorCode.VALIDATION_ERROR, "Không tìm thấy đánh giá"));
+        
+        review.setStaffReply(reply);
+        review.setReplyDate(LocalDateTime.now());
+        productReviewRepository.save(review);
+        
+        return ReviewResponse.builder()
+                .product_review_id(review.getProductReviewId())
+                .user_id(review.getUser().getUserId())
+                .username(review.getUser().getUsername())
+                .rating(review.getRating())
+                .comment(review.getComment())
+                .review_date(review.getReviewDate() != null ? review.getReviewDate().toString() : null)
+                .staff_reply(review.getStaffReply())
+                .reply_date(review.getReplyDate() != null ? review.getReplyDate().toString() : null)
+                .is_purchased(review.getIsPurchased())
                 .build();
     }
 }

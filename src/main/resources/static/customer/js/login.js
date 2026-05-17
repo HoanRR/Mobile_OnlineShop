@@ -42,12 +42,11 @@ async function xuLyDangNhap(event) {
             
             // Chuyển hướng sau 1s
             setTimeout(() => {
-                if (data.user.role === "CUSTOMER"){
+                if (data.user.role === "ADMIN"){
                     window.location.href = 'index.html';
-
                 }
                 else if (data.user.role === "EMPLOYEE"){
-                    window.location.href = 'pos.html';
+                    window.location.href = '../staff/pos.html';
                 }
                 else if (data.user.role === "CUSTOMER"){
                     window.location.href = 'index.html';

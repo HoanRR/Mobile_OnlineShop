@@ -15,14 +15,14 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 /**
- * VoucherController – các API voucher dành cho CUSTOMER.
+ * VoucherController – các API voucher dành cho CUSTOMER và EMPLOYEE (POS).
  *
  * GET  /api/vouchers                          → danh sách voucher khả dụng (có thể lọc)
  * POST /api/vouchers/validate                 → kiểm tra & tính toán giảm giá trước khi đặt
  */
 @RestController
 @RequestMapping("/api/vouchers")
-@PreAuthorize("hasAuthority('CUSTOMER')")
+@PreAuthorize("hasAnyAuthority('CUSTOMER', 'EMPLOYEE')")
 @RequiredArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 public class VoucherController {

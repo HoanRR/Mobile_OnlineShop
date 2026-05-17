@@ -46,7 +46,8 @@ public enum ErrorCode {
     VOUCHER_NOT_FOUND("VOUCHER_NOT_FOUND", "Voucher không tồn tại", HttpStatus.NOT_FOUND),
     INVALID_PASSWORD("INVALID_PASSWORD", "Mật khẩu không chính xác", HttpStatus.UNAUTHORIZED),
     PRODUCT_NOT_PURCHASED("PRODUCT_NOT_PURCHASED" , "Bạn chưa sản phẩm này", HttpStatus.FORBIDDEN),
-    REVIEW_ALREADY_EXISTED("REVIEW_ALREADY_EXISTED", "Bạn đã đánh giá sản phẩm này rồi", HttpStatus.CONFLICT)
+    REVIEW_ALREADY_EXISTED("REVIEW_ALREADY_EXISTED", "Bạn đã đánh giá sản phẩm này rồi", HttpStatus.CONFLICT),
+    NOT_ENOUGH_STOCK("NOT_ENOUGH_STOCK", "Không đủ số lượng trong kho", HttpStatus.BAD_REQUEST)
 
     ;
 

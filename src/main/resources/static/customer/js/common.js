@@ -9,7 +9,7 @@ function capNhatGiaoDienHeader() {
         dangNhapContainer.innerHTML = `
             <div class="user-menu" style="display: flex; align-items: center; gap: 10px;">
                 <a href="profile.html" class="btn-header" style="display: flex; align-items: center; gap: 5px;">
-                    <img src="../static/img/user-interface.png" alt="User">
+                    <img src="./img/user-interface.png" alt="User">
                     <h3>Xin chào, ${userInfo.name || userInfo.username || 'Bạn'}</h3>
                 </a>
                 <button onclick="xuLyDangXuat()" class="btn-logout" style="cursor: pointer; padding: 5px 10px; background-color: #f44336; color: white; border: none; border-radius: 5px;">

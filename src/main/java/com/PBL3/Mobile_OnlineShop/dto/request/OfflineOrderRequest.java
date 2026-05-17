@@ -31,12 +31,16 @@ public class OfflineOrderRequest {
     @JsonProperty("is_paid")
     private Boolean isPaid;
 
-    @NotEmpty(message = "Danh sách IMEI không được trống")
-    private List<ImeiRequest> items;
+    @NotEmpty(message = "Danh sách sản phẩm không được trống")
+    private List<VariantRequest> items;
 
     @Data
-    public static class ImeiRequest {
-        @NotBlank(message = "IMEI không được trống")
-        private String imei;
+    public static class VariantRequest {
+        @NotNull(message = "Variant ID không được trống")
+        @JsonProperty("variant_id")
+        private Long variantId;
+
+        @NotNull(message = "Số lượng không được trống")
+        private Integer quantity;
     }
 }
