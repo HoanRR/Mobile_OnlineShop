@@ -1,6 +1,6 @@
 package com.PBL3.Mobile_OnlineShop.controller;
 
-import com.PBL3.Mobile_OnlineShop.dto.request.AddToCartRequest;
+import com.PBL3.Mobile_OnlineShop.dto.request.CartItemRequest;
 import com.PBL3.Mobile_OnlineShop.dto.request.UpdateCartItemRequest;
 import com.PBL3.Mobile_OnlineShop.dto.response.CartResponse;
 
@@ -36,7 +36,7 @@ public class CartController {
 
     @PostMapping("/items")
     @PreAuthorize("hasAuthority('CUSTOMER')")
-    public ResponseEntity<Map<String, String>> addToCart(@Valid @RequestBody AddToCartRequest request) {
+    public ResponseEntity<Map<String, String>> addToCart(@Valid @RequestBody CartItemRequest request) {
 
         cartService.addToCart(request);
 

@@ -1,6 +1,6 @@
 package com.PBL3.Mobile_OnlineShop.dto.response;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
@@ -9,9 +9,13 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class DevicesResponse {
-    @JsonProperty("devices_id")
-    Long devices_id;
+    Long device_id;
     String imei;
     String status;
+    Long product_variant_id;
+    String product_name;
+    String color;
+    WarrantyResponse warranty_info;
 }

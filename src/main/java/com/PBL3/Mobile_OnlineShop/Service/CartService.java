@@ -2,7 +2,7 @@ package com.PBL3.Mobile_OnlineShop.Service;
 
 import com.PBL3.Mobile_OnlineShop.Exeption.AppException;
 import com.PBL3.Mobile_OnlineShop.Exeption.ErrorCode;
-import com.PBL3.Mobile_OnlineShop.dto.request.AddToCartRequest;
+import com.PBL3.Mobile_OnlineShop.dto.request.CartItemRequest;
 import com.PBL3.Mobile_OnlineShop.dto.request.UpdateCartItemRequest;
 import com.PBL3.Mobile_OnlineShop.dto.response.CartResponse;
 import com.PBL3.Mobile_OnlineShop.entity.Cart;
@@ -102,7 +102,7 @@ public class CartService {
         }
 
         @Transactional
-        public void addToCart(AddToCartRequest request) {
+        public void addToCart(CartItemRequest request) {
                 // 1. Lấy User đang đăng nhập
                 String username = SecurityContextHolder.getContext().getAuthentication().getName();
                 User user = userRepository.findByUsername(username)
@@ -116,7 +116,7 @@ public class CartService {
                 });
 
                 // 3. Kiểm tra sản phẩm có tồn tại không?
-                ProductVariant variant = productVariantRepository.findById(request.getProductVariantId())
+                ProductVariant variant = productVariantRepository.findById(request.getProduct_variant_id())
                                 .orElseThrow(() -> new AppException(ErrorCode.VARIANT_NOT_FOUND));
 
                 // 4. Kiểm tra Tồn kho lần 1 (Số lượng yêu cầu > Số lượng trong kho)

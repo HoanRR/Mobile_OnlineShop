@@ -10,12 +10,13 @@ import lombok.experimental.SuperBuilder;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@EqualsAndHashCode(callSuper = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class OrderResponse extends BaseOrderResponse {
-    String receiver_name;
-    String receiver_phone;
-    String shipping_address;
-    Long voucher_id;
-    Double sub_total;
+public class BaseOrderResponse {
+    Long order_id;
+    String order_status;
+    String order_date;
+    Double total_amount;
+    Double discount_amount;
+    String payment_method;
+    Boolean is_paid;
 }

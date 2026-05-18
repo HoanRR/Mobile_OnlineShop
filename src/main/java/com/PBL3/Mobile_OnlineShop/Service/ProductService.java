@@ -60,7 +60,7 @@ public class ProductService {
 
             Device savedDevice = deviceRepository.save(device);
             DevicesResponse info = DevicesResponse.builder()
-                    .devices_id(savedDevice.getDeviceId())
+                    .device_id(savedDevice.getDeviceId())
                     .imei(savedDevice.getImei())
                     .status(savedDevice.getStatus().toString())
                     .build();
@@ -78,17 +78,17 @@ public class ProductService {
                 .build();
     }
 
-    public GetDevicesResponse GetDevices(String imei){
+    public DevicesResponse GetDevices(String imei){
         Device device = deviceRepository.findByImei(imei).orElseThrow(() -> new AppException(ErrorCode.DEVICES_NOT_FOUND, "Không tìm thấy thiết bị với imei:" + imei) );
         Warranty warranty = warrantyRepository.findByDevice_DeviceId(device.getDeviceId()).orElseThrow(() -> new AppException(ErrorCode.WARRANTY_NOT_FOUND, "Không tìm thấy bảo hành của imei" + imei));
-        return GetDevicesResponse.builder()
-                .deviceId(device.getDeviceId())
+        return DevicesResponse.builder()
+                .device_id(device.getDeviceId())
                 .imei(device.getImei())
                 .status(device.getStatus().toString())
-                .productVariantId(device.getProductVariant().getProductVariantId())
-                .productName(device.getProductVariant().getProduct().getProductName())
+                .product_variant_id(device.getProductVariant().getProductVariantId())
+                .product_name(device.getProductVariant().getProduct().getProductName())
                 .color(device.getProductVariant().getColor())
-                .warratyInfo(WarrantyResponse.builder()
+                .warranty_info(WarrantyResponse.builder()
                         .warrantyId(warranty.getWarrantyId())
                         .startDate(warranty.getStartDate())
                         .endDate(warranty.getEndDate())

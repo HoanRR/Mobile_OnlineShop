@@ -12,7 +12,7 @@ import com.PBL3.Mobile_OnlineShop.dto.request.IntrospectRequest;
 import com.PBL3.Mobile_OnlineShop.dto.request.LoginRequest;
 import com.PBL3.Mobile_OnlineShop.dto.request.LogoutRequest;
 import com.PBL3.Mobile_OnlineShop.dto.request.RefreshTokenRequest;
-import com.PBL3.Mobile_OnlineShop.dto.request.RegisterCustomerRequest;
+import com.PBL3.Mobile_OnlineShop.dto.request.CreateAccountRequest;
 import com.PBL3.Mobile_OnlineShop.dto.request.ResetPasswordRequest;
 import com.nimbusds.jose.JOSEException;
 import jakarta.validation.Valid;
@@ -31,7 +31,7 @@ public class AuthController {
     private final AuthService authService;
 
     @PostMapping("/register")
-    public ResponseEntity<RegisterReponse> register(@Valid @RequestBody RegisterCustomerRequest request) {
+    public ResponseEntity<RegisterReponse> register(@Valid @RequestBody CreateAccountRequest request) {
         RegisterReponse response = authService.register(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }

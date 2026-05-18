@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.PBL3.Mobile_OnlineShop.Service.UserService;
-import com.PBL3.Mobile_OnlineShop.dto.request.UpdateMyInfoRequest;
+import com.PBL3.Mobile_OnlineShop.dto.request.UpdateUserInfoRequest;
 import com.PBL3.Mobile_OnlineShop.dto.request.UpdateMyPasswordRequest;
 import com.PBL3.Mobile_OnlineShop.dto.response.MyInfoResponse;
 
@@ -40,7 +40,7 @@ public class UserInfoController {
     }
 
     @PatchMapping
-    public ResponseEntity<MessageResponse> updateMyInfoPartial(@Valid @RequestBody UpdateMyInfoRequest request){
+    public ResponseEntity<MessageResponse> updateMyInfoPartial(@Valid @RequestBody UpdateUserInfoRequest request){
         userService.updateMyInfoPartial(request);
         return ResponseEntity.ok(MessageResponse.builder().message("Cập nhật thông tin thành công").build());
     }

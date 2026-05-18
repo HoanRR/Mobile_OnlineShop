@@ -3,18 +3,20 @@ package com.PBL3.Mobile_OnlineShop.dto.request;
 import jakarta.validation.constraints.NotBlank;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.SuperBuilder;
+
 import java.util.List;
 
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Builder
+@SuperBuilder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class AddProductRequest {
-    @NotBlank
+@EqualsAndHashCode(callSuper = true)
+public class AddProductRequest extends BaseProductRequest {
+
+    @NotBlank(message = "Tên sản phẩm không được để trống")
     String product_name;
-    String brand;
-    String product_image_link;
-    String description;
+
     List<VariantRequest> variants;
 }

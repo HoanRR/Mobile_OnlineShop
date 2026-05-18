@@ -13,7 +13,7 @@ import com.PBL3.Mobile_OnlineShop.dto.request.IntrospectRequest;
 import com.PBL3.Mobile_OnlineShop.dto.request.LoginRequest;
 import com.PBL3.Mobile_OnlineShop.dto.request.LogoutRequest;
 import com.PBL3.Mobile_OnlineShop.dto.request.RefreshTokenRequest;
-import com.PBL3.Mobile_OnlineShop.dto.request.RegisterCustomerRequest;
+import com.PBL3.Mobile_OnlineShop.dto.request.CreateAccountRequest;
 import com.PBL3.Mobile_OnlineShop.entity.InvalidatedToken;
 import com.PBL3.Mobile_OnlineShop.entity.User;
 import com.PBL3.Mobile_OnlineShop.enums.Role;
@@ -40,22 +40,22 @@ public class AuthService {
     private final JwtTokenProvider jwtTokenProvider;
 
     @Transactional
-    public RegisterReponse register(RegisterCustomerRequest request) {
+    public RegisterReponse register(CreateAccountRequest request) {
         if (userRepository.existsByUsername(request.getUsername())) {
             throw new AppException(ErrorCode.USERNAME_EXISTS, "Email hoặc username đã tồn tại");
         }
         if (userRepository.existsByEmail(request.getEmail())) {
             throw new AppException(ErrorCode.EMAIL_EXISTS, "Email hoặc username đã tồn tại");
         }
-        if (userRepository.existsByPhoneNumber(request.getPhoneNumber())) {
+        if (userRepository.existsByPhoneNumber(request.getPhone_number())) {
             throw new AppException(ErrorCode.PHONE_EXISTS, "Số điện thoại đã tồn tại");
         }
 
         User user = User.builder()
                 .username(request.getUsername())
                 .email(request.getEmail())
-                .fullName(request.getFullName())
-                .phoneNumber(request.getPhoneNumber())
+                .fullName(request.getFull_name())
+                .phoneNumber(request.getPhone_number())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(Role.CUSTOMER)
                 .build();

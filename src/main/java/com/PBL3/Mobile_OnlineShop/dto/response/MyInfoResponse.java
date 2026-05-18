@@ -1,13 +1,8 @@
 package com.PBL3.Mobile_OnlineShop.dto.response;
 
-
 import com.PBL3.Mobile_OnlineShop.enums.Role;
-
-import lombok.AccessLevel;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 
 @Data
@@ -15,11 +10,12 @@ import lombok.experimental.FieldDefaults;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
+@JsonInclude(JsonInclude.Include.NON_NULL)
 public class MyInfoResponse {
-    Long userId;
+    Long user_id;
     String username;
-    String name;
+    String full_name;
     String email;
-    String phoneNumber;
+    String phone_number;
     Role role;
 }

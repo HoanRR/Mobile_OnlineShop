@@ -7,11 +7,15 @@ import lombok.experimental.SuperBuilder;
 
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 @SuperBuilder
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@EqualsAndHashCode(callSuper = true)
 @JsonInclude(JsonInclude.Include.NON_NULL)
-public class UpdateVoucherRequest extends BaseVoucherRequest {
-    // Kế thừa tất cả fields từ BaseVoucherRequest
-    // Không có validation @NotNull vì update cho phép partial
+public class BaseVoucherRequest {
+    String voucher_code;
+    Double discount_percentage;
+    String start_date;
+    String end_date;
+    Long usage_limit;
+    ApplyConditionRequest apply_condition;
 }

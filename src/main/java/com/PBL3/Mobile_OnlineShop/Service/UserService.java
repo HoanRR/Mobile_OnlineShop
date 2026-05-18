@@ -4,9 +4,8 @@ import com.PBL3.Mobile_OnlineShop.Exeption.AppException;
 import com.PBL3.Mobile_OnlineShop.Exeption.ErrorCode;
 import com.PBL3.Mobile_OnlineShop.Repository.UserRepository;
 import com.PBL3.Mobile_OnlineShop.dto.request.CreateAccountRequest;
-import com.PBL3.Mobile_OnlineShop.dto.request.UpdateMyInfoRequest;
+import com.PBL3.Mobile_OnlineShop.dto.request.UpdateUserInfoRequest;
 import com.PBL3.Mobile_OnlineShop.dto.request.UpdateMyPasswordRequest;
-import com.PBL3.Mobile_OnlineShop.dto.request.UpdateUserRequest;
 import com.PBL3.Mobile_OnlineShop.dto.response.*;
 import com.PBL3.Mobile_OnlineShop.entity.Order;
 import com.PBL3.Mobile_OnlineShop.entity.User;
@@ -59,7 +58,7 @@ public class UserService {
         for (Order order: user.getOrders()){
             OrderHistoryResponse OHReponse = OrderHistoryResponse.builder()
                     .order_id(order.getOrderId())
-                    .order_date(order.getOrderDate())
+                    .order_date(order.getOrderDate() != null ? order.getOrderDate().toString() : null)
                     .total_amount(order.getTotalAmount())
                     .discount_amount(order.getDiscountAmount())
                     .payment_method(order.getPaymentMethod())
@@ -95,7 +94,7 @@ public class UserService {
 
         List<UserResponse> data = userPage.getContent().stream()
                 .map(u -> UserResponse.builder()
-                        .user_Id(u.getUserId())
+                        .user_id(u.getUserId())
                         .username(u.getUsername())
                         .email(u.getEmail())
                         .phone_number(u.getPhoneNumber())
@@ -165,19 +164,19 @@ public class UserService {
     }
 
     @Transactional
-    public void updateUser(Long userId, UpdateUserRequest request) {
+    public void updateUser(Long userId, UpdateUserInfoRequest request) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
 
-        if (request.getPhoneNumber() != null) {
-            if (!user.getPhoneNumber().equals(request.getPhoneNumber())
-                    && userRepository.existsByPhoneNumber(request.getPhoneNumber())) {
+        if (request.getPhone_number() != null) {
+            if (!user.getPhoneNumber().equals(request.getPhone_number())
+                    && userRepository.existsByPhoneNumber(request.getPhone_number())) {
                 throw new AppException(ErrorCode.PHONE_EXISTS);
             }
-            user.setPhoneNumber(request.getPhoneNumber());
+            user.setPhoneNumber(request.getPhone_number());
         }
-        if (request.getFullName() != null) {
-            user.setFullName(request.getFullName());
+        if (request.getFull_name() != null) {
+            user.setFullName(request.getFull_name());
         }
 
         if (request.getEmail() != null) {
@@ -226,7 +225,7 @@ public class UserService {
         return username;
     }
 
-    public void updateMyInfoPartial(UpdateMyInfoRequest request) {
+    public void updateMyInfoPartial(UpdateUserInfoRequest request) {
 
         String username = getUsernameFromContextHolder();
         User user = userRepository.findByUsername(username)
@@ -236,16 +235,17 @@ public class UserService {
             if (userRepository.existsByEmail(request.getEmail())) {
                 throw new AppException(ErrorCode.EMAIL_EXISTS);
             }
-
         }
-        if (request.getPhoneNumber() != null && !(request.getPhoneNumber().equals(user.getPhoneNumber()))) {
-            if (userRepository.existsByPhoneNumber(request.getPhoneNumber())) {
+        if (request.getPhone_number() != null && !(request.getPhone_number().equals(user.getPhoneNumber()))) {
+            if (userRepository.existsByPhoneNumber(request.getPhone_number())) {
                 throw new AppException(ErrorCode.PHONE_EXISTS);
             }
-
         }
 
-        userMapper.updateUserFromRequest(request, user);
+        // Manual update instead of mapper (since we removed the old request)
+        if (request.getEmail() != null) user.setEmail(request.getEmail());
+        if (request.getFull_name() != null) user.setFullName(request.getFull_name());
+        if (request.getPhone_number() != null) user.setPhoneNumber(request.getPhone_number());
         userRepository.save(user);
 
     }

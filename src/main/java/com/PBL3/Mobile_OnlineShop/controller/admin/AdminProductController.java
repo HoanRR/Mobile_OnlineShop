@@ -4,7 +4,7 @@ import com.PBL3.Mobile_OnlineShop.Service.ProductService;
 import com.PBL3.Mobile_OnlineShop.dto.request.AddProductRequest;
 import com.PBL3.Mobile_OnlineShop.dto.request.ImportDevicesRequest;
 import com.PBL3.Mobile_OnlineShop.dto.request.UpdateProductRequest;
-import com.PBL3.Mobile_OnlineShop.dto.response.GetDevicesResponse;
+import com.PBL3.Mobile_OnlineShop.dto.response.DevicesResponse;
 import com.PBL3.Mobile_OnlineShop.dto.response.ImportDevicesResponse;
 import com.PBL3.Mobile_OnlineShop.dto.response.MessageResponse;
 import jakarta.validation.Valid;
@@ -31,8 +31,8 @@ public class AdminProductController {
     }
 
     @GetMapping("/devices/{imei}")
-    public ResponseEntity<GetDevicesResponse> getDevices(@PathVariable("imei") String imei){
-        GetDevicesResponse getDevicesResponse = productService.GetDevices(imei);
+    public ResponseEntity<DevicesResponse> getDevices(@PathVariable("imei") String imei){
+        DevicesResponse getDevicesResponse = productService.GetDevices(imei);
         return ResponseEntity.ok(getDevicesResponse);
     }
     @PostMapping("/products")

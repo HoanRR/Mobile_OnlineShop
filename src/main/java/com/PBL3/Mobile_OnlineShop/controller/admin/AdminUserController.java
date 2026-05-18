@@ -2,7 +2,7 @@ package com.PBL3.Mobile_OnlineShop.controller.admin;
 
 import com.PBL3.Mobile_OnlineShop.Service.UserService;
 import com.PBL3.Mobile_OnlineShop.dto.request.CreateAccountRequest;
-import com.PBL3.Mobile_OnlineShop.dto.request.UpdateUserRequest;
+import com.PBL3.Mobile_OnlineShop.dto.request.UpdateUserInfoRequest;
 import com.PBL3.Mobile_OnlineShop.dto.response.MessageResponse;
 import com.PBL3.Mobile_OnlineShop.dto.response.PaginatedResponse;
 import com.PBL3.Mobile_OnlineShop.dto.response.UserDetailResponse;
@@ -49,7 +49,7 @@ public class AdminUserController {
     @PatchMapping("/{user_id}")
     public ResponseEntity<MessageResponse> updateUser(
             @PathVariable("user_id") Long userId,
-            @Valid @RequestBody UpdateUserRequest request) {
+            @Valid @RequestBody UpdateUserInfoRequest request) {
 
         userService.updateUser(userId, request);
         return ResponseEntity.ok(MessageResponse.builder().message("Cập nhập thành công").build());

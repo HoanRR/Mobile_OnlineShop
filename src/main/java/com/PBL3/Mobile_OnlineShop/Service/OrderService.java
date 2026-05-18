@@ -140,17 +140,17 @@ public class OrderService {
         // 4. Map dữ liệu trả về Response
         List<OfflineOrderResponse.ItemResponse> itemResponses = savedOrder.getOrderDetails().stream()
                 .map(detail -> OfflineOrderResponse.ItemResponse.builder()
-                        .orderDetailId(detail.getOrderDetailId())
-                        .deviceId(detail.getDevice().getDeviceId())
+                        .order_detail_id(detail.getOrderDetailId())
+                        .device_id(detail.getDevice().getDeviceId())
                         .imei(detail.getDevice().getImei())
-                        .priceAtPurchase(detail.getPriceAtPurchase())
+                        .price_at_purchase(detail.getPriceAtPurchase())
                         .build())
                 .toList();
 
         return OfflineOrderResponse.builder()
-                .orderId(savedOrder.getOrderId())
-                .orderStatus(savedOrder.getOrderStatus())
-                .totalAmount(savedOrder.getTotalAmount())
+                .order_id(savedOrder.getOrderId())
+                .order_status(savedOrder.getOrderStatus().name())
+                .total_amount(savedOrder.getTotalAmount())
                 .items(itemResponses)
                 .build();
     }
@@ -187,7 +187,7 @@ public class OrderService {
                 .map(o -> OrderHistoryResponse.builder()
                         .order_id(o.getOrderId())
                         .order_status(o.getOrderStatus() != null ? o.getOrderStatus().name() : null)
-                        .order_date(o.getOrderDate())
+                        .order_date(o.getOrderDate() != null ? o.getOrderDate().toString() : null)
                         .total_amount(o.getTotalAmount())
                         .discount_amount(o.getDiscountAmount())
                         .payment_method(o.getPaymentMethod())
@@ -371,7 +371,7 @@ public class OrderService {
         return OrderResponse.builder()
                 .order_id(savedOrder.getOrderId())
                 .order_status(savedOrder.getOrderStatus().name())
-                .order_date(savedOrder.getOrderDate())
+                .order_date(savedOrder.getOrderDate() != null ? savedOrder.getOrderDate().toString() : null)
                 .total_amount(savedOrder.getTotalAmount())
                 .discount_amount(savedOrder.getDiscountAmount())
                 .payment_method(savedOrder.getPaymentMethod())

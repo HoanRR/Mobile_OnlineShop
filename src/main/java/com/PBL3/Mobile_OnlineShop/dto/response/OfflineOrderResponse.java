@@ -1,42 +1,31 @@
 package com.PBL3.Mobile_OnlineShop.dto.response;
 
-import com.PBL3.Mobile_OnlineShop.enums.OrderStatus;
-import com.fasterxml.jackson.annotation.JsonProperty;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.*;
+import lombok.experimental.FieldDefaults;
+import lombok.experimental.SuperBuilder;
 
 import java.util.List;
 
-@Getter
-@Setter
-@Builder
-public class OfflineOrderResponse {
+@Data
+@SuperBuilder
+@AllArgsConstructor
+@NoArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE)
+@EqualsAndHashCode(callSuper = true)
+@JsonInclude(JsonInclude.Include.NON_NULL)
+public class OfflineOrderResponse extends BaseOrderResponse {
+    List<ItemResponse> items;
 
-    @JsonProperty("order_id")
-    private Long orderId;
-
-    @JsonProperty("order_status")
-    private OrderStatus orderStatus;
-
-    @JsonProperty("total_amount")
-    private Double totalAmount;
-
-    private List<ItemResponse> items;
-
-    @Getter
-    @Setter
+    @Data
     @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @FieldDefaults(level = AccessLevel.PRIVATE)
     public static class ItemResponse {
-        @JsonProperty("order_detail_id")
-        private Long orderDetailId;
-
-        @JsonProperty("device_id")
-        private Long deviceId;
-
-        private String imei;
-
-        @JsonProperty("price_at_purchase")
-        private Double priceAtPurchase;
+        Long order_detail_id;
+        Long device_id;
+        String imei;
+        Double price_at_purchase;
     }
 }
