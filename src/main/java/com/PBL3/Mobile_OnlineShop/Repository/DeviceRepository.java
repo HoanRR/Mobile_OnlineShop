@@ -14,4 +14,5 @@ public interface DeviceRepository extends JpaRepository<Device, Long> {
     Optional<Device> findByImei(String imei);
     long countByProductVariantAndStatus(ProductVariant productVariant, DeviceStatus status);
     java.util.List<Device> findByProductVariantAndStatus(ProductVariant productVariant, DeviceStatus status);
+    java.util.List<Device> findByStatus(DeviceStatus status);
 }

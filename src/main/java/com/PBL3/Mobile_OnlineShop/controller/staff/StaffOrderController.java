@@ -66,4 +66,18 @@ public class StaffOrderController {
             @PathVariable("order_id") Long orderId) {
         return ResponseEntity.ok(orderService.getOrderDetailForStaff(orderId));
     }
+
+    @PostMapping("/process-warranty-return")
+    @PreAuthorize("hasAuthority('EMPLOYEE')")
+    public ResponseEntity<MessageResponse> processWarrantyReturn(
+            @RequestParam String imei,
+            @RequestParam String action) {
+
+        orderService.processWarrantyReturn(imei, action);
+
+        return ResponseEntity.ok(MessageResponse.builder()
+                .message("Xử lý yêu cầu thành công")
+                .build()
+        );
+    }
 }

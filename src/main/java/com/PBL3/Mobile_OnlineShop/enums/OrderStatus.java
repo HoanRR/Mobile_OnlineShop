@@ -11,6 +11,10 @@ public enum OrderStatus {
         if (this == PROCESSING && (nextStatus == SHIPPING || nextStatus == CANCELLED)) {
             return true;
         }
+
+        if (this == SHIPPING && (nextStatus == DELIVERED || nextStatus == CANCELLED)) {
+            return true;
+        }
         return false;
     }
 }

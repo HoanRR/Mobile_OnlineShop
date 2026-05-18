@@ -20,4 +20,10 @@ public class WarrantyController {
         WarrantyDetailResponse response = warrantyService.checkWarranty(imei);
         return ResponseEntity.ok(response);
     }
+
+    @GetMapping("/requests")
+    @PreAuthorize("hasAuthority('EMPLOYEE')")
+    public ResponseEntity<java.util.List<WarrantyDetailResponse>> getWarrantyRequests() {
+        return ResponseEntity.ok(warrantyService.getWarrantyRequests());
+    }
 }

@@ -111,6 +111,9 @@ function hienThiBangDonHang() {
                     <div class="order-actions">
                         <button class="btn-view-detail" onclick="moModalChiTiet('${maDonHang}')">Chi tiết</button>
                         <button class="btn-update-status" onclick="moModalTrangThai('${maDonHang}', '${trangThaiKey}', ${donHang.is_paid})">Cập nhật</button>
+                        ${trangThaiKey === 'SHIPPING' ? `
+                            <button class="btn-view-detail" style="background-color:#28a745; color:white; border:none;" onclick="chuyenNhanhHoanThanh('${maDonHang}', ${donHang.is_paid})">Hoàn thành</button>
+                        ` : ''}
                     </div>
                 </td>
             </tr>
@@ -189,13 +192,23 @@ async function moModalChiTiet(maDonHang) {
             const giaSP = DinhDangTien(sp.price_at_purchase || sp.price);
             
             htmlSanPham += `
-                <div class="detail-item">
-                    <div>
-                        <strong>${tenSP}</strong>
-                        <span>
-                            Màu: ${sp.color || '-'} | Bộ nhớ: ${sp.storage_capacity || '-'}GB
-                        </span>
                         ${sp.imei ? `<br><span style="font-size: 12px; color: #555;">IMEI: ${sp.imei}</span>` : ''}
+                        ${sp.device_status ? `
+                            <br><span style="font-size: 12px; font-weight:600; color: ${sp.device_status === 'WARRANTY' ? '#ff9800' : sp.device_status === 'RETURNED' ? '#dc3545' : '#28a745'};">
+                                Trạng thái: ${sp.device_status === 'WARRANTY' ? 'Đang bảo hành' : sp.device_status === 'RETURNED' ? 'Đã yêu cầu đổi/trả' : 'Bình thường'}
+                            </span>
+                        ` : ''}
+                        ${sp.device_status === 'WARRANTY' ? `
+                            <div style="margin-top: 4px;">
+                                <button class="btn-view-detail" style="font-size:11px; padding:4px 8px; background-color:#28a745; color:white; border:none;" onclick="xuLyBaoHanhDoiTra('${sp.imei}', 'COMPLETE_WARRANTY', '${maDonHang}')">Hoàn thành bảo hành</button>
+                            </div>
+                        ` : ''}
+                        ${sp.device_status === 'RETURNED' ? `
+                            <div style="margin-top: 4px; display:flex; gap: 4px;">
+                                <button class="btn-view-detail" style="font-size:11px; padding:4px 8px; background-color:#28a745; color:white; border:none;" onclick="xuLyBaoHanhDoiTra('${sp.imei}', 'CONFIRM_RETURN_GOOD', '${maDonHang}')">Nhận lại kho (Tốt)</button>
+                                <button class="btn-view-detail" style="font-size:11px; padding:4px 8px; background-color:#dc3545; color:white; border:none;" onclick="xuLyBaoHanhDoiTra('${sp.imei}', 'CONFIRM_RETURN_DEFECTIVE', '${maDonHang}')">Báo hỏng (Lỗi)</button>
+                            </div>
+                        ` : ''}
                     </div>
                     <strong>${giaSP}</strong>
                 </div>
@@ -395,6 +408,79 @@ function hienThiLoi(thongBao) {
         `;
     }
 }
+
+async function chuyenNhanhHoanThanh(maDonHang, isPaid) {
+    if (!confirm('Bạn có chắc chắn muốn hoàn thành đơn hàng này?')) return;
+
+    try {
+        const accessToken = localStorage.getItem('accessToken') || '';
+        const idSo = String(maDonHang).replace(/\D/g, '');
+        
+        const response = await fetch(`http://localhost:8080/api/staff/orders/${idSo}/status`, {
+            method: 'PATCH',
+            headers: {
+                'Authorization': `Bearer ${accessToken}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                order_status: 'DELIVERED',
+                is_paid: true
+            })
+        });
+
+        if (!response.ok) {
+            let errorMsg = `Không thể hoàn thành đơn hàng`;
+            try {
+                const errorData = await response.json();
+                if (errorData.message) errorMsg = errorData.message;
+            } catch (e) {}
+            throw new Error(errorMsg);
+        }
+
+        alert('Đã hoàn thành đơn hàng!');
+        await taiDanhSachDonHang();
+    } catch (loi) {
+        console.error('Lỗi khi hoàn thành đơn hàng:', loi);
+        alert(loi.message || 'Thao tác thất bại. Vui lòng thử lại!');
+    }
+}
+
+async function xuLyBaoHanhDoiTra(imei, action, maDonHang) {
+    let confirmMsg = 'Bạn có chắc chắn muốn thực hiện thao tác này?';
+    if (action === 'COMPLETE_WARRANTY') confirmMsg = 'Xác nhận hoàn thành bảo hành cho thiết bị này?';
+    if (action === 'CONFIRM_RETURN_GOOD') confirmMsg = 'Xác nhận nhập lại kho thiết bị này?';
+    if (action === 'CONFIRM_RETURN_DEFECTIVE') confirmMsg = 'Xác nhận báo hỏng thiết bị này?';
+
+    if (!confirm(confirmMsg)) return;
+
+    try {
+        const accessToken = localStorage.getItem('accessToken') || '';
+        
+        const response = await fetch(`http://localhost:8080/api/staff/orders/process-warranty-return?imei=${imei}&action=${action}`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${accessToken}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (!response.ok) {
+            let errorMsg = `Thao tác thất bại`;
+            try {
+                const errorData = await response.json();
+                if (errorData.message) errorMsg = errorData.message;
+            } catch (e) {}
+            throw new Error(errorMsg);
+        }
+
+        alert('Xử lý thành công!');
+        dongModalChiTiet();
+        await taiDanhSachDonHang();
+    } catch (loi) {
+        console.error('Lỗi khi xử lý bảo hành/đổi trả:', loi);
+        alert(loi.message || 'Thao tác thất bại. Vui lòng thử lại!');
+    }
+}
 // --------------------------------------------------------
 // Expose ra Global (để gọi từ HTML onclick)
 // --------------------------------------------------------
@@ -404,6 +490,8 @@ window.dongModalChiTiet = dongModalChiTiet;
 window.moModalTrangThai = moModalTrangThai;
 window.dongModalTrangThai = dongModalTrangThai;
 window.luuTrangThaiMoi = luuTrangThaiMoi;
+window.chuyenNhanhHoanThanh = chuyenNhanhHoanThanh;
+window.xuLyBaoHanhDoiTra = xuLyBaoHanhDoiTra;
 
 // Map tên tiếng Anh từ orders.html sang các hàm tiếng Việt mới refactor
 window.closeDetailModal = dongModalChiTiet;

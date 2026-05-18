@@ -1,154 +1,150 @@
 /**
- * Staff products page script
- * Product lookup using the same local mock data as admin.
+ * Chức năng tra cứu sản phẩm của nhân viên (Rewrite theo style pos.js)
+ * Lấy dữ liệu từ API và hiển thị
  */
 
-const STAFF_PRODUCTS_STORAGE_KEY = 'ht_products';
+document.addEventListener('DOMContentLoaded', async () => {
+  if (typeof initCommonUI === 'function') initCommonUI();
+  if (typeof displayCurrentDate === 'function') displayCurrentDate();
+  if (typeof highlightActivePage === 'function') highlightActivePage();
+  if (typeof setupLogout === 'function') setupLogout();
+  
+  caiDatSuKienTimKiem();
+  await taiDanhSachSanPham();
+});
 
-const staffDefaultProducts = [
-  { id: 'SP001', name: 'iPhone 15 Plus 256GB', brand: 'Apple', price: 22990000, stock: 12 },
-  { id: 'SP002', name: 'Samsung Galaxy S26 Ultra', brand: 'Samsung', price: 31990000, stock: 8 },
-  { id: 'SP003', name: 'iPhone 17 Pro Max', brand: 'Apple', price: 34500000, stock: 0 }
-];
-
-let staffProducts = [];
-let staffProductsApiError = '';
-
-function useStaffProductsApi() {
-  return Boolean(window.HTApi?.isEnabled());
-}
-
-function escapeHtml(value) {
-  const div = document.createElement('div');
-  div.textContent = value ?? '';
-  return div.innerHTML;
-}
-
-async function loadStaffProducts(query = {}) {
-  staffProductsApiError = '';
-
-  if (useStaffProductsApi()) {
-    try {
-      const response = await HTApi.products.list({ page: 1, limit: 100, ...query });
-      staffProducts = HTApi.listData(response).map(HTApi.mapProduct);
-      return;
-    } catch (error) {
-      staffProductsApiError = error.message || 'Kh\u00f4ng l\u1ea5y \u0111\u01b0\u1ee3c s\u1ea3n ph\u1ea9m t\u1eeb API.';
-      console.warn('Không lấy được sản phẩm từ API, dùng dữ liệu mock.', error);
-    }
-  }
-
-  try {
-    const saved = JSON.parse(localStorage.getItem(STAFF_PRODUCTS_STORAGE_KEY) || 'null');
-    staffProducts = Array.isArray(saved) && saved.length ? saved : [...staffDefaultProducts];
-  } catch (error) {
-    staffProducts = [...staffDefaultProducts];
-  }
-
-  if (!localStorage.getItem(STAFF_PRODUCTS_STORAGE_KEY)) {
-    localStorage.setItem(STAFF_PRODUCTS_STORAGE_KEY, JSON.stringify(staffProducts));
-  }
-}
-
-function formatMoney(amount) {
-  if (typeof formatCurrency === 'function') return formatCurrency(Number(amount) || 0);
-  return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(Number(amount) || 0);
-}
-
-function getFilteredStaffProducts() {
-  const searchInput = document.querySelector('.filter-bar input');
-  const keyword = normalizeText(searchInput ? searchInput.value : '');
-
-  if (!keyword) return staffProducts;
-
-  return staffProducts.filter((product) => {
-    return normalizeText(product.id).includes(keyword.replace(/^#/, ''))
-      || normalizeText(product.name).includes(keyword)
-      || normalizeText(product.brand).includes(keyword);
-  });
-}
-
-function renderStaffProducts() {
+async function taiDanhSachSanPham(tuKhoa = '') {
   const tableBody = document.querySelector('.data-table tbody');
   if (!tableBody) return;
 
-  const products = getFilteredStaffProducts();
-  const warningRow = staffProductsApiError
-    ? `
+  tableBody.innerHTML = `
+    <tr>
+      <td colspan="5" style="text-align:center; padding:28px;">
+        <i class="fa-solid fa-spinner fa-spin"></i> Đang tải dữ liệu...
+      </td>
+    </tr>
+  `;
+
+  try {
+    const response = await fetch('http://localhost:8080/api/products?page=1&limit=100');
+    if (!response.ok) throw new Error("Lỗi API sản phẩm");
+
+    const ketQua = await response.json();
+    let danhSach = ketQua.data || [];
+
+    if (tuKhoa) {
+      const tuKhoaThuong = tuKhoa.toLowerCase();
+      danhSach = danhSach.filter(sp => {
+        const ten = (sp.product_name || '').toLowerCase();
+        const brand = (sp.brand || '').toLowerCase();
+        const id = (String(sp.product_id)).toLowerCase();
+        return ten.includes(tuKhoaThuong) || brand.includes(tuKhoaThuong) || id.includes(tuKhoaThuong);
+      });
+    }
+
+    // Lấy tồn kho bằng cách lấy tất cả variant của nó và cộng lại
+    const danhSachVoiTonKho = await Promise.all(danhSach.map(async (sp) => {
+      try {
+        const detailRes = await fetch(`http://localhost:8080/api/products/${sp.product_id}`);
+        if (detailRes.ok) {
+          const detailData = await detailRes.json();
+          const data = detailData.data || detailData;
+          const variants = data.variant || [];
+          const tongTonKho = variants.reduce((sum, vr) => sum + (vr.totalAvailable || 0), 0);
+          return { ...sp, tongTonKho };
+        }
+      } catch (e) {
+        console.error("Lỗi lấy chi tiết sp:", sp.product_id, e);
+      }
+      return { ...sp, tongTonKho: null };
+    }));
+
+    hienThiSanPham(danhSachVoiTonKho);
+  } catch (error) {
+    tableBody.innerHTML = `
       <tr>
-        <td colspan="5" style="color:#f59e0b; background:rgba(245,158,11,0.08);">
-          API /api/products l\u1ed7i: ${escapeHtml(staffProductsApiError)}. \u0110ang hi\u1ec3n th\u1ecb d\u1eef li\u1ec7u mock.
+        <td colspan="5" style="color:#e74c3c; text-align:center; padding:28px;">
+          Lỗi: Không thể tải sản phẩm từ hệ thống.
         </td>
       </tr>
-    `
-    : '';
+    `;
+    console.error(error);
+  }
+}
 
-  if (!products.length) {
+function hienThiSanPham(danhSach) {
+  const tableBody = document.querySelector('.data-table tbody');
+  if (!tableBody) return;
+
+  if (danhSach.length === 0) {
     tableBody.innerHTML = `
-      ${warningRow}
       <tr>
-        <td colspan="5" style="text-align:center; color:var(--muted); padding:28px;">Kh\u00f4ng t\u00ecm th\u1ea5y s\u1ea3n ph\u1ea9m ph\u00f9 h\u1ee3p</td>
+        <td colspan="5" style="text-align:center; color:var(--muted); padding:28px;">Không tìm thấy sản phẩm phù hợp</td>
       </tr>
     `;
     return;
   }
 
-  const rows = products.map((product) => {
-    const stockKnown = product.stock_known !== false;
-    const stock = Number(product.stock);
-    const stockHtml = !stockKnown
-      ? '<span class="stock-unknown">Ch\u01b0a c\u00f3 d\u1eef li\u1ec7u</span>'
-      : stock > 0
-        ? `<span class="stock-available">${stock}</span> chi\u1ebfc`
-        : '<span class="stock-outofstock">H\u1ebft h\u00e0ng</span>';
+  const html = danhSach.map((sp) => {
+    const id = sp.product_id;
+    const ten = sp.product_name || '-';
+    const brand = sp.brand || '-';
+    const gia = sp.min_price || 0;
+    
+    let stockHtml = '<span class="stock-unknown" style="color:#9ca3af;">Chưa có dữ liệu</span>';
+    if (sp.tongTonKho !== null && sp.tongTonKho !== undefined) {
+      if (sp.tongTonKho > 0) {
+        stockHtml = `<span class="stock-available" style="color:#16a34a; font-weight:bold;">${sp.tongTonKho}</span> chiếc`;
+      } else {
+        stockHtml = '<span class="stock-outofstock" style="color:#ef4444; font-weight:bold;">Hết hàng</span>';
+      }
+    }
 
     return `
       <tr>
-        <td class="cell-muted">#${escapeHtml(product.id)}</td>
-        <td><strong>${escapeHtml(product.name)}</strong></td>
-        <td><span class="category-badge">${escapeHtml(product.brand || '-')}</span></td>
-        <td class="price-cell">${formatMoney(product.price)}</td>
+        <td class="cell-muted">#${id}</td>
+        <td><strong>${ten}</strong></td>
+        <td><span class="category-badge">${brand}</span></td>
+        <td class="price-cell">${dinhDangTienVN(gia)}</td>
         <td>${stockHtml}</td>
       </tr>
     `;
   }).join('');
 
-  tableBody.innerHTML = `${warningRow}${rows}`;
+  tableBody.innerHTML = html;
 }
 
-function initStaffProductEvents() {
+function caiDatSuKienTimKiem() {
   const filterBar = document.querySelector('.filter-bar');
-  const searchInput = filterBar ? filterBar.querySelector('input') : null;
-  const searchButton = filterBar ? filterBar.querySelector('button') : null;
-  const queryText = new URLSearchParams(window.location.search).get('q') || '';
-
-  if (queryText && searchInput) {
-    searchInput.value = queryText;
-  }
+  if (!filterBar) return;
+  
+  const searchInput = filterBar.querySelector('input');
+  const searchButton = filterBar.querySelector('button');
+  let thoiGianCho = null;
 
   if (searchInput) {
-    searchInput.addEventListener('keydown', async (event) => {
+    searchInput.addEventListener('input', () => {
+      clearTimeout(thoiGianCho);
+      thoiGianCho = setTimeout(() => taiDanhSachSanPham(searchInput.value.trim()), 500);
+    });
+
+    searchInput.addEventListener('keydown', (event) => {
       if (event.key === 'Enter') {
-        if (useStaffProductsApi()) await loadStaffProducts({ keyword: searchInput.value.trim() });
-        renderStaffProducts();
+        clearTimeout(thoiGianCho);
+        taiDanhSachSanPham(searchInput.value.trim());
       }
     });
   }
 
-  if (searchButton) {
-    searchButton.addEventListener('click', async () => {
-      if (useStaffProductsApi()) await loadStaffProducts({ keyword: searchInput ? searchInput.value.trim() : '' });
-      renderStaffProducts();
+  if (searchButton && searchInput) {
+    searchButton.addEventListener('click', () => {
+      clearTimeout(thoiGianCho);
+      taiDanhSachSanPham(searchInput.value.trim());
     });
   }
 }
 
-document.addEventListener('DOMContentLoaded', async () => {
-  initCommonUI();
-  displayCurrentDate();
-  highlightActivePage();
-  setupLogout();
-  await loadStaffProducts();
-  initStaffProductEvents();
-  renderStaffProducts();
-});
+function dinhDangTienVN(soTien) {
+  if (typeof formatCurrency === 'function') return formatCurrency(soTien);
+  return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(Number(soTien) || 0);
+}

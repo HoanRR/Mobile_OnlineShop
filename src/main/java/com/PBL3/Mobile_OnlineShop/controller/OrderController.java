@@ -2,6 +2,7 @@ package com.PBL3.Mobile_OnlineShop.controller;
 
 import com.PBL3.Mobile_OnlineShop.Service.OrderService;
 import com.PBL3.Mobile_OnlineShop.dto.request.OrderRequest;
+import com.PBL3.Mobile_OnlineShop.dto.request.WarrantyReturnRequest;
 import com.PBL3.Mobile_OnlineShop.dto.response.*;
 import jakarta.validation.Valid;
 import jakarta.websocket.server.PathParam;
@@ -42,5 +43,11 @@ public class OrderController {
 
         OrderResponse response = orderService.createOrder(request);
         return ResponseEntity.ok(response);
+    }
+    @PostMapping("/warranty-return")
+    public ResponseEntity<Void> requestWarrantyOrReturn(
+            @Valid @RequestBody WarrantyReturnRequest request) {
+        orderService.requestWarrantyOrReturn(request);
+        return ResponseEntity.ok().build();
     }
 }

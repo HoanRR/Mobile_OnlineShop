@@ -22,6 +22,11 @@ public interface OrderDetailRepository extends JpaRepository<OrderDetail, Long> 
                         Long userId,
                         Long productId);
 
+        java.util.Optional<OrderDetail> findByOrder_User_UserIdAndDevice_ImeiAndOrder_OrderStatus(
+                        Long userId,
+                        String imei,
+                        OrderStatus orderStatus);
+
         @Query("SELECT COUNT(od) FROM OrderDetail od " +
                         "WHERE od.order.orderDate >= :fromDate AND od.order.orderDate <= :toDate " +
                         "AND (:status IS NULL OR od.order.orderStatus = :status)")

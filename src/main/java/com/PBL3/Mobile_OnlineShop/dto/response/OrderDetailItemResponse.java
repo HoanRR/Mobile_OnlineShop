@@ -18,4 +18,5 @@ public class OrderDetailItemResponse {
     String color;
     Long storage_capacity;
     Double price_at_purchase;
+    String device_status;
 }

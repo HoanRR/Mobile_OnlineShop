@@ -162,12 +162,22 @@ function renderOrderDetail(order) {
                         <div class="detail-product-name">${item.product_name}</div>
                         <div class="detail-product-variant">${item.color} - ${item.storage_capacity}GB</div>
                         ${item.imei ? `<div class="detail-product-imei">IMEI: ${item.imei}</div>` : ''}
+                        ${item.imei && item.device_status ? `
+                            <div style="margin-top: 4px;">
+                                ${item.device_status === 'SOLD' ? '<span style="background:#28a745;color:white;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;">Sử dụng</span>' : ''}
+                                ${item.device_status === 'WARRANTY' ? '<span style="background:#ff9800;color:white;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;">Đang bảo hành</span>' : ''}
+                                ${item.device_status === 'RETURNED' ? '<span style="background:#dc3545;color:white;padding:2px 8px;border-radius:4px;font-size:11px;font-weight:600;">Đã đổi/trả</span>' : ''}
+                            </div>
+                        ` : ''}
                     </div>
                     <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px;">
                         <div class="detail-product-price">${itemPrice}</div>
                         ${isDone ? `
                             <button class="btn-review-small" onclick="moFormDanhGia(${order.order_id}, ${item.variant_id}, '${item.product_name}')">Đánh giá</button>
                             <button class="btn-review-small" onclick="window.location.href='product-detail.html?id=${item.product_id}'">Mua lại</button>
+                            ${(item.imei && item.device_status === 'SOLD') ? `
+                                <button class="btn-review-small btn-warranty-request" style="background-color:#f5a623; color:white; border:none;" onclick="moFormYeuCauBaoHanhDoiTra('${item.imei}', '${item.product_name} (${item.color} - ${item.storage_capacity}GB)')">Bảo hành / Đổi trả</button>
+                            ` : ''}
                         ` : ''}
                     </div>
                 </div>
@@ -390,6 +400,98 @@ async function guiDanhGia(orderId, variantId) {
     }
 }
 
+function moFormYeuCauBaoHanhDoiTra(imei, productNameAndVariant) {
+    const detailModal = document.getElementById('order-detail-modal');
+    if (detailModal) detailModal.style.display = 'none';
+
+    const existing = document.getElementById('warranty-return-modal');
+    if (existing) existing.remove();
+
+    const modal = document.createElement('div');
+    modal.id = 'warranty-return-modal';
+    modal.className = 'modal-overlay';
+    modal.style.display = 'flex';
+    modal.innerHTML = `
+        <div class="modal-box" style="max-width: 500px;">
+            <div class="modal-header">
+                <h3>Yêu cầu Bảo hành / Đổi trả</h3>
+                <button class="modal-close-btn" onclick="document.getElementById('warranty-return-modal').remove();">x</button>
+            </div>
+            <div class="modal-body">
+                <p style="color:#555; margin-bottom:15px; font-weight:500;">Sản phẩm: <b>${productNameAndVariant}</b></p>
+                <p style="color:#777; font-size:13px; margin-bottom:15px;">IMEI: <b>${imei}</b></p>
+
+                <div style="margin-bottom:18px;">
+                    <label style="font-weight:600; display:block; margin-bottom:8px;">Loại yêu cầu:</label>
+                    <select id="request-type" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px; outline:none; font-family:inherit;">
+                        <option value="WARRANTY">Yêu cầu sửa chữa/Bảo hành</option>
+                        <option value="RETURN">Yêu cầu Đổi trả sản phẩm</option>
+                    </select>
+                </div>
+
+                <div style="margin-bottom:18px;">
+                    <label style="font-weight:600; display:block; margin-bottom:8px;">Lý do yêu cầu:</label>
+                    <textarea id="request-reason" rows="4" style="width:100%; padding:10px; border:1px solid #ddd; border-radius:8px; outline:none; font-family:inherit; resize:vertical;"
+                        placeholder="Mô tả chi tiết lỗi thiết bị hoặc lý do đổi trả sản phẩm..."></textarea>
+                </div>
+
+                <p id="request-error" style="color:#d70018; font-size:13px; display:none; margin-bottom:10px;"></p>
+
+                <button onclick="guiYeuCau('${imei}')"
+                    style="background:#f5a623; color:white; border:none; padding:12px; width:100%; border-radius:8px; font-size:15px; font-weight:600; cursor:pointer; transition: 0.2s;">
+                    Gửi yêu cầu
+                </button>
+            </div>
+        </div>
+    `;
+    modal.addEventListener('click', e => { if (e.target === modal) modal.remove(); });
+    document.body.appendChild(modal);
+}
+
+async function guiYeuCau(imei) {
+    const type = document.getElementById('request-type').value;
+    const reason = document.getElementById('request-reason').value.trim();
+    const errorEl = document.getElementById('request-error');
+
+    if (!reason) {
+        errorEl.innerText = 'Vui lòng nhập lý do yêu cầu!';
+        errorEl.style.display = 'block';
+        return;
+    }
+
+    const accessToken = localStorage.getItem('accessToken');
+    if (!accessToken) {
+        window.location.href = 'login.html';
+        return;
+    }
+
+    try {
+        const response = await fetch('http://localhost:8080/api/orders/warranty-return', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${accessToken}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ imei, type, reason })
+        });
+
+        if (response.ok) {
+            document.getElementById('warranty-return-modal').remove();
+            showToast('Yêu cầu đã được gửi thành công!', 'success');
+            // Reload list
+            loadOrders('', 1);
+        } else {
+            const err = await response.json();
+            errorEl.innerText = err.message || 'Gửi yêu cầu thất bại. Vui lòng thử lại!';
+            errorEl.style.display = 'block';
+        }
+    } catch (err) {
+        console.error(err);
+        errorEl.innerText = 'Lỗi kết nối. Vui lòng thử lại!';
+        errorEl.style.display = 'block';
+    }
+}
+
 window.openOrderDetail = openOrderDetail;
 window.closeModal = closeModal;
 window.loadOrders = loadOrders;
@@ -398,3 +500,5 @@ window.danhGiaOrder = danhGiaOrder;
 window.moFormDanhGia = moFormDanhGia;
 window.chonSao = chonSao;
 window.guiDanhGia = guiDanhGia;
+window.moFormYeuCauBaoHanhDoiTra = moFormYeuCauBaoHanhDoiTra;
+window.guiYeuCau = guiYeuCau;
