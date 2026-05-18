@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Bảo hành - HT Mobile Staff</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="css/staff-base.css">
+    <link rel="stylesheet" href="css/warranty.css">
+    <script src="js/common.js"></script>
+    <script src="js/warranty.js"></script>
+</head>
+<body>
+<div class="app-wrapper">
+    <div id="sidebar-container"></div>
+
+    <div class="main-content" id="mainContent">
+        <div id="header-container"></div>
+
+        <div class="page-body warranty-page">
+            <h2>Tra cứu bảo hành</h2>
+            <div class="lookup-panel">
+                <input type="text" id="warrantyImei" placeholder="Nhập IMEI thiết bị">
+                <button type="button" id="warrantyLookupBtn"><i class="fa-solid fa-magnifying-glass"></i> Tra cứu</button>
+            </div>
+
+            <div id="warrantyResult" class="warranty-result">
+                <div class="empty-state">Nhập IMEI để kiểm tra trạng thái bảo hành.</div>
+            </div>
+
+            <div class="requests-section" style="margin-top: 40px;">
+                <h3>Danh sách yêu cầu đang chờ xử lý</h3>
+                <div class="data-table-wrap" style="margin-top: 15px;">
+                    <table class="data-table" style="width: 100%; border-collapse: collapse; background: white; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                        <thead style="background: #f8f9fa;">
+                            <tr>
+                                <th style="padding: 12px; text-align: left; border-bottom: 2px solid #dee2e6;">IMEI</th>
+                                <th style="padding: 12px; text-align: left; border-bottom: 2px solid #dee2e6;">Sản phẩm</th>
+                                <th style="padding: 12px; text-align: left; border-bottom: 2px solid #dee2e6;">Trạng thái</th>
+                                <th style="padding: 12px; text-align: left; border-bottom: 2px solid #dee2e6;">Thao tác</th>
+                            </tr>
+                        </thead>
+                        <tbody id="requestsTableBody">
+                            <tr>
+                                <td colspan="4" style="text-align:center;padding:20px;color:#888;">
+                                    Đang tải danh sách yêu cầu...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

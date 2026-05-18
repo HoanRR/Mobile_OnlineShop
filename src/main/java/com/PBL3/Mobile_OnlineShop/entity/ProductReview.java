@@ -42,4 +42,9 @@ public class ProductReview {
     private LocalDateTime reviewDate;
 
     private Boolean isPurchased;
+
+    @Column(length = 1000)
+    private String staffReply;
+
+    private LocalDateTime replyDate;
 }

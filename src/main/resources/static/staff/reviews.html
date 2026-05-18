@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <title>Quản lý Đánh giá - HT Mobile Staff</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <link rel="stylesheet" href="css/staff-base.css">
+  <link rel="stylesheet" href="css/reviews.css">
+  <script src="js/common.js"></script>
+  <script src="js/reviews.js"></script>
+</head>
+<body>
+<div class="app-wrapper">
+    <div id="sidebar-container"></div>
+
+    <div class="main-content" id="mainContent">
+        <div id="header-container"></div>
+
+    <div class="page-body">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+        <h2 style="margin: 0; font-size: 20px; font-weight: 600;">Tổng hợp Đánh giá Sản phẩm</h2>
+      </div>
+
+      <div class="filter-bar">
+        <input type="text" placeholder="Tìm tên sản phẩm cần xem đánh giá..." style="width: 300px;">
+        <select>
+            <option value="">Lọc theo số sao TB</option>
+            <option>Dưới 3 sao (Cần chú ý)</option>
+            <option>Từ 4 sao trở lên</option>
+        </select>
+        <button class="btn-add"><i class="fa-solid fa-filter"></i> Lọc</button>
+      </div>
+
+      <div class="panel">
+        <table class="admin-table">
+          <thead>
+            <tr>
+                <th>ID</th>
+                <th>TÊN SẢN PHẨM</th>
+                <th>ĐIỂM TRUNG BÌNH</th>
+                <th>TỔNG SỐ ĐÁNH GIÁ</th>
+                <th>ĐÁNH GIÁ MỚI NHẤT</th>
+                <th>THAO TÁC</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td colspan="6" style="text-align:center; padding:32px; color:var(--muted);">
+                <i class="fa-solid fa-spinner fa-spin" style="font-size:24px; margin-bottom:8px; display:block;"></i>
+                Đang tải danh sách...
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+</body>
+</html>

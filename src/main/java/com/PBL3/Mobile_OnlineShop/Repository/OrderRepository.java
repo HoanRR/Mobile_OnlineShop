@@ -23,6 +23,12 @@ public interface OrderRepository extends JpaRepository<Order, Long> {
 
     Page<Order> findByUserAndOrderStatusOrderByOrderDateDesc(User user, OrderStatus status, Pageable pageable);
 
+    @Query("SELECT o FROM Order o WHERE " +
+           "(:status IS NULL OR o.orderStatus = :status) AND " +
+           "(:keyword IS NULL OR CAST(o.orderId AS string) LIKE %:keyword% OR LOWER(o.receiverName) LIKE LOWER(CONCAT('%', :keyword, '%')) OR o.receiverPhone LIKE %:keyword%) " +
+           "ORDER BY o.orderDate DESC")
+    Page<Order> searchAllOrders(@Param("status") OrderStatus status, @Param("keyword") String keyword, Pageable pageable);
+
     @Query("SELECT o FROM Order o WHERE o.user = :user " +
             "AND (o.orderId = :orderId) ")
     Optional<Order> findByUserWithIdFilter(@Param("user") User user,

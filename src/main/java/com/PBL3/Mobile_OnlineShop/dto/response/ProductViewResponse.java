@@ -16,6 +16,7 @@ public class ProductViewResponse {
     String product_image_link;
     Double min_price;
     Double avg_rating;
-
+    Long total_reviews;
+    String latest_review_date;
 
 }

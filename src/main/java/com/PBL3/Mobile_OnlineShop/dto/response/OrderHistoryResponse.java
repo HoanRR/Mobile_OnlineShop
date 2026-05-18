@@ -12,6 +12,8 @@ import java.time.LocalDateTime;
 @FieldDefaults(level = AccessLevel.PRIVATE)
 public class OrderHistoryResponse {
     Long order_id;
+    String customerName;
+    String receiver_name;
     String order_status;
     LocalDateTime order_date;
     Double total_amount;

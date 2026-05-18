@@ -36,4 +36,7 @@ public class WarrantyDetailResponse {
 
     @JsonProperty("is_valid")
     Boolean isValid;
+
+    @JsonProperty("device_status")
+    String deviceStatus;
 }

@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Sản phẩm - HT Mobile Staff</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Link 2 CSS -->
+<link rel="stylesheet" href="css/staff-base.css">
+<link rel="stylesheet" href="css/products.css">
+    <script src="js/common.js"></script>
+    <script src="js/products.js"></script>
+</head>
+<body>
+<div class="app-wrapper">
+    <div id="sidebar-container"></div>
+
+    <div class="main-content" id="mainContent">
+        <div id="header-container"></div>
+
+        <div class="page-body">
+            <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:20px;">
+                <h2 style="margin: 0; font-size: 20px; font-weight: 600;">Danh sách Sản phẩm</h2>
+                <a href="warranty.html" style="text-decoration:none;"><button style="border:none; border-radius:8px; background:var(--red); color:white; padding:12px 16px; font-weight:700; cursor:pointer;"><i class="fa-solid fa-shield-halved"></i> Tra cứu bảo hành</button></a>
+            </div>
+
+            <div class="filter-bar">
+                <input type="text" placeholder="Nhập tên Sản phẩm hoặc mã vạch cần tìm...">
+                <button><i class="fa-solid fa-search"></i> Tra cứu</button>
+            </div>
+
+            <div class="data-table-wrap">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Tên Sản phẩm</th>
+                            <th>Danh mục</th>
+                            <th>Giá bán</th>
+                            <th>Tồn kho</th>
+                        </tr>
+                    </thead>
+                    <tbody id="product-tbody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+</body>
+</html>
+

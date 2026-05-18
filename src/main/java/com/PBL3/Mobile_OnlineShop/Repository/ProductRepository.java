@@ -26,7 +26,9 @@ public interface ProductRepository  extends JpaRepository<Product, Long> {
                 p.description        AS description,
                 p.product_image_link AS product_image_link,
                 MIN(pv.price)                        AS min_price,
-                ROUND(AVG(pr.rating), 1)             AS avg_rating
+                ROUND(AVG(pr.rating), 1)             AS avg_rating,
+                COUNT(DISTINCT pr.product_review_id) AS total_reviews,
+                MAX(pr.review_date)                  AS latest_review_date
             FROM product p
             LEFT JOIN product_variant pv ON pv.product_id = p.product_id
             LEFT JOIN product_review pr  ON pr.product_id = p.product_id

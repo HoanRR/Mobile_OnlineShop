@@ -46,4 +46,38 @@ public class StaffOrderController {
         // Trả về HTTP Status 201 CREATED theo đúng chuẩn RESTful
         return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
+
+    @GetMapping
+    @PreAuthorize("hasAuthority('EMPLOYEE')")
+    public ResponseEntity<com.PBL3.Mobile_OnlineShop.dto.response.PaginatedResponse<com.PBL3.Mobile_OnlineShop.dto.response.OrderHistoryResponse>> getAllOrders(
+            @RequestParam(required = false) String order_status,
+            @RequestParam(required = false) String keyword,
+            @RequestParam(defaultValue = "1") int page,
+            @RequestParam(defaultValue = "100") int limit) {
+
+        com.PBL3.Mobile_OnlineShop.dto.response.PaginatedResponse<com.PBL3.Mobile_OnlineShop.dto.response.OrderHistoryResponse> response =
+                orderService.getAllOrders(order_status, keyword, page, limit);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/{order_id}")
+    @PreAuthorize("hasAuthority('EMPLOYEE')")
+    public ResponseEntity<com.PBL3.Mobile_OnlineShop.dto.response.OrderDetailResponse> getOrderDetail(
+            @PathVariable("order_id") Long orderId) {
+        return ResponseEntity.ok(orderService.getOrderDetailForStaff(orderId));
+    }
+
+    @PostMapping("/process-warranty-return")
+    @PreAuthorize("hasAuthority('EMPLOYEE')")
+    public ResponseEntity<MessageResponse> processWarrantyReturn(
+            @RequestParam String imei,
+            @RequestParam String action) {
+
+        orderService.processWarrantyReturn(imei, action);
+
+        return ResponseEntity.ok(MessageResponse.builder()
+                .message("Xử lý yêu cầu thành công")
+                .build()
+        );
+    }
 }

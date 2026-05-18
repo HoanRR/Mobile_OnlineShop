@@ -22,6 +22,7 @@ import com.PBL3.Mobile_OnlineShop.Exeption.AppException;
 import com.PBL3.Mobile_OnlineShop.Exeption.ErrorCode;
 import com.PBL3.Mobile_OnlineShop.dto.request.OfflineOrderRequest;
 import com.PBL3.Mobile_OnlineShop.dto.request.UpdateOrderStatusRequest;
+import com.PBL3.Mobile_OnlineShop.dto.request.WarrantyReturnRequest;
 import com.PBL3.Mobile_OnlineShop.enums.DeviceStatus;
 import com.PBL3.Mobile_OnlineShop.enums.OrderStatus;
 
@@ -41,29 +42,58 @@ public class OrderService {
     CartRepository cartRepository;
     VoucherRepository voucherRepository;
     CartDetailRepository cartDetailRepository;
+    ProductVariantRepository productVariantRepository;
+    OrderDetailRepository orderDetailRepository;
 
     @Transactional
     public void updateStatus(Long orderId, UpdateOrderStatusRequest request) {
-        // 1. Tìm đơn hàng, ném lỗi 404 nếu không thấy
+        // Tìm đơn hàng, ném lỗi 404 nếu không thấy
         Order order = orderRepository.findById(orderId)
                 .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
 
-        // 2. Validate luồng trạng thái
-        if (!order.getOrderStatus().isValidTransition(request.getOrderStatus())) {
-            // Ném lỗi 422
+        OrderStatus oldStatus = order.getOrderStatus();
+        OrderStatus newStatus = request.getOrderStatus();
+
+        // Validate luồng trạng thái
+        if (!oldStatus.isValidTransition(newStatus)) {
             throw new AppException(ErrorCode.INVALID_STATUS_TRANSITION);
         }
 
-        // 3. Cập nhật trạng thái
-        order.setOrderStatus(request.getOrderStatus());
+        order.setOrderStatus(newStatus);
 
-        // 4. Cập nhật thanh toán (nếu client có gửi is_paid)
         if (request.getIsPaid() != null) {
             order.setIsPaid(request.getIsPaid());
         }
 
-        // 5. Lưu vào DB (Có thể bỏ qua nếu dùng @Transactional và Entity được quản lý
-        // bởi Hibernate)
+        // Xử lý trạng thái thiết bị
+        if (newStatus == OrderStatus.DELIVERED && oldStatus != OrderStatus.DELIVERED) {
+            for (OrderDetail detail : order.getOrderDetails()) {
+                Device device = detail.getDevice();
+                if (device != null) {
+                    device.setStatus(DeviceStatus.SOLD);
+                    deviceRepository.save(device);
+
+                    // Kích hoạt bảo hành nếu chưa có
+                    if (!warrantyRepository.findFirstByDeviceOrderByEndDateDesc(device).isPresent()) {
+                        Warranty warranty = new Warranty();
+                        warranty.setDevice(device);
+                        warranty.setStartDate(LocalDateTime.now());
+                        warranty.setWarrantyMonth(12);
+                        warranty.setEndDate(LocalDateTime.now().plusMonths(12));
+                        warrantyRepository.save(warranty);
+                    }
+                }
+            }
+        } else if (newStatus == OrderStatus.CANCELLED && oldStatus != OrderStatus.CANCELLED) {
+            for (OrderDetail detail : order.getOrderDetails()) {
+                Device device = detail.getDevice();
+                if (device != null) {
+                    device.setStatus(DeviceStatus.AVAILABLE);
+                    deviceRepository.save(device);
+                }
+            }
+        }
+
         orderRepository.save(order);
     }
 
@@ -85,48 +115,68 @@ public class OrderService {
         double totalAmount = 0.0;
         List<OrderDetail> orderDetails = new ArrayList<>();
 
-        // 2. Xử lý từng IMEI được gửi lên
-        for (OfflineOrderRequest.ImeiRequest item : request.getItems()) {
-            // Tìm Device theo IMEI
-            Device device = deviceRepository.findByImei(item.getImei())
-                    .orElseThrow(
-                            () -> new AppException(ErrorCode.IMEI_NOT_FOUND, "Không tìm thấy IMEI: " + item.getImei()));
-
-            // Kiểm tra trạng thái Device (chỉ bán máy đang AVAILABLE)
-            if (device.getStatus() != DeviceStatus.AVAILABLE) {
-                throw new AppException(ErrorCode.IMEI_ALREADY_SOLD,
-                        "IMEI " + item.getImei() + " đã được bán hoặc đang lỗi!");
+        // 2. Xử lý từng sản phẩm được gửi lên
+        for (OfflineOrderRequest.VariantRequest item : request.getItems()) {
+            ProductVariant variant = productVariantRepository.findByProductVariantId(item.getVariantId());
+            if (variant == null) {
+                throw new AppException(ErrorCode.PRODUCT_NOT_FOUND, "Không tìm thấy biến thể sản phẩm: " + item.getVariantId());
             }
 
-            // Đổi trạng thái thiết bị thành ĐÃ BÁN
-            device.setStatus(DeviceStatus.SOLD);
-            // BỔ SUNG: Tự động kích hoạt bảo hành mặc định 12 tháng
-            Warranty warranty = new Warranty();
-            warranty.setDevice(device);
-            warranty.setStartDate(LocalDateTime.now());
-            warranty.setWarrantyMonth(12); // Mặc định 12 tháng
-            warranty.setEndDate(LocalDateTime.now().plusMonths(12)); // Cộng thêm 12 tháng vào ngày hiện tại
-            warrantyRepository.save(warranty); // Lưu bảo hành vào DB
+            // Lấy danh sách các thiết bị CÓ SẴN (AVAILABLE) của biến thể này
+            List<Device> availableDevices = deviceRepository.findByProductVariantAndStatus(variant, DeviceStatus.AVAILABLE);
 
-            // ... (code cũ tạo OrderDetail giữ nguyên)
+            System.out.println("DEBUG POS CHECKOUT - Variant ID: " + variant.getProductVariantId() 
+                + " | totalAvailable (in Variant): " + variant.getTotalAvailable() 
+                + " | Actual Devices (in Device table): " + availableDevices.size() 
+                + " | Requested Quantity: " + item.getQuantity());
 
-            // Lấy thông tin biến thể (Variant) để lấy giá và trừ tồn kho
-            ProductVariant variant = device.getProductVariant();
-
-            // Trừ đi 1 sản phẩm trong tồn kho chung của biến thể đó
-            if (variant.getTotalAvailable() > 0) {
-                variant.setTotalAvailable(variant.getTotalAvailable() - 1);
+            // Tự động generate Device ảo nếu DB test bị thiếu (dựa trên totalAvailable)
+            if (variant.getTotalAvailable() >= item.getQuantity() && availableDevices.size() < item.getQuantity()) {
+                int needed = item.getQuantity() - availableDevices.size();
+                for (int d = 0; d < needed; d++) {
+                    Device newDevice = new Device();
+                    newDevice.setProductVariant(variant);
+                    newDevice.setImei("AUTO_" + variant.getProductVariantId() + "_" + System.currentTimeMillis() + "_" + d);
+                    newDevice.setStatus(DeviceStatus.AVAILABLE);
+                    deviceRepository.save(newDevice);
+                    availableDevices.add(newDevice);
+                }
             }
 
-            // Tạo chi tiết đơn hàng (OrderDetail)
-            OrderDetail detail = new OrderDetail();
-            detail.setOrder(order);
-            detail.setDevice(device);
-            detail.setProductVariant(variant);
-            detail.setPriceAtPurchase(variant.getPrice());
+            if (availableDevices.size() < item.getQuantity()) {
+                throw new AppException(ErrorCode.NOT_ENOUGH_STOCK, "Sản phẩm " + variant.getProduct().getProductName() + " không đủ số lượng trong kho! (Kho thực tế: " + availableDevices.size() + ")");
+            }
 
-            totalAmount += variant.getPrice();
-            orderDetails.add(detail);
+            // Chọn đủ số lượng thiết bị cần thiết
+            for (int i = 0; i < item.getQuantity(); i++) {
+                Device device = availableDevices.get(i);
+                
+                // Đổi trạng thái thiết bị thành ĐÃ BÁN
+                device.setStatus(DeviceStatus.SOLD);
+                
+                // BỔ SUNG: Tự động kích hoạt bảo hành mặc định 12 tháng
+                Warranty warranty = new Warranty();
+                warranty.setDevice(device);
+                warranty.setStartDate(LocalDateTime.now());
+                warranty.setWarrantyMonth(12); // Mặc định 12 tháng
+                warranty.setEndDate(LocalDateTime.now().plusMonths(12)); // Cộng thêm 12 tháng vào ngày hiện tại
+                warrantyRepository.save(warranty); // Lưu bảo hành vào DB
+
+                // Trừ đi 1 sản phẩm trong tồn kho chung của biến thể đó
+                if (variant.getTotalAvailable() > 0) {
+                    variant.setTotalAvailable(variant.getTotalAvailable() - 1);
+                }
+
+                // Tạo chi tiết đơn hàng (OrderDetail)
+                OrderDetail detail = new OrderDetail();
+                detail.setOrder(order);
+                detail.setDevice(device);
+                detail.setProductVariant(variant);
+                detail.setPriceAtPurchase(variant.getPrice());
+
+                totalAmount += variant.getPrice();
+                orderDetails.add(detail);
+            }
         }
 
         // 3. Cập nhật tổng tiền và lưu vào Database
@@ -202,6 +252,44 @@ public class OrderService {
     }
 
     @Transactional
+    public PaginatedResponse<OrderHistoryResponse> getAllOrders(String orderStatusStr, String keyword, int page, int limit) {
+        OrderStatus status = null;
+        if (orderStatusStr != null && !orderStatusStr.isBlank()) {
+            try {
+                status = OrderStatus.valueOf(orderStatusStr.toUpperCase());
+            } catch (IllegalArgumentException e) {
+                throw new AppException(ErrorCode.VALIDATION_ERROR,
+                        "order_status không hợp lệ. Chấp nhận: WAIT, PROCESSING, DELIVERED, CANCELLED");
+            }
+        }
+
+        int pageNo = page > 0 ? page - 1 : 0;
+        Pageable pageable = PageRequest.of(pageNo, limit);
+
+        String searchKeyword = (keyword != null && !keyword.isBlank()) ? keyword : null;
+        Page<Order> orderPage = orderRepository.searchAllOrders(status, searchKeyword, pageable);
+
+        List<OrderHistoryResponse> data = orderPage.getContent().stream()
+                .map(o -> OrderHistoryResponse.builder()
+                        .order_id(o.getOrderId())
+                        .customerName(o.getUser() != null ? o.getUser().getFullName() : "Khách lẻ") // Added customerName
+                        .receiver_name(o.getReceiverName())
+                        .order_status(o.getOrderStatus() != null ? o.getOrderStatus().name() : null)
+                        .order_date(o.getOrderDate())
+                        .total_amount(o.getTotalAmount())
+                        .discount_amount(o.getDiscountAmount())
+                        .payment_method(o.getPaymentMethod())
+                        .is_paid(o.getIsPaid())
+                        .build())
+                .collect(Collectors.toList());
+
+        PaginatedResponse.PaginationMeta meta = new PaginatedResponse.PaginationMeta(
+                page, limit, orderPage.getTotalElements());
+
+        return new PaginatedResponse<>(data, meta);
+    }
+
+    @Transactional
     public OrderDetailResponse GetOrderDetail(Long order_id) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String username = authentication.getName();
@@ -230,11 +318,54 @@ public class OrderService {
                         .color(OD.getProductVariant().getColor())
                         .storage_capacity(OD.getProductVariant().getStorageCapacity())
                         .price_at_purchase(OD.getPriceAtPurchase())
+                        .device_status(OD.getDevice() != null ? OD.getDevice().getStatus().name() : null)
                         .build())
                 .toList();
         return OrderDetailResponse.builder()
                 .order_id(order.getOrderId())
                 .user_id(order.getUser().getUserId())
+                .order_status(order.getOrderStatus().name())
+                .order_date(order.getOrderDate().toString())
+                .total_amount(order.getTotalAmount())
+                .discount_amount(order.getDiscountAmount())
+                .payment_method(order.getPaymentMethod())
+                .is_paid(order.getIsPaid())
+                .voucher_id(order.getVoucher() != null ? order.getVoucher().getVoucherId() : null)
+                .delivery(delivery)
+                .items(items)
+                .build();
+    }
+
+    @Transactional
+    public OrderDetailResponse getOrderDetailForStaff(Long order_id) {
+        Order order = orderRepository.findById(order_id)
+                .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
+
+        OrderDetailResponse.DeliveryInfo delivery = OrderDetailResponse.DeliveryInfo
+                .builder()
+                .receiver_name(order.getReceiverName())
+                .receiver_phone(order.getReceiverPhone())
+                .shipping_address(order.getShippingAddress())
+                .build();
+
+        List<OrderDetailItemResponse> items = order.getOrderDetails().stream()
+                .map(OD -> OrderDetailItemResponse.builder()
+                        .order_detail_id(OD.getOrderDetailId())
+                        .product_id(OD.getProductVariant().getProduct().getProductId())
+                        .variant_id(OD.getProductVariant().getProductVariantId())
+                        .device_id(OD.getDevice() != null ? OD.getDevice().getDeviceId() : null)
+                        .imei(OD.getDevice() != null ? OD.getDevice().getImei() : null)
+                        .product_name(OD.getProductVariant().getProduct().getProductName())
+                        .color(OD.getProductVariant().getColor())
+                        .storage_capacity(OD.getProductVariant().getStorageCapacity())
+                        .price_at_purchase(OD.getPriceAtPurchase())
+                        .device_status(OD.getDevice() != null ? OD.getDevice().getStatus().name() : null)
+                        .build())
+                .toList();
+
+        return OrderDetailResponse.builder()
+                .order_id(order.getOrderId())
+                .user_id(order.getUser() != null ? order.getUser().getUserId() : null)
                 .order_status(order.getOrderStatus().name())
                 .order_date(order.getOrderDate().toString())
                 .total_amount(order.getTotalAmount())
@@ -353,12 +484,23 @@ public class OrderService {
         // Create OrderDetail for each selected item
         List<OrderDetail> orderDetails = new ArrayList<>();
         for (CartDetail cd : selectedItems) {
+            ProductVariant variant = cd.getProductVariant();
+            List<Device> availableDevices = deviceRepository.findByProductVariantAndStatus(variant, DeviceStatus.AVAILABLE);
+
+            if (availableDevices.size() < cd.getQuantity()) {
+                throw new AppException(ErrorCode.OUT_OF_STOCK, "Sản phẩm " + variant.getProduct().getProductName() + " không đủ số lượng trong kho!");
+            }
+
             for (int i = 0; i < cd.getQuantity(); i++) {
+                Device device = availableDevices.get(i);
+                device.setStatus(DeviceStatus.PENDING);
+                deviceRepository.save(device);
+
                 OrderDetail detail = new OrderDetail();
                 detail.setOrder(order);
-                detail.setProductVariant(cd.getProductVariant());
-                detail.setPriceAtPurchase(cd.getProductVariant().getPrice());
-                // device is null until staff allocates it
+                detail.setDevice(device);
+                detail.setProductVariant(variant);
+                detail.setPriceAtPurchase(variant.getPrice());
                 orderDetails.add(detail);
             }
         }
@@ -377,6 +519,70 @@ public class OrderService {
                 .payment_method(savedOrder.getPaymentMethod())
                 .is_paid(savedOrder.getIsPaid())
                 .build();
+    }
+
+    @Transactional
+    public void requestWarrantyOrReturn(WarrantyReturnRequest request) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+
+        OrderDetail orderDetail = orderDetailRepository.findByOrder_User_UserIdAndDevice_ImeiAndOrder_OrderStatus(
+                user.getUserId(), request.getImei(), OrderStatus.DELIVERED)
+                .orElseThrow(() -> new AppException(ErrorCode.IMEI_NOT_FOUND, "Thiết bị với IMEI này không thuộc đơn hàng đã hoàn thành của bạn!"));
+
+        Device device = orderDetail.getDevice();
+        if (device == null) {
+            throw new AppException(ErrorCode.DEVICES_NOT_FOUND);
+        }
+
+        if (device.getStatus() != DeviceStatus.SOLD) {
+            throw new AppException(ErrorCode.INVALID_DATA, "Thiết bị đang được xử lý hoặc không hợp lệ để yêu cầu");
+        }
+
+        if ("WARRANTY".equalsIgnoreCase(request.getType())) {
+            Warranty warranty = warrantyRepository.findFirstByDeviceOrderByEndDateDesc(device)
+                    .orElseThrow(() -> new AppException(ErrorCode.INVALID_DATA, "Thiết bị chưa được kích hoạt bảo hành"));
+            if (warranty.getEndDate().isBefore(LocalDateTime.now())) {
+                throw new AppException(ErrorCode.INVALID_DATA, "Thiết bị đã hết hạn bảo hành");
+            }
+            device.setStatus(DeviceStatus.WARRANTY);
+        } else if ("RETURN".equalsIgnoreCase(request.getType())) {
+            device.setStatus(DeviceStatus.RETURNED);
+        } else {
+            throw new AppException(ErrorCode.INVALID_DATA, "Loại yêu cầu không hợp lệ. Chỉ chấp nhận WARRANTY hoặc RETURN");
+        }
+
+        deviceRepository.save(device);
+
+        System.out.println("Customer " + user.getUsername() + " requested " + request.getType() 
+            + " for IMEI: " + request.getImei() + " | Reason: " + request.getReason());
+    }
+
+    @Transactional
+    public void processWarrantyReturn(String imei, String action) {
+        Device device = deviceRepository.findByImei(imei)
+                .orElseThrow(() -> new AppException(ErrorCode.INVALID_DATA, "Không tìm thấy thiết bị"));
+
+        if (device.getStatus() != DeviceStatus.WARRANTY && device.getStatus() != DeviceStatus.RETURNED) {
+            throw new AppException(ErrorCode.INVALID_DATA, "Thiết bị không trong trạng thái bảo hành hoặc đổi trả");
+        }
+
+        if ("COMPLETE_WARRANTY".equalsIgnoreCase(action)) {
+            device.setStatus(DeviceStatus.SOLD);
+        } else if ("CONFIRM_RETURN_GOOD".equalsIgnoreCase(action)) {
+            device.setStatus(DeviceStatus.AVAILABLE);
+        } else if ("CONFIRM_RETURN_DEFECTIVE".equalsIgnoreCase(action)) {
+            device.setStatus(DeviceStatus.DEFECTIVE);
+        } else if ("REJECT".equalsIgnoreCase(action)) {
+            device.setStatus(DeviceStatus.SOLD);
+        } else {
+            throw new AppException(ErrorCode.INVALID_DATA, "Hành động không hợp lệ");
+        }
+
+        deviceRepository.save(device);
     }
 
 }

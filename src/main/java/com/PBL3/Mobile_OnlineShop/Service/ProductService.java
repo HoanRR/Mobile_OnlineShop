@@ -191,6 +191,8 @@ public class ProductService {
                         .product_image_link(p.getProduct_image_link())
                         .min_price(p.getMin_price())
                         .avg_rating(p.getAvg_rating())
+                        .total_reviews(p.getTotal_reviews())
+                        .latest_review_date(p.getLatest_review_date() != null ? p.getLatest_review_date().toString() : null)
                         .build()
                 )
                 .toList();
@@ -219,7 +221,7 @@ public class ProductService {
                         .frontCamera(pv.getFrontCamera())
                         .rearCamera(pv.getRearCamera())
                         .simCard(pv.getSimCard())
-                        .totalAvailable(pv.getTotalAvailable())
+                        .totalAvailable(deviceRepository.countByProductVariantAndStatus(pv, DeviceStatus.AVAILABLE))
                         .color(pv.getColor())
                         .screenSize(pv.getScreenSize())
                         .frontCamera(pv.getFrontCamera())
@@ -228,12 +230,15 @@ public class ProductService {
                         .build()).toList();
         List<ReviewResponse> reviews = new ArrayList<>();
         for (ProductReview pr : product.getReviews()){
-            ReviewResponse.variantInfo variantInfo = ReviewResponse.variantInfo
-                    .builder()
-                    .product_variant_id(pr.getProductVariant().getProductVariantId())
-                    .storage_capacity(pr.getProductVariant().getStorageCapacity())
-                    .color(pr.getProductVariant().getColor())
-                    .build();
+            ReviewResponse.variantInfo variantInfo = null;
+            if (pr.getProductVariant() != null) {
+                variantInfo = ReviewResponse.variantInfo
+                        .builder()
+                        .product_variant_id(pr.getProductVariant().getProductVariantId())
+                        .storage_capacity(pr.getProductVariant().getStorageCapacity())
+                        .color(pr.getProductVariant().getColor())
+                        .build();
+            }
             ReviewResponse reviewResponse = ReviewResponse
                     .builder()
                     .product_review_id(pr.getProductReviewId())

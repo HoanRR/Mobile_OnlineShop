@@ -21,6 +21,8 @@ public class ReviewResponse {
     String comment;
     String review_date;
     Boolean is_purchased;
+    String staff_reply;
+    String reply_date;
     variantInfo variant;
 
     @Data

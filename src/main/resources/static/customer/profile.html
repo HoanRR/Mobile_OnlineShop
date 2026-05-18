@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="vi">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trang cá nhân - HT Mobile</title>
+    <link rel="stylesheet" href="./css/base.css">
+    <link rel="stylesheet" href="./css/header.css">
+    <link rel="stylesheet" href="./css/profile.css">
+</head>
+
+<body>
+    <div id="header-placeholder"></div>
+
+    <main class="noi-dung">
+        <div class="profile-container">
+            <div class="profile-sidebar">
+                <div class="profile-avatar">
+                    <img src="./img/user-interface.png" alt="Avatar">
+                    <h3 id="sidebar-name">Loading...</h3>
+                </div>
+                <ul class="profile-menu">
+                    <li class="active"><a href="profile.html">Thông tin tài khoản</a></li>
+                    <li><a href="order-history.html">Lịch sử đơn hàng</a></li>
+                    <li><a href="#" onclick="xuLyDangXuat()">Đăng xuất</a></li>
+                </ul>
+            </div>
+
+            <div class="profile-content">
+                <h2 class="tieu-de-phan">Hồ sơ của tôi</h2>
+                <p>Quản lý thông tin hồ sơ để bảo mật tài khoản</p>
+                <hr>
+                
+                <form id="profile-form" class="profile-form">
+                    <div class="form-group">
+                        <label>Tên đăng nhập</label>
+                        <input type="text" id="username" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="email" disabled>
+                    </div>
+                    <div class="form-group">
+                        <label>Họ và tên</label>
+                        <input type="text" id="full-name" placeholder="Nhập họ và tên của bạn">
+                    </div>
+                    <div class="form-group">
+                        <label>Số điện thoại</label>
+                        <input type="tel" id="phone" placeholder="Nhập số điện thoại">
+                    </div>
+                    <button type="submit" class="btn-save">Lưu thay đổi</button>
+                </form>
+            </div>
+        </div>
+    </main>
+
+    <div id="footer-placeholder"></div>
+
+    <script src="./js/common.js"></script>
+    <script src="./js/profile.js"></script>
+</body>
+
+</html>

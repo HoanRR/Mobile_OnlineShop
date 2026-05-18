@@ -370,8 +370,7 @@ UNLOCK TABLES;
 -- device
 -- ============================================================
 LOCK TABLES `device` WRITE;
-INSERT IGNORE INTO `device` VALUES
-(1, '354321010000001', 'AVAILABLE',  1),
+REPLACE INTO `device` VALUES 
 (2, '354321010000002', 'AVAILABLE',  1),
 (3, '354321010000003', 'SOLD',       1),
 (4, '354321020000001', 'SOLD',       2),
