@@ -55,8 +55,11 @@ public class SecurityConfig {
                 )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-                        // Cho phép truy cập tài nguyên tĩnh (HTML, CSS, JS, IMG)
+                        // Cho phép truy cập tài nguyên tĩnh (HTML, CSS, JS, IMG) cho 3 folder FE
                         .requestMatchers("/", "/*.html", "/css/**", "/js/**", "/img/**").permitAll()
+                        .requestMatchers("/admin/**").permitAll()
+                        .requestMatchers("/customer/**").permitAll()
+                        .requestMatchers("/staff/**").permitAll()
                         // Cho phép truy cập các endpoint công khai (POST)
                         .requestMatchers(HttpMethod.POST, PUBLIC_POST_ENDPOINTS).permitAll()
                         // Cho phép GET các sản phẩm công khai (nếu cần)
