@@ -30,9 +30,13 @@ async function lookupWarranty() {
             let errorMsg = 'Không tìm thấy thông tin bảo hành cho IMEI này.';
             try {
                 const errData = await response.json();
-                if (errData.message) errorMsg = errData.message;
+                if (errData.error && errData.error.message) {
+                    errorMsg = errData.error.message;
+                } else if (errData.message) {
+                    errorMsg = errData.message;
+                }
             } catch (e) {}
-            resultDiv.innerHTML = `<div class="empty-state" style="color: red;">${errorMsg}</div>`;
+            resultDiv.innerHTML = `<div class="empty-state" style="color: var(--red);">${errorMsg}</div>`;
             return;
         }
 
@@ -40,7 +44,7 @@ async function lookupWarranty() {
         renderWarranty(data);
     } catch (error) {
         console.error('Lỗi tra cứu bảo hành:', error);
-        resultDiv.innerHTML = '<div class="empty-state" style="color: red;">Lỗi kết nối. Vui lòng thử lại!</div>';
+        resultDiv.innerHTML = '<div class="empty-state" style="color: var(--red);">Lỗi kết nối. Vui lòng thử lại!</div>';
     }
 }
 
@@ -59,40 +63,58 @@ function renderWarranty(data) {
     let actionButtons = '';
     if (data.device_status === 'WARRANTY') {
         actionButtons = `
-            <div style="margin-top: 15px; text-align: center;">
-                <button class="btn-action" style="background-color:#28a745; color:white; padding:10px 20px; border:none; border-radius:8px; cursor:pointer; font-weight:600;" onclick="xuLyBaoHanhDoiTra('${data.imei}', 'COMPLETE_WARRANTY')">Hoàn thành bảo hành</button>
+            <div style="display: flex; gap: 12px; justify-content: center; width: 100%;">
+                <button class="btn-action" style="background-color: var(--green); color: white; padding: 12px 24px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; transition: transform 0.2s;" onclick="xuLyBaoHanhDoiTra('${data.imei}', 'COMPLETE_WARRANTY')">
+                    <i class="fa-solid fa-circle-check"></i> Hoàn thành bảo hành
+                </button>
             </div>
         `;
     } else if (data.device_status === 'RETURNED') {
         actionButtons = `
-            <div style="margin-top: 15px; text-align: center; display:flex; gap:10px; justify-content:center;">
-                <button class="btn-action" style="background-color:#28a745; color:white; padding:10px 20px; border:none; border-radius:8px; cursor:pointer; font-weight:600;" onclick="xuLyBaoHanhDoiTra('${data.imei}', 'CONFIRM_RETURN_GOOD')">Nhập lại kho (Tốt)</button>
-                <button class="btn-action" style="background-color:#dc3545; color:white; padding:10px 20px; border:none; border-radius:8px; cursor:pointer; font-weight:600;" onclick="xuLyBaoHanhDoiTra('${data.imei}', 'CONFIRM_RETURN_DEFECTIVE')">Báo hỏng (Lỗi)</button>
+            <div style="display: flex; gap: 12px; justify-content: center; width: 100%; flex-wrap: wrap;">
+                <button class="btn-action" style="background-color: var(--green); color: white; padding: 12px 24px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; transition: transform 0.2s;" onclick="xuLyBaoHanhDoiTra('${data.imei}', 'CONFIRM_RETURN_GOOD')">
+                    <i class="fa-solid fa-boxes-stacked"></i> Nhập lại kho (Tốt)
+                </button>
+                <button class="btn-action" style="background-color: var(--red); color: white; padding: 12px 24px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; display: inline-flex; align-items: center; gap: 8px; transition: transform 0.2s;" onclick="xuLyBaoHanhDoiTra('${data.imei}', 'CONFIRM_RETURN_DEFECTIVE')">
+                    <i class="fa-solid fa-circle-xmark"></i> Báo hỏng (Lỗi)
+                </button>
             </div>
         `;
     }
 
     resultDiv.innerHTML = `
-        <div class="warranty-card" style="max-width: 600px; margin: 20px auto; background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.05);">
-            <div class="warranty-item" style="display:flex; justify-content:space-between; padding: 12px 0; border-bottom: 1px solid #eee;">
-                <span style="color: #666;">IMEI:</span><strong style="color: #333;">${data.imei}</strong>
+        <div class="warranty-card">
+            <div class="warranty-item">
+                <span>IMEI thiết bị</span>
+                <strong>${data.imei}</strong>
             </div>
-            <div class="warranty-item" style="display:flex; justify-content:space-between; padding: 12px 0; border-bottom: 1px solid #eee;">
-                <span style="color: #666;">Sản phẩm:</span><strong style="color: #333;">${data.product_name} (${data.color})</strong>
+            <div class="warranty-item">
+                <span>Sản phẩm</span>
+                <strong>${data.product_name} (${data.color})</strong>
             </div>
-            <div class="warranty-item" style="display:flex; justify-content:space-between; padding: 12px 0; border-bottom: 1px solid #eee;">
-                <span style="color: #666;">Ngày bắt đầu:</span><strong style="color: #333;">${formatDate(data.start_date)}</strong>
+            <div class="warranty-item">
+                <span>Ngày kích hoạt</span>
+                <strong>${formatDate(data.start_date)}</strong>
             </div>
-            <div class="warranty-item" style="display:flex; justify-content:space-between; padding: 12px 0; border-bottom: 1px solid #eee;">
-                <span style="color: #666;">Ngày hết hạn:</span><strong style="color: #333;">${formatDate(data.end_date)}</strong>
+            <div class="warranty-item">
+                <span>Ngày hết hạn</span>
+                <strong>${formatDate(data.end_date)}</strong>
             </div>
-            <div class="warranty-item" style="display:flex; justify-content:space-between; padding: 12px 0; border-bottom: 1px solid #eee; align-items: center;">
-                <span style="color: #666;">Hạn bảo hành:</span><strong class="warranty-badge ${badgeClass}" style="padding: 4px 10px; border-radius: 4px; color: white; background: ${valid ? '#28a745' : '#dc3545'}; font-size: 13px;">${badgeText}</strong>
+            <div class="warranty-item">
+                <span>Trạng thái bảo hành</span>
+                <div>
+                    <span class="warranty-badge ${badgeClass}">${badgeText}</span>
+                </div>
             </div>
-            <div class="warranty-item" style="display:flex; justify-content:space-between; padding: 12px 0; border-bottom: 1px solid #eee;">
-                <span style="color: #666;">Trạng thái thiết bị:</span><strong style="color: ${data.device_status === 'WARRANTY' ? '#ff9800' : data.device_status === 'RETURNED' ? '#dc3545' : '#28a745'};">${statusText}</strong>
+            <div class="warranty-item">
+                <span>Trạng thái thiết bị</span>
+                <strong style="color: ${data.device_status === 'WARRANTY' ? 'var(--orange, #ff9800)' : data.device_status === 'RETURNED' ? 'var(--red)' : 'var(--green)'};">${statusText}</strong>
             </div>
-            ${actionButtons}
+            ${actionButtons ? `
+            <div class="warranty-actions-wrap" style="grid-column: 1 / -1; margin-top: 10px; display: flex; justify-content: center; width: 100%;">
+                ${actionButtons}
+            </div>
+            ` : ''}
         </div>
     `;
 }
@@ -189,20 +211,16 @@ async function xuLyBaoHanhDoiTra(imei, action) {
         });
 
         if (!response.ok) {
-            let errorMsg = `Thao tác thất bại`;
-            try {
-                const errorData = await response.json();
-                if (errorData.message) errorMsg = errorData.message;
-            } catch (e) {}
-            throw new Error(errorMsg);
+            const err = await response.json().catch(() => null);
+            throw new Error(err?.error?.message || err?.message || `HTTP ${response.status}`);
         }
 
-        alert('Xử lý thành công!');
+        showToast('Xử lý thành công!', 'success');
         lookupWarranty();
         taiDanhSachYeuCau();
     } catch (loi) {
         console.error('Lỗi khi xử lý bảo hành/đổi trả:', loi);
-        alert(loi.message || 'Thao tác thất bại. Vui lòng thử lại!');
+        showToast(loi.message || 'Thao tác thất bại. Vui lòng thử lại!', 'error');
     }
 }
 

@@ -37,7 +37,8 @@ async function loadRevenueReport() {
         }
 
         if (!response.ok) {
-            throw new Error(`HTTP ${response.status}`);
+            const err = await response.json().catch(() => null);
+            throw new Error(err?.error?.message || err?.message || `HTTP ${response.status}`);
         }
 
         const data = await response.json();
@@ -219,7 +220,10 @@ async function loadTopProducts() {
             return;
         }
 
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        if (!response.ok) {
+            const err = await response.json().catch(() => null);
+            throw new Error(err?.error?.message || err?.message || `HTTP ${response.status}`);
+        }
 
         const data = await response.json();
         renderPodium(data);

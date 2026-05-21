@@ -214,8 +214,7 @@ function themVaoGioHang(variantId, tenDayDu, gia, tonKho) {
 
   if (spTonTai) {
     if (spTonTai.soLuong + 1 > tonKho) {
-      if (typeof showToast === 'function') showToast(`Không đủ hàng! Trong kho chỉ còn ${tonKho}`, 'error');
-      else alert(`Không đủ hàng! Trong kho chỉ còn ${tonKho}`);
+      showToast(`Không đủ hàng! Trong kho chỉ còn ${tonKho}`, 'error');
       return;
     }
     spTonTai.soLuong += 1;
@@ -246,8 +245,7 @@ function capNhatSoLuong(viTri, soLuongMoi) {
     const tonKho = gioHang[viTri].tonKho;
 
     if (sl > tonKho) {
-      if (typeof showToast === 'function') showToast(`Trong kho chỉ còn ${tonKho} sản phẩm!`, 'error');
-      else alert(`Trong kho chỉ còn ${tonKho} sản phẩm!`);
+      showToast(`Trong kho chỉ còn ${tonKho} sản phẩm!`, 'error');
       gioHang[viTri].soLuong = tonKho;
     } else if (sl > 0) {
       gioHang[viTri].soLuong = sl;

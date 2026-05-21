@@ -238,7 +238,7 @@ async function guiPhanHoi(nutBam) {
 
   const idDanhGia = nutBam.getAttribute('data-review-id');
   if (!idDanhGia) {
-    alert("Không tìm thấy ID đánh giá!");
+    showToast("Không tìm thấy ID đánh giá!", "error");
     return;
   }
 
@@ -258,8 +258,8 @@ async function guiPhanHoi(nutBam) {
     });
 
     if (!response.ok) {
-      const err = await response.json();
-      throw new Error(err.message || "Lỗi khi gửi phản hồi");
+      const err = await response.json().catch(() => null);
+      throw new Error(err?.error?.message || err?.message || `HTTP ${response.status}`);
     }
 
     const dataThanhCong = await response.json();
@@ -288,7 +288,7 @@ async function guiPhanHoi(nutBam) {
 
   } catch (loi) {
     console.error("Lỗi:", loi);
-    alert(loi.message || "Đã xảy ra lỗi khi gửi phản hồi!");
+    showToast(loi.message || "Đã xảy ra lỗi khi gửi phản hồi!", "error");
     nutBam.innerText = btnOldText;
     nutBam.disabled = false;
   }

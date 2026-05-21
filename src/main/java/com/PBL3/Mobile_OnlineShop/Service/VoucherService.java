@@ -103,8 +103,13 @@ public class VoucherService {
             if (request.getApply_condition().getMin_value() != null)
                 condition.setMinValue(request.getApply_condition().getMin_value());
             List<Long> variantIds = request.getApply_condition().getProduct_variant_ids();
-            if (variantIds != null && !variantIds.isEmpty())
-                condition.setProductVariants(productVariantRepository.findAllById(variantIds));
+            if (variantIds != null) {
+                if (!variantIds.isEmpty()) {
+                    condition.setProductVariants(productVariantRepository.findAllById(variantIds));
+                } else {
+                    condition.setProductVariants(productVariantRepository.findAll());
+                }
+            }
             voucher.setApplyConditions(condition);
         }
 
@@ -225,8 +230,29 @@ public class VoucherService {
         VoucherResponse.ApplyConditionResponse condResponse = null;
         ApplyCondition cond = v.getApplyConditions();
         if (cond != null) {
+            List<Long> pvIds = null;
+            List<VoucherResponse.ProductVariantBriefResponse> pvBriefList = null;
+
+            if (cond.getProductVariants() != null) {
+                pvIds = cond.getProductVariants().stream()
+                        .map(ProductVariant::getProductVariantId)
+                        .collect(Collectors.toList());
+
+                pvBriefList = cond.getProductVariants().stream()
+                        .map(pv -> VoucherResponse.ProductVariantBriefResponse.builder()
+                                .variant_id(pv.getProductVariantId())
+                                .product_name(pv.getProduct() != null ? pv.getProduct().getProductName() : null)
+                                .color(pv.getColor())
+                                .storage_capacity(pv.getStorageCapacity())
+                                .price(pv.getPrice())
+                                .build())
+                        .collect(Collectors.toList());
+            }
+
             condResponse = VoucherResponse.ApplyConditionResponse.builder()
                     .min_value(cond.getMinValue())
+                    .product_variant_ids(pvIds)
+                    .product_variants(pvBriefList)
                     .build();
         }
         return VoucherResponse.builder()

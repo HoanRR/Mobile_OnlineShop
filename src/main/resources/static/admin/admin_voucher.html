@@ -176,6 +176,29 @@
                     </div>
                 </div>
 
+                <div class="form-row" style="margin-top: 15px;">
+                    <div class="form-group" style="flex: 1 1 100%;">
+                        <label>Sản phẩm áp dụng</label>
+                        <div class="variant-selection-container">
+                            <div class="variant-selection-search">
+                                <input type="text" id="variant-search" placeholder="Tìm kiếm sản phẩm hoặc biến thể..." oninput="filterVariantList()" autocomplete="off">
+                            </div>
+                            <div class="variant-selection-header">
+                                <label class="checkbox-container">
+                                    <input type="checkbox" id="select-all-variants" onchange="toggleSelectAllVariants(this)">
+                                    <span class="checkmark"></span>
+                                    Áp dụng cho tất cả sản phẩm & biến thể
+                                </label>
+                            </div>
+                            <div class="variant-list" id="variant-list">
+                                <div style="padding: 20px; text-align: center; color: var(--text-muted);">
+                                    <div class="spinner" style="margin: 0 auto 10px;"></div> Đang tải danh sách sản phẩm...
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <div class="modal-actions">
                     <button type="button" class="btn-cancel" onclick="closeCreateModal()">Hủy</button>
                     <button type="submit" class="btn-submit" id="btn-submit">Tạo voucher</button>

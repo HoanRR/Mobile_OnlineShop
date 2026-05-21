@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
+import java.util.List;
 
 @Data
 @Builder
@@ -44,5 +45,34 @@ public class VoucherResponse {
         /** Giá trị đơn hàng tối thiểu để áp dụng voucher */
         @JsonProperty("min_value")
         Double min_value;
+
+        @JsonProperty("product_variant_ids")
+        List<Long> product_variant_ids;
+
+        @JsonProperty("product_variants")
+        List<ProductVariantBriefResponse> product_variants;
+    }
+
+    @Data
+    @Builder
+    @AllArgsConstructor
+    @NoArgsConstructor
+    @FieldDefaults(level = AccessLevel.PRIVATE)
+    @JsonInclude(JsonInclude.Include.NON_NULL)
+    public static class ProductVariantBriefResponse {
+        @JsonProperty("variant_id")
+        Long variant_id;
+
+        @JsonProperty("product_name")
+        String product_name;
+
+        @JsonProperty("color")
+        String color;
+
+        @JsonProperty("storage_capacity")
+        Long storage_capacity;
+
+        @JsonProperty("price")
+        Double price;
     }
 }

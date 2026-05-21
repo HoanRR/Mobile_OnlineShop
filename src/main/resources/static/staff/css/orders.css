@@ -109,6 +109,8 @@
 .order-detail-modal {
     width: 760px;
     max-width: calc(100vw - 40px);
+    max-height: 90vh;
+    overflow-y: auto;
 }
 .modal-header { 
     display: flex; 
