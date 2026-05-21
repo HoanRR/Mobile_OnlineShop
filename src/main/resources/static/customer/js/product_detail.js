@@ -12,7 +12,7 @@ let currentProduct = null
 
 async function loadProductDetail() {
     if (!productId) {
-        alert("Không tìm thấy mã sản phẩm!");
+        showToast("Không tìm thấy mã sản phẩm!", "error");
         return;
     }
 

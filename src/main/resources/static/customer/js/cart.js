@@ -220,7 +220,13 @@ async function updateQuantity(cartDetailId, newQuantity) {
 // Xóa sản phẩm
 // --------------------------------------------------------
 async function removeCartItem(cartDetailId) {
-    if (!confirm('Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng?')) return;
+    const ok = await showConfirm('Bạn có chắc chắn muốn xóa sản phẩm này khỏi giỏ hàng?', {
+        title: 'Xóa sản phẩm',
+        type: 'danger',
+        okText: 'Xóa',
+        cancelText: 'Hủy'
+    });
+    if (!ok) return;
 
     try {
         const token = localStorage.getItem('accessToken');
@@ -292,7 +298,13 @@ async function xoaToanBoGioHang() {
         showToast('Gio hang dang trong!', 'warning');
         return;
     }
-    if (!confirm(`Ban co chac chan muon xoa tat ca ${cartData.items.length} san pham khoi gio hang?`)) return;
+    const ok = await showConfirm(`Bạn có chắc chắn muốn xóa tất cả ${cartData.items.length} sản phẩm khỏi giỏ hàng?`, {
+        title: 'Xóa giỏ hàng',
+        type: 'danger',
+        okText: 'Xóa tất cả',
+        cancelText: 'Hủy'
+    });
+    if (!ok) return;
 
     const token = localStorage.getItem('accessToken');
     let hasError = false;

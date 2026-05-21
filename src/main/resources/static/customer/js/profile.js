@@ -3,7 +3,10 @@ const API_ME_URL = 'http://localhost:8080/api/me';
 document.addEventListener("DOMContentLoaded", function () {
     const accessToken = localStorage.getItem('accessToken');
     if (!accessToken) {
-        alert("Vui lòng đăng nhập để xem thông tin cá nhân!");
+        sessionStorage.setItem('pendingToast', JSON.stringify({
+            message: 'Vui lòng đăng nhập để xem thông tin cá nhân!',
+            type: 'warning'
+        }));
         window.location.href = 'login.html';
         return;
     }
@@ -31,7 +34,10 @@ async function loadProfile() {
         });
 
         if (response.status === 401) {
-            alert("Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại!");
+            sessionStorage.setItem('pendingToast', JSON.stringify({
+                message: 'Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại!',
+                type: 'warning'
+            }));
             xuLyDangXuat();
             return;
         }

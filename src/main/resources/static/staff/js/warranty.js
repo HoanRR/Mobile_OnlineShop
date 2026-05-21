@@ -197,7 +197,13 @@ async function xuLyBaoHanhDoiTra(imei, action) {
     if (action === 'CONFIRM_RETURN_DEFECTIVE') confirmMsg = 'Xác nhận báo hỏng thiết bị này?';
     if (action === 'REJECT') confirmMsg = 'Xác nhận từ chối yêu cầu này?';
 
-    if (!confirm(confirmMsg)) return;
+    const ok = await showConfirm(confirmMsg, {
+        title: 'Xác nhận xử lý',
+        type: 'warning',
+        okText: 'Xác nhận',
+        cancelText: 'Hủy'
+    });
+    if (!ok) return;
 
     try {
         const accessToken = localStorage.getItem('accessToken') || '';

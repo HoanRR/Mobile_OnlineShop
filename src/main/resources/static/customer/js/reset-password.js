@@ -39,11 +39,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 step2.style.display = 'block';
                 document.getElementById('otp-sent-msg').innerText = `Mã OTP đã được gửi về email: ${email}`;
             } else {
-                alert(data.message || 'Có lỗi xảy ra khi gửi OTP.');
+                showToast(data.message || 'Có lỗi xảy ra khi gửi OTP.', 'error');
             }
         } catch (error) {
             console.error('Error:', error);
-            alert('Lỗi kết nối server.');
+            showToast('Lỗi kết nối server.', 'error');
         } finally {
             btnSendOtp.disabled = false;
             btnSendOtp.innerText = 'Gửi mã OTP';
@@ -59,17 +59,17 @@ document.addEventListener('DOMContentLoaded', function () {
         const confirmPassword = confirmPasswordInput.value;
 
         if (!otp || otp.length < 6) {
-            alert('Vui lòng nhập mã OTP 6 chữ số.');
+            showToast('Vui lòng nhập mã OTP 6 chữ số.', 'warning');
             return;
         }
 
         if (newPassword.length < 6) {
-            alert('Mật khẩu mới phải có ít nhất 6 ký tự.');
+            showToast('Mật khẩu mới phải có ít nhất 6 ký tự.', 'warning');
             return;
         }
 
         if (newPassword !== confirmPassword) {
-            alert('Xác nhận mật khẩu không khớp.');
+            showToast('Xác nhận mật khẩu không khớp.', 'warning');
             return;
         }
 
@@ -90,14 +90,17 @@ document.addEventListener('DOMContentLoaded', function () {
             const data = await response.json();
 
             if (response.ok) {
-                alert('Đặt lại mật khẩu thành công! Bạn có thể đăng nhập bằng mật khẩu mới.');
+                sessionStorage.setItem('pendingToast', JSON.stringify({
+                    message: 'Đặt lại mật khẩu thành công! Bạn có thể đăng nhập bằng mật khẩu mới.',
+                    type: 'success'
+                }));
                 window.location.href = 'login.html';
             } else {
-                alert(data.message || 'Mã OTP không đúng hoặc đã hết hạn.');
+                showToast(data.message || 'Mã OTP không đúng hoặc đã hết hạn.', 'error');
             }
         } catch (error) {
             console.error('Error:', error);
-            alert('Lỗi kết nối server.');
+            showToast('Lỗi kết nối server.', 'error');
         } finally {
             btnResetPassword.disabled = false;
             btnResetPassword.innerText = 'Xác nhận thay đổi';

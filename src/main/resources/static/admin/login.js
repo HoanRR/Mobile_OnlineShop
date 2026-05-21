@@ -5,7 +5,7 @@ function showAuthError(message) {
         errorDiv.innerText = message;
         errorDiv.style.display = 'block';
     } else {
-        alert(message);
+        showToast(message, 'error');
     }
 }
 
@@ -39,7 +39,7 @@ async function xuLyDangNhap(event) {
             localStorage.setItem('accessToken', data.access_token || data.token);
             localStorage.setItem('userInfo', JSON.stringify(data));
             
-            typeof showToast !== 'undefined' ? showToast("Đăng nhập thành công!", "success") : alert("Đăng nhập thành công!");
+            showToast("Đăng nhập thành công!", "success");
             
             let userRole = "CUSTOMER";
             if (data.user && data.user.role) {
@@ -109,7 +109,7 @@ async function xuLyDangKy(event) {
         });
 
         if (response.ok) {
-            typeof showToast !== 'undefined' ? showToast("Đăng ký thành công! Vui lòng đăng nhập.", "success") : alert("Đăng ký thành công!");
+            showToast("Đăng ký thành công! Vui lòng đăng nhập.", "success");
             setTimeout(() => {
                 window.location.href = 'login.html';
             }, 1500);
@@ -143,7 +143,7 @@ async function xuLyQuenMatKhau(event) {
 
     // Giả lập gửi mail do backend hiện tại chưa có API reset mật khẩu
     setTimeout(() => {
-        showToast ? showToast("Đã gửi hướng dẫn khôi phục qua Email của bạn!", "success") : alert("Đã gửi hướng dẫn!");
+        showToast("Đã gửi hướng dẫn khôi phục qua Email của bạn!", "success");
         document.getElementById('error-message').style.display = 'none';
         
         btnSubmit.innerText = "Đã gửi thành công";

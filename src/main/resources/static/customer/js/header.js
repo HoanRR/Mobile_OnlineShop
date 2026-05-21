@@ -133,7 +133,7 @@ function setupLogout() {
                         window.location.href = 'index.html';
                     }, 500);
                 } else {
-                    alert('Có lỗi xảy ra khi đăng xuất');
+                    typeof showToast !== 'undefined' ? showToast('Có lỗi xảy ra khi đăng xuất', 'error') : alert('Có lỗi xảy ra khi đăng xuất');
                 }
             } catch (error) {
                 console.error('Lỗi khi đăng xuất:', error);

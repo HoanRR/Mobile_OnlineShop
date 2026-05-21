@@ -409,7 +409,13 @@ function hienThiLoi(thongBao) {
 }
 
 async function chuyenNhanhHoanThanh(maDonHang, isPaid) {
-    if (!confirm('Bạn có chắc chắn muốn hoàn thành đơn hàng này?')) return;
+    const ok = await showConfirm('Bạn có chắc chắn muốn hoàn thành đơn hàng này?', {
+        title: 'Hoàn thành đơn hàng',
+        type: 'warning',
+        okText: 'Hoàn thành',
+        cancelText: 'Hủy'
+    });
+    if (!ok) return;
 
     try {
         const accessToken = localStorage.getItem('accessToken') || '';
@@ -446,7 +452,13 @@ async function xuLyBaoHanhDoiTra(imei, action, maDonHang) {
     if (action === 'CONFIRM_RETURN_GOOD') confirmMsg = 'Xác nhận nhập lại kho thiết bị này?';
     if (action === 'CONFIRM_RETURN_DEFECTIVE') confirmMsg = 'Xác nhận báo hỏng thiết bị này?';
 
-    if (!confirm(confirmMsg)) return;
+    const ok = await showConfirm(confirmMsg, {
+        title: 'Xác nhận xử lý',
+        type: 'warning',
+        okText: 'Xác nhận',
+        cancelText: 'Hủy'
+    });
+    if (!ok) return;
 
     try {
         const accessToken = localStorage.getItem('accessToken') || '';

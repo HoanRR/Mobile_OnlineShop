@@ -258,7 +258,7 @@ async function xuLyDatHang() {
     if (!validateCheckoutForm()) return;
 
     if (!cartData || !cartData.items || cartData.items.length === 0) {
-        alert('Giỏ hàng của bạn trống!');
+        showToast('Giỏ hàng của bạn trống!', 'error');
         return;
     }
 

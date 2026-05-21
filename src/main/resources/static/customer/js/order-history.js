@@ -5,7 +5,10 @@ const paymentMap = { 'COD': 'Thanh toan khi nhan hang (COD)', 'BANK': 'Chuyen kh
 document.addEventListener("DOMContentLoaded", function () {
     const accessToken = localStorage.getItem('accessToken');
     if (!accessToken) {
-        alert("Vui long dang nhap de xem thong tin ca nhan!");
+        sessionStorage.setItem('pendingToast', JSON.stringify({
+            message: 'Vui lòng đăng nhập để xem thông tin cá nhân!',
+            type: 'warning'
+        }));
         window.location.href = 'login.html';
         return;
     }
@@ -242,7 +245,10 @@ async function muaLai(orderId) {
         });
         
         if (response.status === 401) {
-            alert('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
+            sessionStorage.setItem('pendingToast', JSON.stringify({
+                message: 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.',
+                type: 'warning'
+            }));
             localStorage.removeItem('accessToken');
             window.location.href = 'login.html';
             return;
@@ -254,7 +260,7 @@ async function muaLai(orderId) {
             // Chuyển hướng đến sản phẩm đầu tiên trong đơn hàng
             window.location.href = `product-detail.html?id=${order.items[0].product_id}`;
         } else {
-            alert("Đơn hàng không có sản phẩm nào để mua lại!");
+            showToast("Đơn hàng không có sản phẩm nào để mua lại!", "warning");
         }
     } catch (error) {
         console.error("Lỗi mua lại:", error);
@@ -274,7 +280,10 @@ async function danhGiaOrder(orderId) {
         });
         
         if (response.status === 401) {
-            alert('Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.');
+            sessionStorage.setItem('pendingToast', JSON.stringify({
+                message: 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.',
+                type: 'warning'
+            }));
             localStorage.removeItem('accessToken');
             window.location.href = 'login.html';
             return;
@@ -286,7 +295,7 @@ async function danhGiaOrder(orderId) {
             const firstItem = order.items[0];
             moFormDanhGia(order.order_id, firstItem.variant_id, firstItem.product_name);
         } else {
-            alert("Đơn hàng không có sản phẩm nào để đánh giá!");
+            showToast("Đơn hàng không có sản phẩm nào để đánh giá!", "warning");
         }
     } catch (error) {
         console.error("Lỗi:", error);
@@ -501,7 +510,13 @@ async function guiYeuCau(imei) {
 }
 
 async function huyDonHang(orderId) {
-    if (!confirm('Bạn có chắc chắn muốn hủy đơn hàng này không?')) {
+    const ok = await showConfirm('Bạn có chắc chắn muốn hủy đơn hàng này không?', {
+        title: 'Hủy đơn hàng',
+        type: 'danger',
+        okText: 'Xác nhận hủy',
+        cancelText: 'Quay lại'
+    });
+    if (!ok) {
         return;
     }
 
