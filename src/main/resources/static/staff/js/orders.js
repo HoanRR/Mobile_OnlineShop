@@ -61,7 +61,10 @@ async function taiDanhSachDonHang(timKiemTuKhoa = '', timKiemTrangThai = '') {
             }
         });
 
-        if (!response.ok) throw new Error(`Lỗi HTTP: ${response.status}`);
+        if (!response.ok) {
+            const err = await response.json().catch(() => null);
+            throw new Error(err?.error?.message || err?.message || `HTTP ${response.status}`);
+        }
         
         const result = await response.json();
         
@@ -297,22 +300,18 @@ async function luuTrangThaiMoi() {
         });
 
         if (!response.ok) {
-            let errorMsg = `Chuyển trạng thái không hợp lệ`;
-            try {
-                const errorData = await response.json();
-                if (errorData.message) errorMsg = errorData.message;
-            } catch (e) {}
-            throw new Error(errorMsg);
+            const err = await response.json().catch(() => null);
+            throw new Error(err?.error?.message || err?.message || `HTTP ${response.status}`);
         }
 
-        alert('Cập nhật trạng thái thành công!');
+        showToast('Cập nhật trạng thái thành công!', 'success');
         dongModalTrangThai();
         
         // Tải lại bảng sau khi cập nhật
         await taiDanhSachDonHang();
     } catch (loi) {
         console.error('Lỗi khi cập nhật trạng thái:', loi);
-        alert(loi.message || 'Cập nhật thất bại. Vui lòng thử lại!');
+        showToast(loi.message || 'Cập nhật thất bại. Vui lòng thử lại!', 'error');
     }
 }
 
@@ -429,19 +428,15 @@ async function chuyenNhanhHoanThanh(maDonHang, isPaid) {
         });
 
         if (!response.ok) {
-            let errorMsg = `Không thể hoàn thành đơn hàng`;
-            try {
-                const errorData = await response.json();
-                if (errorData.message) errorMsg = errorData.message;
-            } catch (e) {}
-            throw new Error(errorMsg);
+            const err = await response.json().catch(() => null);
+            throw new Error(err?.error?.message || err?.message || `HTTP ${response.status}`);
         }
 
-        alert('Đã hoàn thành đơn hàng!');
+        showToast('Đã hoàn thành đơn hàng!', 'success');
         await taiDanhSachDonHang();
     } catch (loi) {
         console.error('Lỗi khi hoàn thành đơn hàng:', loi);
-        alert(loi.message || 'Thao tác thất bại. Vui lòng thử lại!');
+        showToast(loi.message || 'Thao tác thất bại. Vui lòng thử lại!', 'error');
     }
 }
 
@@ -465,20 +460,16 @@ async function xuLyBaoHanhDoiTra(imei, action, maDonHang) {
         });
 
         if (!response.ok) {
-            let errorMsg = `Thao tác thất bại`;
-            try {
-                const errorData = await response.json();
-                if (errorData.message) errorMsg = errorData.message;
-            } catch (e) {}
-            throw new Error(errorMsg);
+            const err = await response.json().catch(() => null);
+            throw new Error(err?.error?.message || err?.message || `HTTP ${response.status}`);
         }
 
-        alert('Xử lý thành công!');
+        showToast('Xử lý thành công!', 'success');
         dongModalChiTiet();
         await taiDanhSachDonHang();
     } catch (loi) {
         console.error('Lỗi khi xử lý bảo hành/đổi trả:', loi);
-        alert(loi.message || 'Thao tác thất bại. Vui lòng thử lại!');
+        showToast(loi.message || 'Thao tác thất bại. Vui lòng thử lại!', 'error');
     }
 }
 // --------------------------------------------------------

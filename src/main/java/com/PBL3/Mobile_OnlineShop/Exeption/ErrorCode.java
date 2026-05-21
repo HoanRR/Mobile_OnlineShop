@@ -19,7 +19,7 @@ public enum ErrorCode {
     IMEI_NOT_FOUND("IMEI_NOT_FOUND", "IMEI không tồn tại", HttpStatus.NOT_FOUND), // 404
     IMEI_ALREADY_SOLD("IMEI_ALREADY_SOLD", "IMEI đã được bán hoặc không khả dụng", HttpStatus.CONFLICT), // 409
     ORDER_NOT_FOUND("ORDER_NOT_FOUND", "Đơn hàng không tồn tại", HttpStatus.NOT_FOUND),
-    INVALID_STATUS_TRANSITION("INVALID_STATUS_TRANSITION", "Transition trạng thái không hợp lệ",
+    INVALID_STATUS_TRANSITION("INVALID_STATUS_TRANSITION", "Cập nhật trạng thái không hợp lệ",
             HttpStatus.UNPROCESSABLE_ENTITY), // 422
     USERNAME_EXISTS("USERNAME_EXISTS", "Username đã tồn tại", HttpStatus.CONFLICT),
     EMAIL_EXISTS("EMAIL_EXISTS", "Email đã tồn tại", HttpStatus.CONFLICT),
@@ -42,6 +42,8 @@ public enum ErrorCode {
     INTERNAL_ERROR("INTERNAL_ERROR", "Lỗi hệ thống", HttpStatus.INTERNAL_SERVER_ERROR),
     UNAUTHENTICATED("UNAUTHENTICATED_ERROR", "Lỗi chưa xác thực", HttpStatus.FORBIDDEN),
     PRODUCT_HAS_ORDERS("PRODUCT_HAS_ORDERS", "Không thể xóa sản phẩm vì đã có đơn hàng liên quan", HttpStatus.CONFLICT),
+    VARIANT_HAS_DEVICES("VARIANT_HAS_DEVICES", "Không thể xóa biến thể vì đã có thiết bị trong kho", HttpStatus.CONFLICT),
+    VARIANT_HAS_ORDERS("VARIANT_HAS_ORDERS", "Không thể xóa biến thể vì đã có đơn hàng liên quan", HttpStatus.CONFLICT),
     INVALID_DATA("INVALID_DATA", "Dữ liệu không hợp lệ", HttpStatus.UNPROCESSABLE_ENTITY),
     VOUCHER_NOT_FOUND("VOUCHER_NOT_FOUND", "Voucher không tồn tại", HttpStatus.NOT_FOUND),
     INVALID_PASSWORD("INVALID_PASSWORD", "Mật khẩu không chính xác", HttpStatus.UNAUTHORIZED),

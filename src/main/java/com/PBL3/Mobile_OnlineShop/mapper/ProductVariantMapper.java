@@ -4,8 +4,10 @@ import com.PBL3.Mobile_OnlineShop.dto.request.VariantRequest;
 import com.PBL3.Mobile_OnlineShop.entity.ProductVariant;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
+import org.mapstruct.MappingTarget;
+import org.mapstruct.NullValuePropertyMappingStrategy;
 
-@Mapper(componentModel = "spring")
+@Mapper(componentModel = "spring", nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
 public interface ProductVariantMapper {
 
     @Mapping(source = "storage_capacity", target = "storageCapacity")
@@ -20,4 +22,17 @@ public interface ProductVariantMapper {
     @Mapping(target = "product", ignore = true)
     @Mapping(target = "devices", ignore = true)
     ProductVariant toProductVariant(VariantRequest request);
+
+    @Mapping(source = "storage_capacity", target = "storageCapacity")
+    @Mapping(source = "battery_capacity", target = "batteryCapacity")
+    @Mapping(source = "total_available", target = "totalAvailable")
+    @Mapping(source = "variant_image_link", target = "variantImageLink")
+    @Mapping(source = "screen_size", target = "screenSize")
+    @Mapping(source = "front_camera", target = "frontCamera")
+    @Mapping(source = "rear_camera", target = "rearCamera")
+    @Mapping(source = "sim_card", target = "simCard")
+    @Mapping(target = "productVariantId", ignore = true)
+    @Mapping(target = "product", ignore = true)
+    @Mapping(target = "devices", ignore = true)
+    void updateVariantFromRequest(VariantRequest request, @MappingTarget ProductVariant productVariant);
 }

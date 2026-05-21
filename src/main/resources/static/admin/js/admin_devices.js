@@ -38,7 +38,7 @@ async function searchDevice(event) {
 
         if (!response.ok) {
             const err = await response.json().catch(() => null);
-            throw new Error(err?.message || `HTTP ${response.status}`);
+            throw new Error(err?.error?.message || err?.message || `HTTP ${response.status}`);
         }
 
         const data = await response.json();
@@ -156,7 +156,10 @@ async function onProductChange() {
 
     try {
         const response = await fetch(`${API_PRODUCTS_PUBLIC}/${productId}`);
-        if (!response.ok) throw new Error('Failed to load variants');
+        if (!response.ok) {
+            const err = await response.json().catch(() => null);
+            throw new Error(err?.error?.message || err?.message || `HTTP ${response.status}`);
+        }
         const product = await response.json();
         
         variantSelect.innerHTML = '<option value="">-- Chọn biến thể --</option>';
@@ -216,7 +219,7 @@ async function submitImportForm(event) {
 
         if (!response.ok) {
             const err = await response.json().catch(() => null);
-            throw new Error(err?.message || `Lỗi server HTTP ${response.status}`);
+            throw new Error(err?.error?.message || err?.message || `HTTP ${response.status}`);
         }
 
         const resData = await response.json();

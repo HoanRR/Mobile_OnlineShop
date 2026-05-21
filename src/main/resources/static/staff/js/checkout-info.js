@@ -138,11 +138,7 @@ function toggleAddressField() {
 }
 
 function thongBaoLoi(msg) {
-  if (typeof showToast === 'function') {
-    showToast(msg, 'error');
-  } else {
-    alert(msg);
-  }
+  showToast(msg, 'error');
 }
 
 /**

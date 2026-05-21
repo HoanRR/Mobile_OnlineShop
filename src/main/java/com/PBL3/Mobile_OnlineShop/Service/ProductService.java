@@ -266,4 +266,74 @@ public class ProductService {
                 .build();
     }
 
+    @Transactional(readOnly = true)
+    public List<ProductDetailResponse> getAllProductsWithVariants() {
+        return productRepository.findAll().stream()
+                .map(product -> {
+                    List<ProductVariantResponse> variants = product.getVariants().stream()
+                            .map(pv -> ProductVariantResponse.builder()
+                                    .productVariantId(pv.getProductVariantId())
+                                    .price(pv.getPrice())
+                                    .ram(pv.getRam())
+                                    .chip(pv.getChip())
+                                    .variantImageLink(pv.getVariantImageLink())
+                                    .batteryCapacity(pv.getBatteryCapacity())
+                                    .storageCapacity(pv.getStorageCapacity())
+                                    .resolution(pv.getResolution())
+                                    .screenSize(pv.getScreenSize())
+                                    .frontCamera(pv.getFrontCamera())
+                                    .rearCamera(pv.getRearCamera())
+                                    .simCard(pv.getSimCard())
+                                    .totalAvailable(deviceRepository.countByProductVariantAndStatus(pv, DeviceStatus.AVAILABLE))
+                                    .color(pv.getColor())
+                                    .build())
+                            .toList();
+                    return ProductDetailResponse.builder()
+                            .product_id(product.getProductId())
+                            .brand(product.getBrand())
+                            .product_name(product.getProductName())
+                            .description(product.getDescription())
+                            .product_image_link(product.getProductImageLink())
+                            .variant(variants)
+                            .build();
+                })
+                .toList();
+    }
+
+    @Transactional
+    public void addVariant(Long productId, VariantRequest request) {
+        Product product = productRepository.findByProductId(productId)
+                .orElseThrow(() -> new AppException(ErrorCode.PRODUCT_NOT_FOUND, "Không tìm thấy sản phẩm với id: " + productId));
+        ProductVariant variant = productVariantMapper.toProductVariant(request);
+        variant.setProduct(product);
+        if (variant.getTotalAvailable() == null) {
+            variant.setTotalAvailable(0L);
+        }
+        productVariantRepository.save(variant);
+    }
+
+    @Transactional
+    public void updateVariant(Long variantId, VariantRequest request) {
+        ProductVariant variant = productVariantRepository.findById(variantId)
+                .orElseThrow(() -> new AppException(ErrorCode.VARIANT_NOT_FOUND, "Không tìm thấy phân loại sản phẩm với id: " + variantId));
+        Long oldStock = variant.getTotalAvailable();
+        productVariantMapper.updateVariantFromRequest(request, variant);
+        if (request.getTotal_available() == null) {
+            variant.setTotalAvailable(oldStock);
+        }
+        productVariantRepository.save(variant);
+    }
+
+    @Transactional
+    public void deleteVariant(Long variantId) {
+        ProductVariant variant = productVariantRepository.findById(variantId)
+                .orElseThrow(() -> new AppException(ErrorCode.VARIANT_NOT_FOUND, "Không tìm thấy phân loại sản phẩm với id: " + variantId));
+        if (deviceRepository.existsByProductVariant(variant)) {
+            throw new AppException(ErrorCode.VARIANT_HAS_DEVICES);
+        }
+        if (orderDetailRepository.existsByProductVariant(variant)) {
+            throw new AppException(ErrorCode.VARIANT_HAS_ORDERS);
+        }
+        productVariantRepository.delete(variant);
+    }
 }

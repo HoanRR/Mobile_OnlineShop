@@ -16,6 +16,7 @@ import java.util.List;
 @Repository
 public interface OrderDetailRepository extends JpaRepository<OrderDetail, Long> {
         boolean existsByProductVariantIn(List<ProductVariant> productVariants);
+        boolean existsByProductVariant(ProductVariant productVariant);
 
         boolean existsByOrder_OrderIdAndOrder_User_UserIdAndProductVariant_Product_ProductId(
                         Long orderId,

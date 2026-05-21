@@ -48,7 +48,10 @@ async function loadUsers(page = 1) {
             return;
         }
 
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        if (!response.ok) {
+            const err = await response.json().catch(() => null);
+            throw new Error(err?.error?.message || err?.message || `HTTP ${response.status}`);
+        }
 
         const result = await response.json();
         const users = result.data || [];
@@ -161,7 +164,10 @@ async function viewUserDetail(userId) {
             return;
         }
 
-        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        if (!response.ok) {
+            const err = await response.json().catch(() => null);
+            throw new Error(err?.error?.message || err?.message || `HTTP ${response.status}`);
+        }
 
         const user = await response.json();
         renderUserDetail(user);
@@ -332,7 +338,7 @@ async function submitUserForm(event) {
 
             if (!response.ok) {
                 const errData = await response.json().catch(() => null);
-                throw new Error(errData?.message || `HTTP ${response.status}`);
+                throw new Error(errData?.error?.message || errData?.message || `HTTP ${response.status}`);
             }
 
             showToast('Cập nhật người dùng thành công!');
@@ -374,7 +380,7 @@ async function submitUserForm(event) {
 
             if (!response.ok) {
                 const errData = await response.json().catch(() => null);
-                throw new Error(errData?.message || `HTTP ${response.status}`);
+                throw new Error(errData?.error?.message || errData?.message || `HTTP ${response.status}`);
             }
 
             showToast('Tạo tài khoản thành công!');

@@ -1,4 +1,4 @@
-﻿/* ============================================================
+/* ============================================================
    STAFF BASE - STYLING CHUNG (TỰ ĐỘNG SÁNG/TỐI)
 ============================================================ */
 
@@ -62,171 +62,174 @@ body {
 /* === SIDEBAR === */
 .sidebar {
     width: var(--sidebar-w);
-    min-height: 100vh;
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    z-index: 200;
     background: var(--surface);
     border-right: 1px solid var(--border);
-    position: fixed;
-    top: 0;
-    left: 0;
     display: flex;
     flex-direction: column;
-    z-index: 200;
-    transition: width var(--transition), background-color var(--transition), border-color var(--transition);
-    overflow: hidden;
+    transition: transform var(--transition), background-color var(--transition), border-color var(--transition);
 }
 
 .sidebar.collapsed {
-    width: var(--sidebar-collapsed);
+    transform: translateX(-100%);
+}
+
+.sidebar-header {
+    padding: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    border-bottom: 1px solid var(--border);
+    height: 64px;
 }
 
 .sidebar-logo {
     display: flex;
     align-items: center;
-    gap: 12px;
-    padding: 0 16px;
-    height: 64px;
-    background: var(--red);
-    color: white;
-    flex-shrink: 0;
-    overflow: hidden;
-    white-space: nowrap;
+    gap: 10px;
 }
 
-.sidebar-logo .logo-icon {
-    font-size: 20px;
-    flex-shrink: 0;
+.logo-icon {
+    font-size: 24px;
 }
 
-.sidebar-logo .logo-text {
-    font-size: 16px;
+.logo-text {
+    font-size: 18px;
     font-weight: 700;
-    letter-spacing: 0.5px;
-    transition: opacity var(--transition), width var(--transition);
+    background: linear-gradient(135deg, var(--red), #a78bfa);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
-.sidebar.collapsed .logo-text {
-    opacity: 0;
-    width: 0;
-}
-
-.sidebar-toggle {
-    position: absolute;
-    top: 16px;
-    right: -14px;
-    width: 28px;
-    height: 28px;
-    background: var(--surface2);
-    border: 1px solid var(--border);
-    border-radius: 50%;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--muted);
-    font-size: 11px;
-    transition: background var(--transition), color var(--transition), transform var(--transition), border-color var(--transition);
-    z-index: 10;
-}
-
-.sidebar-toggle:hover {
-    background: var(--red);
-    color: white;
-    border-color: var(--red);
-}
-
-.sidebar.collapsed .sidebar-toggle {
-    transform: rotate(180deg);
+.sidebar-badge {
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 8px;
+    border-radius: 20px;
+    background: var(--blue);
+    color: #fff;
+    letter-spacing: .05em;
 }
 
 .sidebar-nav {
     flex: 1;
-    padding: 16px 8px;
-    overflow: hidden;
+    overflow-y: auto;
+    padding: 16px 12px;
 }
 
-.sidebar-nav ul {
-    list-style: none;
-    display: flex;
-    flex-direction: column;
-    gap: 2px;
+.nav-section {
+    margin-bottom: 20px;
 }
 
-.nav-item a, button {
+.nav-section-title {
+    font-size: 10px;
+    font-weight: 600;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: .1em;
+    padding: 0 12px;
+    margin-bottom: 8px;
+    display: block;
+}
+
+.nav-item {
     display: flex;
     align-items: center;
-    gap: 14px;
-    padding: 11px 12px;
+    gap: 12px;
+    padding: 10px 12px;
+    border-radius: 8px;
     color: var(--muted);
     text-decoration: none;
-    border-radius: 10px;
-    transition: background var(--transition), color var(--transition);
-    white-space: nowrap;
-    overflow: hidden;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all .2s;
+    cursor: pointer;
 }
 
-.nav-item a .nav-icon {
+.nav-item:hover {
+    background: var(--surface2);
+    color: var(--text);
+}
+
+.nav-item.active {
+    background: var(--red-glow);
+    color: var(--red);
+    font-weight: 600;
+}
+
+.nav-icon {
     font-size: 16px;
-    flex-shrink: 0;
     width: 20px;
     text-align: center;
 }
 
-.nav-item a .nav-label {
+.sidebar-footer {
+    padding: 16px;
+    border-top: 1px solid var(--border);
+    background: var(--surface);
+}
+
+.admin-profile {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 12px;
+}
+
+.admin-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--blue), #10b981);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
     font-size: 14px;
-    font-weight: 500;
-    transition: opacity var(--transition);
+    color: #fff;
 }
 
-.sidebar.collapsed .nav-item a .nav-label {
-    opacity: 0;
-    pointer-events: none;
+.admin-info {
+    display: flex;
+    flex-direction: column;
 }
 
-.nav-item a:hover {
-    background: var(--red-glow);
-    color: var(--nav-hover-text);
-}
-
-.nav-item.active a {
-    background: var(--red);
-    color: white;
-}
-
-.nav-divider {
-    height: 1px;
-    background: var(--border);
-    margin: 10px 4px;
-    transition: background-color var(--transition);
-}
-
-.nav-item.logout a {
-    color: #ff6b6b;
-}
-
-.nav-item.logout a:hover {
-    background: rgba(255, 77, 77, 0.12);
-    color: #ff4444;
-}
-
-.nav-item {
-    position: relative;
-}
-
-.sidebar.collapsed .nav-item:hover::after {
-    content: attr(data-label);
-    position: absolute;
-    left: calc(var(--sidebar-collapsed) + 8px);
-    top: 50%;
-    transform: translateY(-50%);
-    background: var(--surface2);
-    color: var(--text);
-    padding: 6px 12px;
-    border-radius: 8px;
+.admin-name {
     font-size: 13px;
-    white-space: nowrap;
+    font-weight: 600;
+    color: var(--text);
+}
+
+.admin-role {
+    font-size: 11px;
+    color: var(--muted);
+}
+
+.btn-logout-sidebar {
+    width: 100%;
+    padding: 8px;
     border: 1px solid var(--border);
-    pointer-events: none;
-    z-index: 300;
+    border-radius: 8px;
+    background: transparent;
+    color: var(--muted);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all .2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-family: inherit;
+}
+
+.btn-logout-sidebar:hover {
+    border-color: #ef4444;
+    color: #ef4444;
+    background: rgba(239, 68, 68, 0.08);
 }
 
 /* === MAIN CONTENT === */
