@@ -189,6 +189,25 @@ public class VoucherService {
                     "Đơn hàng tối thiểu " + condition.getMinValue() + " VNĐ để sử dụng voucher này");
         }
 
+        // Kiểm tra voucher có áp dụng cho sản phẩm trong đơn không
+        if (condition != null
+                && condition.getProductVariants() != null
+                && !condition.getProductVariants().isEmpty()) {
+            if (request.getProductVariantIds() != null && !request.getProductVariantIds().isEmpty()) {
+                List<Long> allowedIds = condition.getProductVariants().stream()
+                        .map(ProductVariant::getProductVariantId)
+                        .collect(Collectors.toList());
+
+                boolean hasMatch = request.getProductVariantIds().stream()
+                        .anyMatch(allowedIds::contains);
+
+                if (!hasMatch) {
+                    throw new AppException(ErrorCode.VOUCHER_INVALID,
+                            "Voucher này không áp dụng cho các sản phẩm trong đơn hàng của bạn");
+                }
+            }
+        }
+
         double discountAmount = request.getOrderTotal() * (voucher.getDiscountPercentage() / 100);
         double finalTotal     = request.getOrderTotal() - discountAmount;
 

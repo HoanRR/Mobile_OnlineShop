@@ -508,6 +508,12 @@ public class OrderService {
 
         Order savedOrder = orderRepository.save(order);
 
+        // Xóa tham chiếu khỏi collection cha để tránh re-persist do CascadeType.ALL khi commit
+        if (cart.getCartDetails() != null) {
+            cart.getCartDetails().removeAll(selectedItems);
+            cartRepository.save(cart);
+        }
+
         cartDetailRepository.deleteAll(selectedItems);
 
         return OrderResponse.builder()
@@ -583,6 +589,50 @@ public class OrderService {
         }
 
         deviceRepository.save(device);
+    }
+
+    @Transactional
+    public void cancelOrder(Long orderId) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String username = authentication.getName();
+
+        User user = userRepository.findByUsername(username)
+                .orElseThrow(() -> new AppException(ErrorCode.USER_NOT_FOUND));
+
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new AppException(ErrorCode.ORDER_NOT_FOUND));
+
+        if (!order.getUser().getUserId().equals(user.getUserId())) {
+            throw new AppException(ErrorCode.FORBIDDEN);
+        }
+
+        if (order.getOrderStatus() != OrderStatus.WAIT) {
+            throw new AppException(ErrorCode.INVALID_STATUS_TRANSITION, "Chỉ có thể hủy đơn hàng ở trạng thái chờ xác nhận!");
+        }
+
+        order.setOrderStatus(OrderStatus.CANCELLED);
+
+        // Giải phóng các thiết bị đã liên kết về AVAILABLE
+        if (order.getOrderDetails() != null) {
+            for (OrderDetail detail : order.getOrderDetails()) {
+                Device device = detail.getDevice();
+                if (device != null) {
+                    device.setStatus(DeviceStatus.AVAILABLE);
+                    deviceRepository.save(device);
+                }
+            }
+        }
+
+        // Khôi phục lượt sử dụng Voucher nếu có
+        if (order.getVoucher() != null) {
+            Voucher voucher = order.getVoucher();
+            if (voucher.getUsageLimit() != null) {
+                voucher.setUsageLimit(voucher.getUsageLimit() + 1);
+                voucherRepository.save(voucher);
+            }
+        }
+
+        orderRepository.save(order);
     }
 
 }

@@ -365,6 +365,8 @@ async function apDungVoucher() {
   // Hiện trạng thái đang kiểm tra
   hienThiKetQuaVoucher('Đang kiểm tra mã voucher...', 'loading');
 
+  const productVariantIds = gioHang.map(item => Number(item.id));
+
   try {
     const response = await fetch('http://localhost:8080/api/vouchers/validate', {
       method: 'POST',
@@ -374,7 +376,8 @@ async function apDungVoucher() {
       },
       body: JSON.stringify({
         voucher_code: maVoucher,
-        order_total: tongTam
+        order_total: tongTam,
+        product_variant_ids: productVariantIds
       })
     });
 
@@ -382,7 +385,8 @@ async function apDungVoucher() {
 
     if (!response.ok || !ketQua.valid) {
       voucherApDung = null;
-      hienThiKetQuaVoucher(ketQua.message || 'Mã voucher không hợp lệ hoặc đã hết hạn.', 'error');
+      const errorMsg = (ketQua.error && ketQua.error.message) || ketQua.message || 'Mã voucher không hợp lệ hoặc đã hết hạn.';
+      hienThiKetQuaVoucher(errorMsg, 'error');
       hienThiGioHang();
       return;
     }

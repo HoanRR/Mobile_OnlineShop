@@ -50,4 +50,9 @@ public class OrderController {
         orderService.requestWarrantyOrReturn(request);
         return ResponseEntity.ok().build();
     }
+    @PutMapping("/{order_id}/cancel")
+    public ResponseEntity<Void> cancelOrder(@PathVariable Long order_id) {
+        orderService.cancelOrder(order_id);
+        return ResponseEntity.ok().build();
+    }
 }

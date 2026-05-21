@@ -11,7 +11,7 @@ document.addEventListener("DOMContentLoaded", function () {
     }
 
     const userInfo = JSON.parse(localStorage.getItem('userInfo')) || {};
-    document.getElementById('sidebar-name').innerText = userInfo.name || userInfo.username || 'Tài khoản';
+    document.getElementById('sidebar-name').innerText = userInfo.name || 'Tài khoản';
 
     document.querySelectorAll('.tab-btn').forEach(tab => {
         tab.addEventListener('click', function () {
@@ -212,6 +212,14 @@ function renderOrderDetail(order) {
             ${formattedDiscount ? `<div class="detail-row"><span>Giam gia (voucher):</span><span style="color:green;">- ${formattedDiscount}</span></div>` : ''}
             <div class="detail-row detail-total"><span>Tong thanh toan:</span><b>${formattedTotal}</b></div>
         </div>
+        ${order.order_status === 'WAIT' ? `
+            <div style="margin-top: 20px; text-align: right;">
+                <button onclick="huyDonHang(${order.order_id})" 
+                    style="background-color: #dc3545; color: white; border: none; padding: 10px 20px; border-radius: 6px; font-weight: 600; cursor: pointer; transition: 0.2s;">
+                    Hủy đơn hàng
+                </button>
+            </div>
+        ` : ''}
     `;
 }
 
@@ -492,6 +500,42 @@ async function guiYeuCau(imei) {
     }
 }
 
+async function huyDonHang(orderId) {
+    if (!confirm('Bạn có chắc chắn muốn hủy đơn hàng này không?')) {
+        return;
+    }
+
+    const accessToken = localStorage.getItem('accessToken');
+    if (!accessToken) {
+        window.location.href = 'login.html';
+        return;
+    }
+
+    try {
+        const response = await fetch(`${API_ORDERS_URL}/${orderId}/cancel`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Bearer ${accessToken}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (response.ok) {
+            closeModal();
+            showToast('Hủy đơn hàng thành công!', 'success');
+            // Reload list
+            loadOrders('', 1);
+        } else {
+            const err = await response.json();
+            const errorMsg = (err.error && err.error.message) || err.message || 'Hủy đơn hàng thất bại. Vui lòng thử lại!';
+            showToast(errorMsg, 'error');
+        }
+    } catch (err) {
+        console.error(err);
+        showToast('Lỗi kết nối. Vui lòng thử lại!', 'error');
+    }
+}
+
 window.openOrderDetail = openOrderDetail;
 window.closeModal = closeModal;
 window.loadOrders = loadOrders;
@@ -502,3 +546,4 @@ window.chonSao = chonSao;
 window.guiDanhGia = guiDanhGia;
 window.moFormYeuCauBaoHanhDoiTra = moFormYeuCauBaoHanhDoiTra;
 window.guiYeuCau = guiYeuCau;
+window.huyDonHang = huyDonHang;

@@ -173,7 +173,22 @@ function renderReviews(reviews) {
             </span>`;
         }
 
-        const userName = `Khách hàng #${review.user_id}`;
+        const userName = review.username || `Khách hàng #${review.user_id}`;
+
+        let staffReplyHtml = '';
+        if (review.staff_reply) {
+            const replyDateObj = new Date(review.reply_date);
+            const replyTimeString = `${replyDateObj.getHours()}:${replyDateObj.getMinutes().toString().padStart(2, '0')} ${replyDateObj.getDate()}/${replyDateObj.getMonth() + 1}/${replyDateObj.getFullYear()}`;
+            staffReplyHtml = `
+                <div class="staff-reply-box" style="margin-top: 12px; margin-left: 20px; padding: 12px 16px; background-color: #f8f9fa; border-left: 4px solid #d70018; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.05);">
+                    <div style="font-weight: bold; color: #d70018; display: flex; align-items: center; gap: 6px; font-size: 13px; margin-bottom: 6px;">
+                        <span>💬 Phản hồi từ cửa hàng</span>
+                        <span style="font-weight: normal; color: #888; font-size: 11px;">(${replyTimeString})</span>
+                    </div>
+                    <div style="font-size: 14px; color: #333; line-height: 1.5;">${review.staff_reply}</div>
+                </div>
+            `;
+        }
 
         const htmlItem = `
             <div class="item-binh-luan-mc">
@@ -185,9 +200,9 @@ function renderReviews(reviews) {
                     <div class="sao-danh-gia" style="margin: 5px 0;">${stars}</div>
                     <div class="text-binh-luan">${review.comment}</div>
                     <div class="action-binh-luan" style="margin-top: 10px; font-size: 13px; color: #666;">
-                        <button class="btn-thich" style="cursor: pointer; border: none; background: none; color: #007bff;">👍 Hữu ích</button>
                         <span class="thoi-gian" style="margin-left: 15px;">${timeString}</span>
                     </div>
+                    ${staffReplyHtml}
                 </div>
             </div>
         `;

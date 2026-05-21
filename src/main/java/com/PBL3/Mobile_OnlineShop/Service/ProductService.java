@@ -243,10 +243,13 @@ public class ProductService {
                     .builder()
                     .product_review_id(pr.getProductReviewId())
                     .user_id(pr.getUser().getUserId())
-                    .review_date(pr.getReviewDate().toString())
+                    .username(pr.getUser().getUsername())
+                    .review_date(pr.getReviewDate() != null ? pr.getReviewDate().toString() : null)
                     .rating(pr.getRating())
                     .comment(pr.getComment())
                     .is_purchased(pr.getIsPurchased())
+                    .staff_reply(pr.getStaffReply())
+                    .reply_date(pr.getReplyDate() != null ? pr.getReplyDate().toString() : null)
                     .variant(variantInfo)
                     .build();
             reviews.add(reviewResponse);

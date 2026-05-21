@@ -22,4 +22,7 @@ public class ValidateVoucherRequest {
     @Positive(message = "Tổng đơn hàng phải lớn hơn 0")
     @JsonProperty("order_total")
     Double orderTotal;
+
+    @JsonProperty("product_variant_ids")
+    java.util.List<Long> productVariantIds;
 }

@@ -167,8 +167,8 @@ function renderPhonesToHTML(phones) {
         <p class="gia-hien-tai">${price}</p>
     </div>
     <div class="nhom-nut-mua">
-        <a href="product-detail.html?id=${item.product_id}"><button class="nut-them-vao-gio">Xem chi tiet</button></a>
-        <a href="product-detail.html?id=${item.product_id}"><button class="nut-mua">Mua hang</button></a>
+        <a href="product-detail.html?id=${item.product_id}"><button class="nut-them-vao-gio">Xem chi tiết</button></a>
+        <a href="product-detail.html?id=${item.product_id}"><button class="nut-mua">Mua hàng</button></a>
     </div>
     </div>
     `;
