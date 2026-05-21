@@ -7,87 +7,8 @@ const API_ADMIN_PRODUCTS = `${API_BASE}/api/admin/products`;
 let currentPage = 1;
 let currentLimit = 10;
 
-// ===== AUTH HELPERS =====
-function getAccessToken() {
-    return localStorage.getItem('accessToken');
-}
 
-function getAuthHeaders() {
-    return {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${getAccessToken()}`
-    };
-}
 
-function checkAdminAuth() {
-    const token = getAccessToken();
-    const userInfo = localStorage.getItem('userInfo');
-    if (!token || !userInfo) { window.location.href = 'login.html'; return false; }
-    try {
-        const data = JSON.parse(userInfo);
-        const role = data.user ? data.user.role : data.role;
-        if (role !== 'ADMIN') { window.location.href = 'login.html'; return false; }
-        const nameEl = document.querySelector('.admin-name');
-        const avatarEl = document.querySelector('.admin-avatar');
-        const uname = data.user ? data.user.username : data.username;
-        if (nameEl && uname) nameEl.textContent = uname;
-        if (avatarEl && uname) avatarEl.textContent = uname.charAt(0).toUpperCase();
-    } catch (e) { window.location.href = 'login.html'; return false; }
-    return true;
-}
-
-function adminLogout() {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('userInfo');
-    window.location.href = 'login.html';
-}
-
-// ===== TOAST =====
-function showToast(message, type = 'success') {
-    let container = document.getElementById('toast-container');
-    if (!container) {
-        container = document.createElement('div');
-        container.id = 'toast-container';
-        container.style.cssText = 'position:fixed;top:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:10px;';
-        document.body.appendChild(container);
-    }
-    const toast = document.createElement('div');
-    toast.style.cssText = `min-width:250px;padding:15px 20px;border-radius:8px;color:#fff;font-size:14px;font-family:var(--font);box-shadow:0 4px 20px rgba(0,0,0,.12);animation:slideIn .4s ease forwards;background:${type === 'error' ? 'var(--red)' : 'var(--green)'}`;
-    toast.textContent = message;
-    container.appendChild(toast);
-    setTimeout(() => {
-        toast.style.opacity = '0';
-        toast.style.transform = 'translateX(100%)';
-        toast.style.transition = 'all .4s';
-        setTimeout(() => toast.remove(), 400);
-    }, 3000);
-}
-
-// ===== SIDEBAR =====
-function toggleSidebar() {
-    const sidebar = document.getElementById('sidebar');
-    const main = document.querySelector('.main-content');
-    if (window.innerWidth <= 768) {
-        sidebar.classList.toggle('mobile-open');
-    } else {
-        sidebar.classList.toggle('collapsed');
-        main.classList.toggle('expanded');
-    }
-}
-
-// ===== FORMAT =====
-function formatCurrency(value) {
-    if (value === null || value === undefined) return '--';
-    return new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(value);
-}
-
-function renderStars(rating) {
-    if (!rating) return '<span class="rating-stars">☆☆☆☆☆</span><span class="rating-value">--</span>';
-    const full = Math.round(rating);
-    let s = '';
-    for (let i = 0; i < 5; i++) s += i < full ? '★' : '☆';
-    return `<span class="rating-stars">${s}</span><span class="rating-value">${rating.toFixed(1)}</span>`;
-}
 
 // ========================================
 // GET /api/products (public, for listing)

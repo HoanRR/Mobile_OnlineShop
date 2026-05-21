@@ -3,87 +3,11 @@ const API_BASE = 'http://localhost:8080';
 const API_ADMIN_DEVICES = `${API_BASE}/api/admin/devices`;
 const API_PRODUCTS_PUBLIC = `${API_BASE}/api/products`;
 
-// ===== AUTH HELPERS =====
-function getAccessToken() {
-    return localStorage.getItem('accessToken');
-}
 
-function getAuthHeaders() {
-    return {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${getAccessToken()}`
-    };
-}
 
-function checkAdminAuth() {
-    const token = getAccessToken();
-    const userInfo = localStorage.getItem('userInfo');
-    if (!token || !userInfo) { window.location.href = 'login.html'; return false; }
-    try {
-        const data = JSON.parse(userInfo);
-        const role = data.user ? data.user.role : data.role;
-        if (role !== 'ADMIN') { window.location.href = 'login.html'; return false; }
-        const nameEl = document.querySelector('.admin-name');
-        const avatarEl = document.querySelector('.admin-avatar');
-        const uname = data.user ? data.user.username : data.username;
-        if (nameEl && uname) nameEl.textContent = uname;
-        if (avatarEl && uname) avatarEl.textContent = uname.charAt(0).toUpperCase();
-    } catch (e) { window.location.href = 'login.html'; return false; }
-    return true;
-}
 
-function adminLogout() {
-    localStorage.removeItem('accessToken');
-    localStorage.removeItem('userInfo');
-    window.location.href = 'login.html';
-}
 
-// ===== TOAST =====
-function showToast(message, type = 'success') {
-    let container = document.getElementById('toast-container');
-    if (!container) {
-        container = document.createElement('div');
-        container.id = 'toast-container';
-        container.style.cssText = 'position:fixed;top:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:10px;';
-        document.body.appendChild(container);
-    }
-    const toast = document.createElement('div');
-    toast.style.cssText = `min-width:250px;padding:15px 20px;border-radius:8px;color:#fff;font-size:14px;font-family:var(--font);box-shadow:0 4px 20px rgba(0,0,0,.12);animation:slideIn .4s ease forwards;background:${type === 'error' ? 'var(--red)' : 'var(--green)'}`;
-    toast.textContent = message;
-    container.appendChild(toast);
-    setTimeout(() => {
-        toast.style.opacity = '0';
-        toast.style.transform = 'translateX(100%)';
-        toast.style.transition = 'all .4s';
-        setTimeout(() => toast.remove(), 400);
-    }, 3000);
-}
 
-function toggleSidebar() {
-    const sidebar = document.getElementById('sidebar');
-    const main = document.querySelector('.main-content');
-    if (window.innerWidth <= 768) {
-        sidebar.classList.toggle('mobile-open');
-    } else {
-        sidebar.classList.toggle('collapsed');
-        main.classList.toggle('expanded');
-    }
-}
-
-function formatDate(dateStr) {
-    if (!dateStr) return '--';
-    const d = new Date(dateStr);
-    if (isNaN(d.getTime())) return dateStr;
-    return d.toLocaleDateString('vi-VN') + ' ' + d.toLocaleTimeString('vi-VN', { hour: '2-digit', minute: '2-digit' });
-}
-
-function getStatusBadge(status) {
-    if (!status) return '<span class="device-status">--</span>';
-    if (status.toUpperCase() === 'INSTOCK') return '<span class="device-status status-instock">Trong kho</span>';
-    if (status.toUpperCase() === 'SOLD') return '<span class="device-status status-sold">Đã bán</span>';
-    if (status.toUpperCase() === 'DEFECTIVE') return '<span class="device-status status-defective">Lỗi/Hỏng</span>';
-    return `<span class="device-status">${status}</span>`;
-}
 
 // ===================================
 // GET /api/admin/devices/{imei}
