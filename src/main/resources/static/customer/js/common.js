@@ -8,7 +8,7 @@ function capNhatGiaoDienHeader() {
 
         dangNhapContainer.innerHTML = `
             <div class="user-menu" style="display: flex; align-items: center; gap: 10px;">
-                <a href="profile.html" class="btn-header" style="display: flex; align-items: center; gap: 5px;">
+                <a href="profile" class="btn-header" style="display: flex; align-items: center; gap: 5px;">
                     <img src="./img/user.svg" alt="User">
                     <h3>Xin chào, ${userInfo.name || userInfo.username || 'Bạn'}</h3>
                 </a>
@@ -27,9 +27,9 @@ function capNhatGiaoDienHeader() {
         searchBtn.addEventListener('click', function () {
             const query = searchInput.value.trim();
             if (query) {
-                window.location.href = `index.html?search=${encodeURIComponent(query)}`;
+                window.location.href = `index?search=${encodeURIComponent(query)}`;
             } else {
-                window.location.href = 'index.html';
+                window.location.href = 'index';
             }
         });
 
@@ -89,7 +89,7 @@ function xuLyDangXuat() {
     localStorage.removeItem('userInfo');
 
 
-    window.location.href = 'login.html';
+    window.location.href = 'login';
 }
 
 /**

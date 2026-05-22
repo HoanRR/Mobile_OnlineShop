@@ -2,14 +2,14 @@
 
 // Danh sách tiêu đề trang tương ứng với từng file HTML
 const DANH_SACH_TIEU_DE = {
-  'dashboard.html': 'Tổng quan',
-  'pos.html': 'POS Bán Hàng',
-  'checkout-info.html': 'Thanh toán POS',
-  'orders.html': 'Quản lý Đơn hàng',
-  'products.html': 'Tra cứu Sản phẩm',
-  'warranty.html': 'Tra cứu Bảo hành',
-  'reviews.html': 'Quản lý Đánh giá',
-  'review-detail.html': 'Chi tiết Đánh giá'
+  'dashboard': 'Tổng quan',
+  'pos': 'POS Bán Hàng',
+  'checkout-info': 'Thanh toán POS',
+  'orders': 'Quản lý Đơn hàng',
+  'products': 'Tra cứu Sản phẩm',
+  'warranty': 'Tra cứu Bảo hành',
+  'reviews': 'Quản lý Đánh giá',
+  'review-detail': 'Chi tiết Đánh giá'
 };
 
 document.addEventListener('DOMContentLoaded', async function () {
@@ -50,7 +50,7 @@ async function taiGiaoDienChung() {
  * Hàm lấy tên file hiện tại (ví dụ: 'orders.html')
  */
 function layTenFileHienTai() {
-  return window.location.pathname.split('/').pop() || 'dashboard.html';
+  return window.location.pathname.split('/').pop() || 'dashboard';
 }
 
 /**
@@ -93,7 +93,7 @@ function XuLyDangXuat() {
   localStorage.removeItem('refresh_token');
   localStorage.removeItem('userInfo');
   
-  window.location.href = '../customer/login.html';
+  window.location.href = '../customer/login';
 }
 
 /**

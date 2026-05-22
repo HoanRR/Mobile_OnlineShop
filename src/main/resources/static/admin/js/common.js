@@ -15,14 +15,14 @@ function checkAdminAuth() {
     const token = getAccessToken();
     const userInfo = localStorage.getItem('userInfo');
     if (!token || !userInfo) {
-        window.location.href = '../customer/login.html';
+        window.location.href = '../customer/login';
         return false;
     }
     try {
         const data = JSON.parse(userInfo);
         const role = data.user ? data.user.role : data.role;
         if (role !== 'ADMIN') {
-            window.location.href = '../customer/login.html';
+            window.location.href = '../customer/login';
             return false;
         }
         // Update admin profile in sidebar
@@ -32,7 +32,7 @@ function checkAdminAuth() {
         if (nameEl && uname) nameEl.textContent = uname;
         if (avatarEl && uname) avatarEl.textContent = uname.charAt(0).toUpperCase();
     } catch (e) {
-        window.location.href = '../customer/login.html';
+        window.location.href = '../customer/login';
         return false;
     }
     return true;
@@ -41,7 +41,7 @@ function checkAdminAuth() {
 function adminLogout() {
     localStorage.removeItem('accessToken');
     localStorage.removeItem('userInfo');
-    window.location.href = '../customer/login.html';
+    window.location.href = '../customer/login';
 }
 
 function renderStars(rating) {

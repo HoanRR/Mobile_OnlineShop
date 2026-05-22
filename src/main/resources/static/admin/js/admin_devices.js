@@ -32,7 +32,7 @@ async function searchDevice(event) {
 
         if (response.status === 401 || response.status === 403) {
             showToast('Phiên đăng nhập hết hạn.', 'error');
-            setTimeout(() => window.location.href = 'login.html', 1500);
+            setTimeout(() => window.location.href = 'login', 1500);
             return;
         }
 

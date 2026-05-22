@@ -94,7 +94,7 @@ document.addEventListener('DOMContentLoaded', function () {
                     message: 'Đặt lại mật khẩu thành công! Bạn có thể đăng nhập bằng mật khẩu mới.',
                     type: 'success'
                 }));
-                window.location.href = 'login.html';
+                window.location.href = 'login';
             } else {
                 showToast(data.message || 'Mã OTP không đúng hoặc đã hết hạn.', 'error');
             }

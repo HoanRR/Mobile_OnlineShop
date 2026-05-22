@@ -7,7 +7,7 @@ document.addEventListener("DOMContentLoaded", function () {
             message: 'Vui lòng đăng nhập để xem thông tin cá nhân!',
             type: 'warning'
         }));
-        window.location.href = 'login.html';
+        window.location.href = 'login';
         return;
     }
 

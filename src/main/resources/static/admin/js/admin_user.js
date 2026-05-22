@@ -44,7 +44,7 @@ async function loadUsers(page = 1) {
 
         if (response.status === 401 || response.status === 403) {
             showToast('Phiên đăng nhập hết hạn.', 'error');
-            setTimeout(() => { window.location.href = '../customer/login.html'; }, 1500);
+            setTimeout(() => { window.location.href = '../customer/login'; }, 1500);
             return;
         }
 
@@ -160,7 +160,7 @@ async function viewUserDetail(userId) {
 
         if (response.status === 401 || response.status === 403) {
             showToast('Phiên đăng nhập hết hạn.', 'error');
-            setTimeout(() => { window.location.href = '../customer/login.html'; }, 1500);
+            setTimeout(() => { window.location.href = '../customer/login'; }, 1500);
             return;
         }
 

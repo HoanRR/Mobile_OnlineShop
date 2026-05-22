@@ -130,7 +130,7 @@ function setupLogout() {
 
                     // Redirect to home
                     setTimeout(() => {
-                        window.location.href = 'index.html';
+                        window.location.href = 'index';
                     }, 500);
                 } else {
                     typeof showToast !== 'undefined' ? showToast('Có lỗi xảy ra khi đăng xuất', 'error') : alert('Có lỗi xảy ra khi đăng xuất');
@@ -149,7 +149,7 @@ function setupLogout() {
                 updateHeaderAuth();
 
                 setTimeout(() => {
-                    window.location.href = 'index.html';
+                    window.location.href = 'index';
                 }, 500);
             }
         });

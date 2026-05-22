@@ -62,7 +62,7 @@ function docGioHangTuSession() {
 
 function canhBaoGioHangTrong() {
   if (typeof showToast === 'function') showToast('Giỏ hàng trống! Đang chuyển về trang POS...', 'warning');
-  setTimeout(() => { window.location.href = 'pos.html'; }, 1500);
+  setTimeout(() => { window.location.href = 'pos'; }, 1500);
 }
 
 function dinhDangTien(soTien) {

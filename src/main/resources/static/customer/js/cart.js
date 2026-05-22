@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (!token) {
         const container = document.getElementById('cart-items-list');
         if (!container) return;
-        container.innerHTML = `<p class="thong-bao-trong">Vui lòng <a href="login.html">đăng nhập</a> để xem giỏ hàng của bạn.</p>`;
+        container.innerHTML = `<p class="thong-bao-trong">Vui lòng <a href="login">đăng nhập</a> để xem giỏ hàng của bạn.</p>`;
         document.querySelector('.cart-header').style.display = 'none';
         document.querySelector('.cart-summary').innerHTML = '<h3>Tóm tắt đơn hàng</h3><p>Giỏ hàng trống</p>';
         return;
@@ -30,7 +30,7 @@ export async function addToCart(productID, quantity = 1) {
     const token = localStorage.getItem("accessToken");
     if (!token) {
         showToast('Vui lòng đăng nhập để thực hiện chức năng này!', 'warning');
-        window.location.href = "login.html";
+        window.location.href = "login";
         return;
     }
 
@@ -48,7 +48,7 @@ export async function addToCart(productID, quantity = 1) {
             showToast('Đã thêm sản phẩm vào giỏ hàng thành công!', 'success');
         } else if (response.status === 401) {
             localStorage.removeItem('accessToken');
-            window.location.href = 'login.html';
+            window.location.href = 'login';
         } else {
             const errorData = await response.json();
             showToast(errorData.message || 'Không thể thêm vào giỏ hàng', 'error');
@@ -76,7 +76,7 @@ async function loadCartFromAPI() {
         } else if (response.status === 401) {
             localStorage.removeItem('accessToken');
             localStorage.removeItem('refreshToken');
-            window.location.href = 'login.html';
+            window.location.href = 'login';
         } else {
             const container = document.getElementById('cart-items-list');
             container.innerHTML = '<p class="thong-bao-trong">Không thể tải giỏ hàng. Vui lòng thử lại!</p>';
@@ -179,7 +179,7 @@ function proceedToCheckout() {
     localStorage.setItem('selectedCheckoutItems', JSON.stringify(selectedItemIds));
     localStorage.removeItem('appliedVoucher');
 
-    window.location.href = 'checkout.html';
+    window.location.href = 'checkout';
 }
 
 // --------------------------------------------------------
@@ -204,7 +204,7 @@ async function updateQuantity(cartDetailId, newQuantity) {
         } else if (response.status === 401) {
             localStorage.removeItem('accessToken');
             localStorage.removeItem('refreshToken');
-            window.location.href = 'login.html';
+            window.location.href = 'login';
         } else if (response.status === 400) {
             showToast('Vượt quá số lượng hàng tồn kho', 'warning');
         } else {
@@ -241,7 +241,7 @@ async function removeCartItem(cartDetailId) {
         } else if (response.status === 401) {
             localStorage.removeItem('accessToken');
             localStorage.removeItem('refreshToken');
-            window.location.href = 'login.html';
+            window.location.href = 'login';
         } else {
             showToast('Không thể xóa sản phẩm. Vui lòng thử lại!', 'error');
         }

@@ -158,7 +158,7 @@ function renderPhonesToHTML(phones) {
         const price = (item.min_price || 0).toLocaleString('vi-VN') + 'đ';
         const htmlCard = `
     <div class="the-san-pham">
-    <a href="product-detail.html?id=${item.product_id}" class="product-link">
+    <a href="product-detail?id=${item.product_id}" class="product-link">
         <img src="${item.product_image_link}" alt="${item.product_name}"
              onerror="this.src='https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg'">
         <h3>${item.product_name}</h3>
@@ -167,8 +167,8 @@ function renderPhonesToHTML(phones) {
         <p class="gia-hien-tai">${price}</p>
     </div>
     <div class="nhom-nut-mua">
-        <a href="product-detail.html?id=${item.product_id}"><button class="nut-them-vao-gio">Xem chi tiết</button></a>
-        <a href="product-detail.html?id=${item.product_id}"><button class="nut-mua">Mua hàng</button></a>
+        <a href="product-detail?id=${item.product_id}"><button class="nut-them-vao-gio">Xem chi tiết</button></a>
+        <a href="product-detail?id=${item.product_id}"><button class="nut-mua">Mua hàng</button></a>
     </div>
     </div>
     `;

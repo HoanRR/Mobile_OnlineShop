@@ -110,7 +110,7 @@ function hienThiBangDanhGia() {
                 <td><span style="color:#f59e0b; font-weight:bold;">${diemTb} <i class="fa-solid fa-star"></i></span></td>
                 <td style="color:var(--text);">${tongDanhGia} lượt</td>
                 <td style="color:var(--muted); font-size:13px;">${DinhDangNgay(sp.latest_review_date) || '-'}</td>
-                <td><a href="review-detail.html?id=${id}" class="btn-edit" style="text-decoration:none; display:inline-block;">Xem chi tiết</a></td>
+                <td><a href="review-detail?id=${id}" class="btn-edit" style="text-decoration:none; display:inline-block;">Xem chi tiết</a></td>
             </tr>
         `;
   }).join('');

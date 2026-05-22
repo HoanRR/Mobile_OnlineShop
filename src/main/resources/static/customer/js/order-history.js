@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", function () {
             message: 'Vui lòng đăng nhập để xem thông tin cá nhân!',
             type: 'warning'
         }));
-        window.location.href = 'login.html';
+        window.location.href = 'login';
         return;
     }
 
@@ -177,7 +177,7 @@ function renderOrderDetail(order) {
                         <div class="detail-product-price">${itemPrice}</div>
                         ${isDone ? `
                             <button class="btn-review-small" onclick="moFormDanhGia(${order.order_id}, ${item.variant_id}, '${item.product_name}')">Đánh giá</button>
-                            <button class="btn-review-small" onclick="window.location.href='product-detail.html?id=${item.product_id}'">Mua lại</button>
+                            <button class="btn-review-small" onclick="window.location.href='product-detail?id=${item.product_id}'">Mua lại</button>
                             ${(item.imei && item.device_status === 'SOLD') ? `
                                 <button class="btn-review-small btn-warranty-request" style="background-color:#f5a623; color:white; border:none;" onclick="moFormYeuCauBaoHanhDoiTra('${item.imei}', '${item.product_name} (${item.color} - ${item.storage_capacity}GB)')">Bảo hành / Đổi trả</button>
                             ` : ''}
@@ -250,7 +250,7 @@ async function muaLai(orderId) {
                 type: 'warning'
             }));
             localStorage.removeItem('accessToken');
-            window.location.href = 'login.html';
+            window.location.href = 'login';
             return;
         }
         if (!response.ok) throw new Error("Khong the tai don hang");
@@ -258,7 +258,7 @@ async function muaLai(orderId) {
         
         if (order.items && order.items.length > 0) {
             // Chuyển hướng đến sản phẩm đầu tiên trong đơn hàng
-            window.location.href = `product-detail.html?id=${order.items[0].product_id}`;
+            window.location.href = `product-detail?id=${order.items[0].product_id}`;
         } else {
             showToast("Đơn hàng không có sản phẩm nào để mua lại!", "warning");
         }
@@ -285,7 +285,7 @@ async function danhGiaOrder(orderId) {
                 type: 'warning'
             }));
             localStorage.removeItem('accessToken');
-            window.location.href = 'login.html';
+            window.location.href = 'login';
             return;
         }
         if (!response.ok) throw new Error("Khong the tai don hang");
@@ -478,7 +478,7 @@ async function guiYeuCau(imei) {
 
     const accessToken = localStorage.getItem('accessToken');
     if (!accessToken) {
-        window.location.href = 'login.html';
+        window.location.href = 'login';
         return;
     }
 
@@ -522,7 +522,7 @@ async function huyDonHang(orderId) {
 
     const accessToken = localStorage.getItem('accessToken');
     if (!accessToken) {
-        window.location.href = 'login.html';
+        window.location.href = 'login';
         return;
     }
 

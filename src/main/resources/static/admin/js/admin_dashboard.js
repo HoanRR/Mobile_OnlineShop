@@ -32,7 +32,7 @@ async function loadRevenueReport() {
 
         if (response.status === 401 || response.status === 403) {
             showToast('Phiên đăng nhập hết hạn. Vui lòng đăng nhập lại.', 'error');
-            setTimeout(() => { window.location.href = 'login.html'; }, 1500);
+            setTimeout(() => { window.location.href = 'login'; }, 1500);
             return;
         }
 
@@ -216,7 +216,7 @@ async function loadTopProducts() {
 
         if (response.status === 401 || response.status === 403) {
             showToast('Phiên đăng nhập hết hạn.', 'error');
-            setTimeout(() => { window.location.href = 'login.html'; }, 1500);
+            setTimeout(() => { window.location.href = 'login'; }, 1500);
             return;
         }
 

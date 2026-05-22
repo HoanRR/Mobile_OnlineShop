@@ -51,11 +51,11 @@ async function xuLyDangNhap(event) {
             // Chuyển hướng sau 1s theo role (3 hướng)
             setTimeout(() => {
                 if (userRole === "ADMIN") {
-                    window.location.href = '../admin/index_admin.html';
+                    window.location.href = '../admin/index_admin';
                 } else if (userRole === "EMPLOYEE" || userRole === "STAFF") {
-                    window.location.href = '../staff/pos.html';
+                    window.location.href = '../staff/pos';
                 } else {
-                    window.location.href = 'index.html';
+                    window.location.href = 'index';
                 }
             }, 1000);
 
@@ -111,7 +111,7 @@ async function xuLyDangKy(event) {
         if (response.ok) {
             showToast("Đăng ký thành công! Vui lòng đăng nhập.", "success");
             setTimeout(() => {
-                window.location.href = 'login.html';
+                window.location.href = 'login';
             }, 1500);
         } else {
             const errData = await response.json();
@@ -148,7 +148,7 @@ async function xuLyQuenMatKhau(event) {
         btnSubmit.innerText = "Đã gửi thành công";
         
         setTimeout(() => {
-            window.location.href = 'login.html';
+            window.location.href = 'login';
         }, 3000);
     }, 1500);
 }

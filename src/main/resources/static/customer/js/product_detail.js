@@ -230,7 +230,7 @@ window.addEventListener("DOMContentLoaded", () => {
             const token = localStorage.getItem('accessToken');
             if (!token) {
                 showToast('Vui lòng đăng nhập để mua hàng!', 'warning');
-                window.location.href = 'login.html';
+                window.location.href = 'login';
                 return;
             }
 
@@ -293,7 +293,7 @@ window.addEventListener("DOMContentLoaded", () => {
                 localStorage.setItem('selectedCheckoutItems', JSON.stringify([String(targetItem.cart_detail_id)]));
                 localStorage.removeItem('appliedVoucher');
 
-                window.location.href = 'checkout.html';
+                window.location.href = 'checkout';
 
             } catch (error) {
                 console.error('Lỗi Mua ngay:', error);
