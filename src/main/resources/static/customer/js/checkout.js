@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const token = localStorage.getItem('accessToken');
     if (!token) {
         showToast('Vui lòng đăng nhập để tiếp tục thanh toán!', 'warning');
-        window.location.href = 'login.html';
+        window.location.href = 'login';
         return;
     }
 
@@ -34,7 +34,7 @@ async function loadCartFromAPI() {
             const selectedItemsStr = localStorage.getItem('selectedCheckoutItems');
             if (!selectedItemsStr) {
                 showToast('Bạn chưa chọn sản phẩm nào để thanh toán!', 'warning');
-                window.location.href = 'cart.html';
+                window.location.href = 'cart';
                 return;
             }
 
@@ -46,7 +46,7 @@ async function loadCartFromAPI() {
 
             if (cartData.items.length === 0) {
                 showToast('Sản phẩm bạn chọn không còn trong giỏ hàng!', 'warning');
-                window.location.href = 'cart.html';
+                window.location.href = 'cart';
                 return;
             }
 
@@ -54,7 +54,7 @@ async function loadCartFromAPI() {
         } else if (response.status === 401) {
             localStorage.removeItem('accessToken');
             localStorage.removeItem('refreshToken');
-            window.location.href = 'login.html';
+            window.location.href = 'login';
         } else {
             showToast('Không thể tải giỏ hàng. Vui lòng thử lại!', 'error');
         }
@@ -68,7 +68,7 @@ async function loadCartFromAPI() {
 function renderCheckoutItems() {
     if (!cartData || !cartData.items || cartData.items.length === 0) {
         showToast('Giỏ hàng của bạn trống!', 'warning');
-        window.location.href = 'cart.html';
+        window.location.href = 'cart';
         return;
     }
 
@@ -118,7 +118,7 @@ function recalculateCheckoutTotal(subtotalParam) {
     const discountRow = document.getElementById('checkout-discount-row');
 
     if (appliedVoucher && appliedVoucher.discount_percentage > 0) {
-        const discountAmt = subtotal * (appliedVoucher.discount_percentage / 100);
+        const discountAmt = appliedVoucher.discount_amount !== undefined && appliedVoucher.discount_amount !== null ? appliedVoucher.discount_amount : (subtotal * (appliedVoucher.discount_percentage / 100));
         const finalTotal = Math.max(0, subtotal - discountAmt);
 
         discountRow.style.display = 'flex';
@@ -160,7 +160,7 @@ window.applyDiscountCheckout = async function () {
         : [];
 
     const token = localStorage.getItem('accessToken');
-    if (!token) { window.location.href = 'login.html'; return; }
+    if (!token) { window.location.href = 'login'; return; }
 
     // Disable nút
     const btn = document.querySelector('.discount-section button');
@@ -173,7 +173,13 @@ window.applyDiscountCheckout = async function () {
             body: JSON.stringify({
                 voucher_code: code,
                 order_total: subtotal,
-                product_variant_ids: variantIds
+                product_variant_ids: variantIds,
+                items: cartData && cartData.items
+                    ? cartData.items.map(item => ({
+                        variant_id: item.variant.product_variant_id,
+                        quantity: item.quantity
+                      }))
+                    : []
             })
         });
 
@@ -184,7 +190,11 @@ window.applyDiscountCheckout = async function () {
             localStorage.setItem('appliedVoucher', JSON.stringify(appliedVoucher));
 
             msg.style.color = '#28a745';
-            msg.innerText = `✓ Áp dụng thành công! Giảm ${data.discount_percentage}% (-${data.discount_amount.toLocaleString('vi-VN')}đ)`;
+            let msgText = `✓ Áp dụng thành công! Giảm ${data.discount_percentage}% (-${data.discount_amount.toLocaleString('vi-VN')}đ)`;
+            if (data.eligible_product_names && data.eligible_product_names.length > 0) {
+                msgText += ` áp dụng cho: ${data.eligible_product_names.join(', ')}`;
+            }
+            msg.innerText = msgText;
             recalculateCheckoutTotal();
         } else {
             appliedVoucher = null;
@@ -306,11 +316,11 @@ async function xuLyDatHang() {
             localStorage.removeItem('appliedVoucher');
             localStorage.removeItem('selectedCheckoutItems');
 
-            window.location.href = 'order-success.html';
+            window.location.href = 'order-success';
         } else if (response.status === 401) {
             localStorage.removeItem('accessToken');
             localStorage.removeItem('refreshToken');
-            window.location.href = 'login.html';
+            window.location.href = 'login';
             const errorData = await response.json();
             const errorCode = (errorData.error && errorData.error.code) || errorData.code || '';
             const errorMsg = (errorData.error && errorData.error.message) || errorData.message || 'Đặt hàng thất bại. Vui lòng thử lại!';

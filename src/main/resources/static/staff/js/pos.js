@@ -332,7 +332,7 @@ function checkout() {
     voucherId: voucherApDung ? voucherApDung.voucher_id : null,
     voucherCode: voucherApDung ? voucherApDung.voucher_code : null
   }));
-  window.location.href = 'checkout-info.html';
+  window.location.href = 'checkout-info';
 }
 
 function dinhDangTienVN(soTien) {
@@ -375,7 +375,11 @@ async function apDungVoucher() {
       body: JSON.stringify({
         voucher_code: maVoucher,
         order_total: tongTam,
-        product_variant_ids: productVariantIds
+        product_variant_ids: productVariantIds,
+        items: gioHang.map(item => ({
+          variant_id: Number(item.id),
+          quantity: item.soLuong
+        }))
       })
     });
 
@@ -392,8 +396,13 @@ async function apDungVoucher() {
     voucherApDung = ketQua;
     giaTriGiamGia = ketQua.discount_amount || 0;
 
+    let thongBao = `✓ Áp dụng thành công! Giảm ${ketQua.discount_percentage}% (-${dinhDangTienVN(giaTriGiamGia)})`;
+    if (ketQua.eligible_product_names && ketQua.eligible_product_names.length > 0) {
+      thongBao += ` áp dụng cho: ${ketQua.eligible_product_names.join(', ')}`;
+    }
+
     hienThiKetQuaVoucher(
-      `✓ Áp dụng thành công! Giảm ${dinhDangTienVN(giaTriGiamGia)}`,
+      thongBao,
       'success'
     );
 

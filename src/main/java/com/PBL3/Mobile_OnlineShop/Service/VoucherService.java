@@ -213,7 +213,73 @@ public class VoucherService {
             }
         }
 
-        double discountAmount = request.getOrderTotal() * (voucher.getDiscountPercentage() / 100);
+        double eligibleTotal = 0.0;
+        final List<Long> allowedIds = (condition != null && condition.getProductVariants() != null && !condition.getProductVariants().isEmpty())
+                ? condition.getProductVariants().stream()
+                        .map(ProductVariant::getProductVariantId)
+                        .collect(Collectors.toList())
+                : null;
+
+        List<String> eligibleProductNames = new java.util.ArrayList<>();
+
+        if (request.getItems() != null && !request.getItems().isEmpty()) {
+            List<Long> requestedIds = request.getItems().stream()
+                    .map(ValidateVoucherRequest.VoucherItemRequest::getVariantId)
+                    .collect(Collectors.toList());
+            List<ProductVariant> variantsInDb = productVariantRepository.findAllById(requestedIds);
+
+            for (ValidateVoucherRequest.VoucherItemRequest item : request.getItems()) {
+                ProductVariant variant = variantsInDb.stream()
+                        .filter(v -> v.getProductVariantId().equals(item.getVariantId()))
+                        .findFirst()
+                        .orElse(null);
+                if (variant != null) {
+                    boolean isEligible = (allowedIds == null || allowedIds.contains(variant.getProductVariantId()));
+                    if (isEligible) {
+                        eligibleTotal += variant.getPrice() * item.getQuantity();
+                        String name = variant.getProduct() != null ? variant.getProduct().getProductName() : "Sản phẩm";
+                        if (variant.getStorageCapacity() != null) {
+                            name += " (" + variant.getStorageCapacity() + "GB)";
+                        }
+                        if (!eligibleProductNames.contains(name)) {
+                            eligibleProductNames.add(name);
+                        }
+                    }
+                }
+            }
+        } else if (request.getProductVariantIds() != null && !request.getProductVariantIds().isEmpty()) {
+            List<ProductVariant> variantsInDb = productVariantRepository.findAllById(request.getProductVariantIds());
+            for (ProductVariant variant : variantsInDb) {
+                boolean isEligible = (allowedIds == null || allowedIds.contains(variant.getProductVariantId()));
+                if (isEligible) {
+                    String name = variant.getProduct() != null ? variant.getProduct().getProductName() : "Sản phẩm";
+                    if (variant.getStorageCapacity() != null) {
+                        name += " (" + variant.getStorageCapacity() + "GB)";
+                    }
+                    if (!eligibleProductNames.contains(name)) {
+                        eligibleProductNames.add(name);
+                    }
+                }
+            }
+            if (allowedIds != null) {
+                double totalOfAll = variantsInDb.stream().mapToDouble(ProductVariant::getPrice).sum();
+                double totalOfEligible = variantsInDb.stream()
+                        .filter(v -> allowedIds.contains(v.getProductVariantId()))
+                        .mapToDouble(ProductVariant::getPrice)
+                        .sum();
+                if (totalOfAll > 0) {
+                    eligibleTotal = request.getOrderTotal() * (totalOfEligible / totalOfAll);
+                } else {
+                    eligibleTotal = request.getOrderTotal();
+                }
+            } else {
+                eligibleTotal = request.getOrderTotal();
+            }
+        } else {
+            eligibleTotal = request.getOrderTotal();
+        }
+
+        double discountAmount = eligibleTotal * (voucher.getDiscountPercentage() / 100);
         double finalTotal     = request.getOrderTotal() - discountAmount;
 
         return ValidateVoucherResponse.builder()
@@ -225,6 +291,7 @@ public class VoucherService {
                 .finalTotal(finalTotal)
                 .endDate(voucher.getEndDate() != null ? voucher.getEndDate().toString() : null)
                 .usageLimit(voucher.getUsageLimit())
+                .eligibleProductNames(eligibleProductNames)
                 .build();
     }
 

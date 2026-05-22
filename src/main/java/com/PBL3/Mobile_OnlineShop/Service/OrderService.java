@@ -466,8 +466,22 @@ public class OrderService {
                 }
             }
 
-            // Áp dụng giảm giá
-            Double discount = totalAmount * (voucher.getDiscountPercentage() / 100);
+            // Áp dụng giảm giá chỉ đối với các sản phẩm hợp lệ
+            Double eligibleAmount = 0.0;
+            if (condition != null && condition.getProductVariants() != null && !condition.getProductVariants().isEmpty()) {
+                List<Long> allowedIds = condition.getProductVariants().stream()
+                        .map(ProductVariant::getProductVariantId)
+                        .collect(Collectors.toList());
+
+                eligibleAmount = selectedItems.stream()
+                        .filter(cd -> allowedIds.contains(cd.getProductVariant().getProductVariantId()))
+                        .mapToDouble(cd -> cd.getProductVariant().getPrice() * cd.getQuantity())
+                        .sum();
+            } else {
+                eligibleAmount = totalAmount;
+            }
+
+            Double discount = eligibleAmount * (voucher.getDiscountPercentage() / 100);
             order.setVoucher(voucher);
             order.setDiscountAmount(discount);
 

@@ -34,4 +34,7 @@ public class ValidateVoucherResponse {
 
     @JsonProperty("usage_limit")
     Long usageLimit;
+
+    @JsonProperty("eligible_product_names")
+    java.util.List<String> eligibleProductNames;
 }

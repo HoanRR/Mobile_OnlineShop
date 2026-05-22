@@ -25,4 +25,20 @@ public class ValidateVoucherRequest {
 
     @JsonProperty("product_variant_ids")
     java.util.List<Long> productVariantIds;
+
+    @JsonProperty("items")
+    java.util.List<VoucherItemRequest> items;
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    @FieldDefaults(level = AccessLevel.PRIVATE)
+    public static class VoucherItemRequest {
+        @JsonProperty("variant_id")
+        Long variantId;
+
+        @JsonProperty("quantity")
+        Integer quantity;
+    }
 }
