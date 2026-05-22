@@ -96,10 +96,6 @@ function renderOrders(orders) {
                     </div>
                     <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;">
                         <button class="btn-view-detail" onclick="openOrderDetail(${order.order_id})">Xem chi tiết</button>
-                        ${isDone ? `
-                            <button class="btn-review-outline" onclick="danhGiaOrder(${order.order_id})">Đánh giá</button>
-                            <button class="btn-rebuy" onclick="muaLai(${order.order_id})">Mua lại</button>
-                        ` : ''}
                     </div>
                 </div>
             </div>
@@ -243,7 +239,7 @@ async function muaLai(orderId) {
         const response = await fetch(`${API_ORDERS_URL}/${orderId}`, {
             headers: { 'Authorization': `Bearer ${accessToken}`, 'Content-Type': 'application/json' }
         });
-        
+
         if (response.status === 401) {
             sessionStorage.setItem('pendingToast', JSON.stringify({
                 message: 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.',
@@ -255,10 +251,13 @@ async function muaLai(orderId) {
         }
         if (!response.ok) throw new Error("Khong the tai don hang");
         const order = await response.json();
-        
+
         if (order.items && order.items.length > 0) {
-            // Chuyển hướng đến sản phẩm đầu tiên trong đơn hàng
-            window.location.href = `product-detail?id=${order.items[0].product_id}`;
+            if (order.items.length === 1) {
+                window.location.href = `product-detail?id=${order.items[0].product_id}`;
+            } else {
+                openProductSelectionModal(order, 'REBUY');
+            }
         } else {
             showToast("Đơn hàng không có sản phẩm nào để mua lại!", "warning");
         }
@@ -278,7 +277,7 @@ async function danhGiaOrder(orderId) {
         const response = await fetch(`${API_ORDERS_URL}/${orderId}`, {
             headers: { 'Authorization': `Bearer ${accessToken}`, 'Content-Type': 'application/json' }
         });
-        
+
         if (response.status === 401) {
             sessionStorage.setItem('pendingToast', JSON.stringify({
                 message: 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.',
@@ -290,16 +289,143 @@ async function danhGiaOrder(orderId) {
         }
         if (!response.ok) throw new Error("Khong the tai don hang");
         const order = await response.json();
-        
+
         if (order.items && order.items.length > 0) {
-            const firstItem = order.items[0];
-            moFormDanhGia(order.order_id, firstItem.variant_id, firstItem.product_name);
+            if (order.items.length === 1) {
+                const firstItem = order.items[0];
+                moFormDanhGia(order.order_id, firstItem.variant_id, firstItem.product_name);
+            } else {
+                openProductSelectionModal(order, 'REVIEW');
+            }
         } else {
             showToast("Đơn hàng không có sản phẩm nào để đánh giá!", "warning");
         }
     } catch (error) {
         console.error("Lỗi:", error);
     }
+}
+
+function openProductSelectionModal(order, actionType) {
+    const existing = document.getElementById('product-selection-modal');
+    if (existing) existing.remove();
+
+    const title = actionType === 'REVIEW' ? 'Chọn sản phẩm để đánh giá' : 'Chọn sản phẩm để mua lại';
+
+    const modal = document.createElement('div');
+    modal.id = 'product-selection-modal';
+    modal.className = 'modal-overlay';
+    modal.style.display = 'flex';
+
+    const modalBox = document.createElement('div');
+    modalBox.className = 'modal-box';
+    modalBox.style.maxWidth = '500px';
+    modalBox.style.width = '90%';
+
+    const modalHeader = document.createElement('div');
+    modalHeader.className = 'modal-header';
+    modalHeader.style.display = 'flex';
+    modalHeader.style.justifyContent = 'space-between';
+    modalHeader.style.alignItems = 'center';
+    modalHeader.style.borderBottom = '1px solid #eee';
+    modalHeader.style.paddingBottom = '12px';
+    modalHeader.style.marginBottom = '15px';
+
+    const h3 = document.createElement('h3');
+    h3.style.margin = '0';
+    h3.style.fontSize = '18px';
+    h3.innerText = title;
+
+    const closeBtn = document.createElement('button');
+    closeBtn.className = 'modal-close-btn';
+    closeBtn.style.background = 'none';
+    closeBtn.style.border = 'none';
+    closeBtn.style.fontSize = '20px';
+    closeBtn.style.cursor = 'pointer';
+    closeBtn.style.color = '#999';
+    closeBtn.innerText = 'x';
+    closeBtn.onclick = () => modal.remove();
+
+    modalHeader.appendChild(h3);
+    modalHeader.appendChild(closeBtn);
+
+    const modalBody = document.createElement('div');
+    modalBody.className = 'modal-body';
+    modalBody.style.maxHeight = '400px';
+    modalBody.style.overflowY = 'auto';
+
+    order.items.forEach(item => {
+        const itemPrice = new Intl.NumberFormat('vi-VN', { style: 'currency', currency: 'VND' }).format(item.price_at_purchase);
+
+        const itemEl = document.createElement('div');
+        itemEl.className = 'detail-product-item';
+        itemEl.style.display = 'flex';
+        itemEl.style.justifyContent = 'space-between';
+        itemEl.style.alignItems = 'center';
+        itemEl.style.marginBottom = '10px';
+        itemEl.style.padding = '12px';
+        itemEl.style.border = '1px solid #eee';
+        itemEl.style.borderRadius = '8px';
+        itemEl.style.background = '#f9f9f9';
+
+        const infoDiv = document.createElement('div');
+        infoDiv.style.flex = '1';
+
+        const nameDiv = document.createElement('div');
+        nameDiv.style.fontWeight = 'bold';
+        nameDiv.style.fontSize = '14px';
+        nameDiv.style.color = '#333';
+        nameDiv.style.marginBottom = '4px';
+        nameDiv.innerText = item.product_name;
+
+        const variantDiv = document.createElement('div');
+        variantDiv.style.fontSize = '12px';
+        variantDiv.style.color = '#666';
+        variantDiv.innerText = `${item.color} - ${item.storage_capacity}GB`;
+
+        const priceDiv = document.createElement('div');
+        priceDiv.style.fontWeight = 'bold';
+        priceDiv.style.color = '#d70018';
+        priceDiv.style.fontSize = '13px';
+        priceDiv.style.marginTop = '4px';
+        priceDiv.innerText = itemPrice;
+
+        infoDiv.appendChild(nameDiv);
+        infoDiv.appendChild(variantDiv);
+        infoDiv.appendChild(priceDiv);
+
+        const btnDiv = document.createElement('div');
+        btnDiv.style.marginLeft = '15px';
+
+        const actionBtn = document.createElement('button');
+        actionBtn.className = 'btn-review-small';
+        if (actionType === 'REVIEW') {
+            actionBtn.innerText = 'Đánh giá';
+            actionBtn.onclick = () => {
+                modal.remove();
+                moFormDanhGia(order.order_id, item.variant_id, item.product_name);
+            };
+        } else {
+            actionBtn.innerText = 'Mua lại';
+            actionBtn.onclick = () => {
+                modal.remove();
+                window.location.href = `product-detail?id=${item.product_id}`;
+            };
+        }
+
+        btnDiv.appendChild(actionBtn);
+
+        itemEl.appendChild(infoDiv);
+        itemEl.appendChild(btnDiv);
+
+        modalBody.appendChild(itemEl);
+    });
+
+    modalBox.appendChild(modalHeader);
+    modalBox.appendChild(modalBody);
+    modal.appendChild(modalBox);
+
+    modal.addEventListener('click', e => { if (e.target === modal) modal.remove(); });
+    document.body.appendChild(modal);
 }
 
 function moFormDanhGia(orderId, variantId, productName) {
@@ -406,7 +532,7 @@ async function guiDanhGia(orderId, variantId) {
             document.getElementById('review-modal').remove();
             showToast('Cam on ban da danh gia san pham!', 'success');
         } else {
-                const err = await reviewRes.json();
+            const err = await reviewRes.json();
             errorEl.innerText = err.message || 'Gui danh gia that bai. Vui long thu lai!';
             errorEl.style.display = 'block';
         }
@@ -562,3 +688,4 @@ window.guiDanhGia = guiDanhGia;
 window.moFormYeuCauBaoHanhDoiTra = moFormYeuCauBaoHanhDoiTra;
 window.guiYeuCau = guiYeuCau;
 window.huyDonHang = huyDonHang;
+window.openProductSelectionModal = openProductSelectionModal;
