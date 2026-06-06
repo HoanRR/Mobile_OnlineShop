@@ -245,8 +245,7 @@ async function muaLai(orderId) {
                 message: 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.',
                 type: 'warning'
             }));
-            localStorage.removeItem('accessToken');
-            window.location.href = 'login';
+            xuLyDangXuat();
             return;
         }
         if (!response.ok) throw new Error("Khong the tai don hang");
@@ -283,8 +282,7 @@ async function danhGiaOrder(orderId) {
                 message: 'Phiên đăng nhập đã hết hạn. Vui lòng đăng nhập lại.',
                 type: 'warning'
             }));
-            localStorage.removeItem('accessToken');
-            window.location.href = 'login';
+            xuLyDangXuat();
             return;
         }
         if (!response.ok) throw new Error("Khong the tai don hang");

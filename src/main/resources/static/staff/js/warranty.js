@@ -110,6 +110,12 @@ function renderWarranty(data) {
                 <span>Trạng thái thiết bị</span>
                 <strong style="color: ${data.device_status === 'WARRANTY' ? 'var(--orange, #ff9800)' : data.device_status === 'RETURNED' ? 'var(--red)' : 'var(--green)'};">${statusText}</strong>
             </div>
+            ${data.request_reason ? `
+            <div class="warranty-item" style="grid-column: 1 / -1; background: rgba(255, 152, 0, 0.08); padding: 10px 14px; border-radius: 8px; border-left: 4px solid #ff9800; margin-top: 10px; display: flex; flex-direction: column; align-items: flex-start; gap: 4px;">
+                <span style="font-size: 12px; color: var(--muted); font-weight:600;">Lý do khách hàng yêu cầu</span>
+                <strong style="color: var(--text); font-style: italic; font-weight: 500;">"${data.request_reason}"</strong>
+            </div>
+            ` : ''}
             ${actionButtons ? `
             <div class="warranty-actions-wrap" style="grid-column: 1 / -1; margin-top: 10px; display: flex; justify-content: center; width: 100%;">
                 ${actionButtons}
@@ -170,7 +176,10 @@ async function taiDanhSachYeuCau() {
             html += `
                 <tr>
                     <td style="padding: 12px; border-bottom: 1px solid #eee;"><strong>${item.imei}</strong></td>
-                    <td style="padding: 12px; border-bottom: 1px solid #eee;">${item.product_name} (${item.color})</td>
+                    <td style="padding: 12px; border-bottom: 1px solid #eee;">
+                        <strong>${item.product_name} (${item.color})</strong>
+                        ${item.request_reason ? `<br><span style="font-size: 11px; font-style: italic; color: #888;">Lý do: "${item.request_reason}"</span>` : ''}
+                    </td>
                     <td style="padding: 12px; border-bottom: 1px solid #eee;"><span style="color: ${statusColor}; font-weight:600;">${statusText}</span></td>
                     <td style="padding: 12px; border-bottom: 1px solid #eee; display:flex; gap:5px;">${actions}</td>
                 </tr>

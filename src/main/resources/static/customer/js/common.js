@@ -1,22 +1,31 @@
 
 function capNhatGiaoDienHeader() {
+    const accessToken = localStorage.getItem('accessToken');
     const userInfoString = localStorage.getItem('userInfo');
     const dangNhapContainer = document.querySelector('.Dang-nhap');
 
-    if (userInfoString && dangNhapContainer) {
-        const userInfo = JSON.parse(userInfoString);
-
-        dangNhapContainer.innerHTML = `
-            <div class="user-menu" style="display: flex; align-items: center; gap: 10px;">
-                <a href="profile" class="btn-header" style="display: flex; align-items: center; gap: 5px;">
-                    <img src="./img/user.svg" alt="User">
-                    <h3>Xin chào, ${userInfo.name || userInfo.username || 'Bạn'}</h3>
-                </a>
-                <button onclick="xuLyDangXuat()" class="btn-logout" style="cursor: pointer; padding: 5px 10px; background-color: #f44336; color: white; border: none; border-radius: 5px;">
-                    Đăng xuất
-                </button>
-            </div>
-        `;
+    if (dangNhapContainer) {
+        if (accessToken && userInfoString) {
+            try {
+                const userInfo = JSON.parse(userInfoString);
+                dangNhapContainer.innerHTML = `
+                    <div class="user-menu" style="display: flex; align-items: center; gap: 10px;">
+                        <a href="profile" class="btn-header" style="display: flex; align-items: center; gap: 5px;">
+                            <img src="./img/user.svg" alt="User">
+                            <h3>Xin chào, ${userInfo.name || userInfo.username || 'Bạn'}</h3>
+                        </a>
+                        <button onclick="xuLyDangXuat()" class="btn-logout" style="cursor: pointer; padding: 5px 10px; background-color: #f44336; color: white; border: none; border-radius: 5px;">
+                            Đăng xuất
+                        </button>
+                    </div>
+                `;
+            } catch (e) {
+                console.error('Lỗi khi parse user info:', e);
+                renderDefaultLoginHeader(dangNhapContainer);
+            }
+        } else {
+            renderDefaultLoginHeader(dangNhapContainer);
+        }
     }
 
     // Bind search functionality
@@ -90,6 +99,15 @@ function xuLyDangXuat() {
 
 
     window.location.href = 'login';
+}
+
+function renderDefaultLoginHeader(container) {
+    container.innerHTML = `
+        <a href="login" class="btn-header">
+            <img src="./img/user.svg" alt="Đăng nhập">
+            <h3>Đăng nhập<br>Thành viên</h3>
+        </a>
+    `;
 }
 
 /**

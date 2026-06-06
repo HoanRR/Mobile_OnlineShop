@@ -35,7 +35,6 @@ public class User {
     @Column(length = 255, nullable = false, unique = true)
     String email;
 
-    @NotBlank(message = "Họ và tên không được để trống")
     String fullName;
 
     @NotBlank(message = "Số điện thoại không được để trống")

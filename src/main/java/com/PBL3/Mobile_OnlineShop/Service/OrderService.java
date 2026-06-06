@@ -319,6 +319,7 @@ public class OrderService {
                         .storage_capacity(OD.getProductVariant().getStorageCapacity())
                         .price_at_purchase(OD.getPriceAtPurchase())
                         .device_status(OD.getDevice() != null ? OD.getDevice().getStatus().name() : null)
+                        .request_reason(OD.getDevice() != null ? OD.getDevice().getWarrantyReturnReason() : null)
                         .build())
                 .toList();
         return OrderDetailResponse.builder()
@@ -360,6 +361,7 @@ public class OrderService {
                         .storage_capacity(OD.getProductVariant().getStorageCapacity())
                         .price_at_purchase(OD.getPriceAtPurchase())
                         .device_status(OD.getDevice() != null ? OD.getDevice().getStatus().name() : null)
+                        .request_reason(OD.getDevice() != null ? OD.getDevice().getWarrantyReturnReason() : null)
                         .build())
                 .toList();
 
@@ -390,22 +392,40 @@ public class OrderService {
         Cart cart = cartRepository.findByUser(user)
                 .orElseThrow(() -> new AppException(ErrorCode.CART_NOT_FOUND));
 
-        if ( cart.getCartDetails() == null || cart.getCartDetails().isEmpty()){
+        // Kiểm tra xem đây có phải là đơn hàng mua trực tiếp hay không
+        boolean isDirectPurchase = request.getItems().stream().anyMatch(item -> item.getProduct_variant_id() != null);
+
+        if (!isDirectPurchase && (cart.getCartDetails() == null || cart.getCartDetails().isEmpty())){
             throw new AppException(ErrorCode.CART_EMPTY);
         }
 
         // Xác minh sản phẩm được chọn
         List<CartDetail> selectedItems = new ArrayList<>();
         for (OrderRequest.OrderItemRequest item : request.getItems()) {
-            CartDetail cartDetail = cartDetailRepository.findById(item.getCart_detail_id())
-                    .orElseThrow(() -> new AppException(ErrorCode.INVALID_DATA));
+            if (item.getCart_detail_id() != null) {
+                CartDetail cartDetail = cartDetailRepository.findById(item.getCart_detail_id())
+                        .orElseThrow(() -> new AppException(ErrorCode.INVALID_DATA));
 
-            // Kiểm tra cart detail này thuộc giỏ hàng của user
-            if (!cartDetail.getCart().getCartId().equals(cart.getCartId())) {
-                throw new AppException(ErrorCode.FORBIDDEN);
+                // Kiểm tra cart detail này thuộc giỏ hàng của user
+                if (!cartDetail.getCart().getCartId().equals(cart.getCartId())) {
+                    throw new AppException(ErrorCode.FORBIDDEN);
+                }
+
+                selectedItems.add(cartDetail);
+            } else if (item.getProduct_variant_id() != null) {
+                ProductVariant variant = productVariantRepository.findByProductVariantId(item.getProduct_variant_id());
+                if (variant == null) {
+                    throw new AppException(ErrorCode.PRODUCT_NOT_FOUND, "Không tìm thấy biến thể sản phẩm: " + item.getProduct_variant_id());
+                }
+
+                CartDetail transientDetail = new CartDetail();
+                transientDetail.setProductVariant(variant);
+                transientDetail.setQuantity(item.getQuantity());
+                transientDetail.setCart(cart);
+                selectedItems.add(transientDetail);
+            } else {
+                throw new AppException(ErrorCode.INVALID_DATA, "Mỗi sản phẩm phải có cart_detail_id hoặc product_variant_id");
             }
-
-            selectedItems.add(cartDetail);
         }
 
         // Tính tổng giá từ DB
@@ -522,13 +542,19 @@ public class OrderService {
 
         Order savedOrder = orderRepository.save(order);
 
-        // Xóa tham chiếu khỏi collection cha để tránh re-persist do CascadeType.ALL khi commit
-        if (cart.getCartDetails() != null) {
-            cart.getCartDetails().removeAll(selectedItems);
-            cartRepository.save(cart);
-        }
+        // Lọc các sản phẩm thực sự nằm trong DB để xóa khỏi giỏ hàng
+        List<CartDetail> dbCartDetails = selectedItems.stream()
+                .filter(cd -> cd.getCartDetailId() != null)
+                .collect(Collectors.toList());
 
-        cartDetailRepository.deleteAll(selectedItems);
+        if (!dbCartDetails.isEmpty()) {
+            // Xóa tham chiếu khỏi collection cha để tránh re-persist do CascadeType.ALL khi commit
+            if (cart.getCartDetails() != null) {
+                cart.getCartDetails().removeAll(dbCartDetails);
+                cartRepository.save(cart);
+            }
+            cartDetailRepository.deleteAll(dbCartDetails);
+        }
 
         return OrderResponse.builder()
                 .order_id(savedOrder.getOrderId())
@@ -575,6 +601,7 @@ public class OrderService {
             throw new AppException(ErrorCode.INVALID_DATA, "Loại yêu cầu không hợp lệ. Chỉ chấp nhận WARRANTY hoặc RETURN");
         }
 
+        device.setWarrantyReturnReason(request.getReason());
         deviceRepository.save(device);
 
         System.out.println("Customer " + user.getUsername() + " requested " + request.getType() 
@@ -592,12 +619,42 @@ public class OrderService {
 
         if ("COMPLETE_WARRANTY".equalsIgnoreCase(action)) {
             device.setStatus(DeviceStatus.SOLD);
-        } else if ("CONFIRM_RETURN_GOOD".equalsIgnoreCase(action)) {
-            device.setStatus(DeviceStatus.AVAILABLE);
-        } else if ("CONFIRM_RETURN_DEFECTIVE".equalsIgnoreCase(action)) {
-            device.setStatus(DeviceStatus.DEFECTIVE);
+            device.setWarrantyReturnReason(null);
+        } else if ("CONFIRM_RETURN_GOOD".equalsIgnoreCase(action) || "CONFIRM_RETURN_DEFECTIVE".equalsIgnoreCase(action)) {
+            if ("CONFIRM_RETURN_GOOD".equalsIgnoreCase(action)) {
+                device.setStatus(DeviceStatus.AVAILABLE);
+            } else {
+                device.setStatus(DeviceStatus.DEFECTIVE);
+            }
+            device.setWarrantyReturnReason(null);
+
+            // Deduct the returned device price from the order's total amount
+            OrderDetail orderDetail = orderDetailRepository.findByDevice(device).orElse(null);
+            if (orderDetail != null) {
+                Order order = orderDetail.getOrder();
+                double newTotal = Math.max(0.0, order.getTotalAmount() - orderDetail.getPriceAtPurchase());
+                order.setTotalAmount(newTotal);
+                orderRepository.save(order);
+
+                // Check if all other items in this order are also returned/defective
+                boolean allReturned = true;
+                for (OrderDetail od : order.getOrderDetails()) {
+                    if (od.getDevice() != null && od.getDevice() != device) {
+                        DeviceStatus ds = od.getDevice().getStatus();
+                        if (ds == DeviceStatus.SOLD || ds == DeviceStatus.WARRANTY || ds == DeviceStatus.RETURNED) {
+                            allReturned = false;
+                            break;
+                        }
+                    }
+                }
+                if (allReturned) {
+                    order.setOrderStatus(OrderStatus.CANCELLED);
+                    orderRepository.save(order);
+                }
+            }
         } else if ("REJECT".equalsIgnoreCase(action)) {
             device.setStatus(DeviceStatus.SOLD);
+            device.setWarrantyReturnReason(null);
         } else {
             throw new AppException(ErrorCode.INVALID_DATA, "Hành động không hợp lệ");
         }

@@ -42,7 +42,7 @@ function renderProductDetailToHTML(data) {
     document.getElementById('header-danh-gia').innerText = `Hỏi đáp & đánh giá ${data.product_name} chính hãng`;
     renderVariantButtons(data.variant);
     renderReviews(data.review);
-    
+
     // Hiển thị mô tả sản phẩm
     const moTaContainer = document.querySelector(".noi-dung-mo-ta");
     if (moTaContainer) {
@@ -113,27 +113,27 @@ function updateDynamicUI() {
 function renderReviews(reviews) {
     const container = document.querySelector('.danh-sach-binh-luan-mc');
     container.innerHTML = '';
-    
+
     // Thống kê đánh giá
     let totalReviews = reviews ? reviews.length : 0;
     let sumRating = 0;
     let counts = { 1: 0, 2: 0, 3: 0, 4: 0, 5: 0 };
-    
+
     if (totalReviews > 0) {
         reviews.forEach(r => {
             sumRating += r.rating;
             counts[r.rating] = (counts[r.rating] || 0) + 1;
         });
     }
-    
+
     let avgRating = totalReviews > 0 ? (sumRating / totalReviews).toFixed(1) : 0;
     let roundedAvg = Math.round(avgRating) || 0;
     let avgStars = '⭐'.repeat(roundedAvg) + '☆'.repeat(5 - roundedAvg);
-    
+
     // Cập nhật thẻ hiển thị trên cùng
     const ratingEl = document.getElementById('rating');
     if (ratingEl) ratingEl.innerText = `${avgStars} (${totalReviews} đánh giá)`;
-    
+
     // Cập nhật khu vực tổng quan đánh giá
     const diemSoEl = document.querySelector('.diem-so');
     if (diemSoEl) diemSoEl.innerText = `${avgRating}/5`;
@@ -141,7 +141,7 @@ function renderReviews(reviews) {
     if (saoTongEl) saoTongEl.innerText = avgStars;
     const tongSoDanhGiaEl = document.querySelector('.tong-so-danh-gia');
     if (tongSoDanhGiaEl) tongSoDanhGiaEl.innerText = `${totalReviews} đánh giá`;
-    
+
     const starBars = document.querySelectorAll('.cot-thanh-sao .dong-sao');
     if (starBars.length === 5) {
         for (let i = 5; i >= 1; i--) {
@@ -223,14 +223,17 @@ window.addEventListener("DOMContentLoaded", () => {
         });
     }
 
-    // Nút Mua ngay → thêm vào giỏ + chuyển thẳng sang checkout
     const btn_mua_ngay = document.querySelector('.btn-mua-ngay');
     if (btn_mua_ngay) {
         btn_mua_ngay.addEventListener('click', async () => {
             const token = localStorage.getItem('accessToken');
             if (!token) {
-                showToast('Vui lòng đăng nhập để mua hàng!', 'warning');
-                window.location.href = 'login';
+                showToast('Vui lòng đăng nhập để thực hiện chức năng này!', 'warning');
+
+                setTimeout(() => {
+                    window.location.href = "login";
+                }, 2000);
+
                 return;
             }
 
@@ -241,56 +244,20 @@ window.addEventListener("DOMContentLoaded", () => {
             btn_mua_ngay.innerText = 'Đang xử lý...';
 
             try {
-                // 1. Thêm vào giỏ hàng
-                const addRes = await fetch('http://localhost:8080/api/cart/items', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: JSON.stringify({
+                const directItem = {
+                    quantity: quantity,
+                    variant: {
                         product_variant_id: activateVariant.productVariantId,
-                        quantity: quantity
-                    })
-                });
+                        product_name: currentProduct.product_name,
+                        color: activateVariant.color,
+                        storage_capacity: activateVariant.storageCapacity,
+                        price: activateVariant.price,
+                        variant_image_link: activateVariant.variantImageLink || currentProduct.product_image_link
+                    }
+                };
 
-                if (!addRes.ok) {
-                    const err = await addRes.json();
-                    showToast(err.message || 'Không thể thêm vào giỏ hàng', 'error');
-                    return;
-                }
-
-                const addedItem = await addRes.json(); // { cart_detail_id, ... }
-
-                // 2. Lấy cart để tìm cart_detail_id của item vừa thêm
-                const cartRes = await fetch('http://localhost:8080/api/cart', {
-                    headers: { 'Authorization': `Bearer ${token}` }
-                });
-
-                if (!cartRes.ok) {
-                    showToast('Lỗi khi tải giỏ hàng', 'error');
-                    return;
-                }
-
-                const cartData = await cartRes.json();
-
-                // Tìm item có variant_id = activateVariant.productVariantId (item mới nhất)
-                const matchingItems = cartData.items.filter(
-                    it => it.variant && it.variant.product_variant_id === activateVariant.productVariantId
-                );
-
-                if (matchingItems.length === 0) {
-                    showToast('Không tìm thấy sản phẩm trong giỏ hàng', 'error');
-                    return;
-                }
-
-                // Lấy item mới nhất (cart_detail_id lớn nhất)
-                const targetItem = matchingItems.reduce((a, b) =>
-                    a.cart_detail_id > b.cart_detail_id ? a : b
-                );
-
-                // 3. Lưu item đã chọn vào localStorage rồi chuyển sang checkout
-                localStorage.setItem('selectedCheckoutItems', JSON.stringify([String(targetItem.cart_detail_id)]));
+                localStorage.setItem('directCheckoutItem', JSON.stringify(directItem));
+                localStorage.removeItem('selectedCheckoutItems');
                 localStorage.removeItem('appliedVoucher');
 
                 window.location.href = 'checkout';
@@ -305,40 +272,4 @@ window.addEventListener("DOMContentLoaded", () => {
         });
     }
 });
-
-
-// if (trangChiTiet) {
-
-//     let danhGiaChiTiet = document.querySelector(".noi-dung-mo-ta");
-//     if (danhGiaChiTiet && sanPham) {
-//         const htmlCard = `
-//                 <p>${sanPham.moTa}</p>
-//             `
-//         danhGiaChiTiet.innerHTML = htmlCard;
-//     }
-
-//     const nutThemVaoGio = document.querySelector('.btn-them-gio-hang');
-//     if (nutThemVaoGio && sanPham) {
-//         nutThemVaoGio.addEventListener('click', function () {
-//             let gioHang = JSON.parse(localStorage.getItem('cart')) || [];
-
-//             const sanPhamDaCo = gioHang.find(item => item.id === sanPham.id);
-
-//             if (sanPhamDaCo) {
-//                 sanPhamDaCo.quantity += 1;
-//             } else {
-//                 gioHang.push({
-//                     id: sanPham.id,
-//                     ten: sanPham.ten,
-//                     giaHienTai: sanPham.giaHienTai,
-//                     anh: sanPham.anh,
-//                     quantity: 1
-//                 });
-//             }
-
-//             localStorage.setItem('cart', JSON.stringify(gioHang));
-//             alert(`Đã thêm ${sanPham.ten} vào giỏ hàng!`);
-//         });
-//     }
-// }
 

@@ -1,6 +1,7 @@
 package com.PBL3.Mobile_OnlineShop.Repository;
 
 import com.PBL3.Mobile_OnlineShop.dto.response.TopProductResponse;
+import com.PBL3.Mobile_OnlineShop.entity.Device;
 import com.PBL3.Mobile_OnlineShop.entity.OrderDetail;
 import com.PBL3.Mobile_OnlineShop.entity.ProductVariant;
 import com.PBL3.Mobile_OnlineShop.enums.OrderStatus;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface OrderDetailRepository extends JpaRepository<OrderDetail, Long> {
@@ -23,14 +25,17 @@ public interface OrderDetailRepository extends JpaRepository<OrderDetail, Long> 
                         Long userId,
                         Long productId);
 
-        java.util.Optional<OrderDetail> findByOrder_User_UserIdAndDevice_ImeiAndOrder_OrderStatus(
+        Optional<OrderDetail> findByOrder_User_UserIdAndDevice_ImeiAndOrder_OrderStatus(
                         Long userId,
                         String imei,
                         OrderStatus orderStatus);
 
+        Optional<OrderDetail> findByDevice(Device device);
+
         @Query("SELECT COUNT(od) FROM OrderDetail od " +
                         "WHERE od.order.orderDate >= :fromDate AND od.order.orderDate <= :toDate " +
-                        "AND (:status IS NULL OR od.order.orderStatus = :status)")
+                        "AND (:status IS NULL OR od.order.orderStatus = :status) " +
+                        "AND (od.device IS NULL OR od.device.status NOT IN (com.PBL3.Mobile_OnlineShop.enums.DeviceStatus.AVAILABLE, com.PBL3.Mobile_OnlineShop.enums.DeviceStatus.DEFECTIVE))")
         Long getTotalDevicesSold(@Param("fromDate") LocalDateTime fromDate,
                         @Param("toDate") LocalDateTime toDate,
                         @Param("status") OrderStatus status);
@@ -44,6 +49,7 @@ public interface OrderDetailRepository extends JpaRepository<OrderDetail, Long> 
                         "JOIN pv.product p " +
                         "JOIN od.order o " +
                         "WHERE o.orderStatus = :status AND o.isPaid = true " +
+                        "AND (od.device IS NULL OR od.device.status NOT IN (com.PBL3.Mobile_OnlineShop.enums.DeviceStatus.AVAILABLE, com.PBL3.Mobile_OnlineShop.enums.DeviceStatus.DEFECTIVE)) " +
                         "AND (:startDate IS NULL OR o.orderDate >= :startDate) " +
                         "AND (:endDate IS NULL OR o.orderDate <= :endDate) " +
                         "AND (:brand IS NULL OR :brand = '' OR p.brand = :brand) " +
@@ -64,6 +70,7 @@ public interface OrderDetailRepository extends JpaRepository<OrderDetail, Long> 
                         "JOIN pv.product p " +
                         "JOIN od.order o " +
                         "WHERE o.orderStatus = :status AND o.isPaid = true " +
+                        "AND (od.device IS NULL OR od.device.status NOT IN (com.PBL3.Mobile_OnlineShop.enums.DeviceStatus.AVAILABLE, com.PBL3.Mobile_OnlineShop.enums.DeviceStatus.DEFECTIVE)) " +
                         "AND (:startDate IS NULL OR o.orderDate >= :startDate) " +
                         "AND (:endDate IS NULL OR o.orderDate <= :endDate) " +
                         "AND p.brand = :brand")
@@ -78,6 +85,7 @@ public interface OrderDetailRepository extends JpaRepository<OrderDetail, Long> 
                         "FROM OrderDetail od " +
                         "JOIN od.order o " +
                         "WHERE o.orderStatus = :status AND o.isPaid = true " +
+                        "AND (od.device IS NULL OR od.device.status NOT IN (com.PBL3.Mobile_OnlineShop.enums.DeviceStatus.AVAILABLE, com.PBL3.Mobile_OnlineShop.enums.DeviceStatus.DEFECTIVE)) " +
                         "AND (:startDate IS NULL OR o.orderDate >= :startDate) " +
                         "AND (:endDate IS NULL OR o.orderDate <= :endDate)")
         Double getTotalRevenueAll(

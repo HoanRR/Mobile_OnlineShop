@@ -54,6 +54,7 @@ public class UserService {
                 .phone_number(user.getPhoneNumber())
                 .role(user.getRole())
                 .username(user.getUsername())
+                .fullName(user.getFullName())
                 .build();
         List<OrderHistoryResponse> orderHistoryResponse = new ArrayList<>();
         for (Order order: user.getOrders()){

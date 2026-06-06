@@ -6,11 +6,14 @@ let appliedVoucher = null; // Voucher đang được áp dụng
 document.addEventListener('DOMContentLoaded', function () {
     const token = localStorage.getItem('accessToken');
     if (!token) {
-        showToast('Vui lòng đăng nhập để tiếp tục thanh toán!', 'warning');
-        window.location.href = 'login';
+        showToast('Vui lòng đăng nhập để thực hiện chức năng này!', 'warning');
+
+        setTimeout(() => {
+            window.location.href = "login";
+        }, 2000);
+
         return;
     }
-
     loadCartFromAPI();
     fillUserData();
 
@@ -23,6 +26,19 @@ document.addEventListener('DOMContentLoaded', function () {
 async function loadCartFromAPI() {
     try {
         const token = localStorage.getItem('accessToken');
+
+        // Kiểm tra xem có đơn hàng mua trực tiếp hay không
+        const directCheckoutItemStr = localStorage.getItem('directCheckoutItem');
+        if (directCheckoutItemStr) {
+            const directItem = JSON.parse(directCheckoutItemStr);
+            cartData = {
+                items: [directItem],
+                total: directItem.variant.price * directItem.quantity
+            };
+            renderCheckoutItems();
+            return;
+        }
+
         const response = await fetch('http://localhost:8080/api/cart', {
             method: 'GET',
             headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` }
@@ -34,7 +50,10 @@ async function loadCartFromAPI() {
             const selectedItemsStr = localStorage.getItem('selectedCheckoutItems');
             if (!selectedItemsStr) {
                 showToast('Bạn chưa chọn sản phẩm nào để thanh toán!', 'warning');
-                window.location.href = 'cart';
+
+                setTimeout(() => {
+                    window.location.href = 'cart';
+                }, 2000);
                 return;
             }
 
@@ -52,9 +71,7 @@ async function loadCartFromAPI() {
 
             renderCheckoutItems();
         } else if (response.status === 401) {
-            localStorage.removeItem('accessToken');
-            localStorage.removeItem('refreshToken');
-            window.location.href = 'login';
+            xuLyDangXuat();
         } else {
             showToast('Không thể tải giỏ hàng. Vui lòng thử lại!', 'error');
         }
@@ -98,7 +115,7 @@ function renderCheckoutItems() {
     document.getElementById('checkout-items-list').innerHTML = html;
     recalculateCheckoutTotal(subtotal);
 
-    
+
 }
 
 // Tính lại tổng tiền hiển thị trên checkout
@@ -141,7 +158,7 @@ window.applyDiscountCheckout = async function () {
     if (!code) {
         msg.style.color = '#d70018';
         msg.innerText = 'Vui lòng nhập mã giảm giá.';
-        if (localStorage.getItem("appliedVoucher")){
+        if (localStorage.getItem("appliedVoucher")) {
             localStorage.removeItem("appliedVoucher");
         }
         appliedVoucher = null;
@@ -178,7 +195,7 @@ window.applyDiscountCheckout = async function () {
                     ? cartData.items.map(item => ({
                         variant_id: item.variant.product_variant_id,
                         quantity: item.quantity
-                      }))
+                    }))
                     : []
             })
         });
@@ -222,15 +239,61 @@ window.removeVoucher = function () {
     recalculateCheckoutTotal();
 };
 
-// Điền thông tin user từ localStorage
-function fillUserData() {
-    const userString = localStorage.getItem('currentUser');
-    if (userString) {
-        const user = JSON.parse(userString);
-        const hoTenInput = document.getElementById('ho-ten');
-        if (hoTenInput && !hoTenInput.value) hoTenInput.value = user.full_name || user.username || '';
-        const sdtInput = document.getElementById('so-dien-thoai');
-        if (sdtInput && !sdtInput.value) sdtInput.value = user.phone_number || '';
+// Điền thông tin user từ API /api/me và lưu vào localStorage
+async function fillUserData() {
+    const token = localStorage.getItem('accessToken');
+    if (!token) return;
+
+    try {
+        const response = await fetch('http://localhost:8080/api/me', {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            
+            // Đồng bộ sang định dạng currentUser mà frontend mong đợi
+            const currentUser = {
+                user_id: data.userId,
+                username: data.username,
+                full_name: data.name,
+                phone_number: data.phoneNumber,
+                email: data.email
+            };
+            
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+
+            const hoTenInput = document.getElementById('ho-ten');
+            if (hoTenInput && !hoTenInput.value) hoTenInput.value = currentUser.full_name || currentUser.username || '';
+            
+            const sdtInput = document.getElementById('so-dien-thoai');
+            if (sdtInput && !sdtInput.value) sdtInput.value = currentUser.phone_number || '';
+        } else {
+            // Fallback sang localStorage hiện có nếu API lỗi
+            const userString = localStorage.getItem('currentUser');
+            if (userString) {
+                const user = JSON.parse(userString);
+                const hoTenInput = document.getElementById('ho-ten');
+                if (hoTenInput && !hoTenInput.value) hoTenInput.value = user.full_name || user.username || '';
+                const sdtInput = document.getElementById('so-dien-thoai');
+                if (sdtInput && !sdtInput.value) sdtInput.value = user.phone_number || '';
+            }
+        }
+    } catch (error) {
+        console.error('Lỗi khi tải thông tin user:', error);
+        // Fallback
+        const userString = localStorage.getItem('currentUser');
+        if (userString) {
+            const user = JSON.parse(userString);
+            const hoTenInput = document.getElementById('ho-ten');
+            if (hoTenInput && !hoTenInput.value) hoTenInput.value = user.full_name || user.username || '';
+            const sdtInput = document.getElementById('so-dien-thoai');
+            if (sdtInput && !sdtInput.value) sdtInput.value = user.phone_number || '';
+        }
     }
 }
 
@@ -277,10 +340,15 @@ async function xuLyDatHang() {
     const diaChi = document.getElementById('dia-chi').value.trim();
     const phuongThuc = document.querySelector('input[name="payment"]:checked').value;
 
-    const items = cartData.items.map(item => ({
-        cart_detail_id: item.cart_detail_id,
-        quantity: item.quantity
-    }));
+    const items = cartData.items.map(item => {
+        const orderItem = { quantity: item.quantity };
+        if (item.cart_detail_id) {
+            orderItem.cart_detail_id = item.cart_detail_id;
+        } else if (item.variant && item.variant.product_variant_id) {
+            orderItem.product_variant_id = item.variant.product_variant_id;
+        }
+        return orderItem;
+    });
 
     const orderRequest = {
         receiver_name: hoTen,
@@ -315,12 +383,12 @@ async function xuLyDatHang() {
             localStorage.removeItem('cart');
             localStorage.removeItem('appliedVoucher');
             localStorage.removeItem('selectedCheckoutItems');
+            localStorage.removeItem('directCheckoutItem');
 
             window.location.href = 'order-success';
         } else if (response.status === 401) {
-            localStorage.removeItem('accessToken');
-            localStorage.removeItem('refreshToken');
-            window.location.href = 'login';
+            xuLyDangXuat();
+            return;
             const errorData = await response.json();
             const errorCode = (errorData.error && errorData.error.code) || errorData.code || '';
             const errorMsg = (errorData.error && errorData.error.message) || errorData.message || 'Đặt hàng thất bại. Vui lòng thử lại!';

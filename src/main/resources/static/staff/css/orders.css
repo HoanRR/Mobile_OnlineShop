@@ -163,6 +163,7 @@
 .btn-cancel:hover { background: var(--surface2); border-color: var(--red); }
 .btn-save { padding: 10px 24px; background: var(--red); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; transition: var(--transition); }
 .btn-save:hover { background: var(--red-dark); box-shadow: 0 4px 12px var(--red-glow); }
+.btn-save:disabled { background: var(--muted); opacity: 0.6; cursor: not-allowed; box-shadow: none; }
 
 .detail-grid {
     display: grid;

@@ -30,4 +30,7 @@ public class Device {
     @Column(length = 20, name = "status")
     @Enumerated(EnumType.STRING)
     private DeviceStatus status;
+
+    @Column(name = "warranty_return_reason", length = 500)
+    private String warrantyReturnReason;
 }

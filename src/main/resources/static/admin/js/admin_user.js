@@ -273,7 +273,7 @@ function openCreateModal() {
 // ==========================================
 // API 4: PATCH /api/admin/user/{id} (Update)
 // ==========================================
-function openEditModal(userId, username, email, phone, role) {
+async function openEditModal(userId, username, email, phone, role) {
     isEditMode = true;
     document.getElementById('modal-title').textContent = 'Chỉnh sửa người dùng';
     document.getElementById('btn-submit').textContent = 'Lưu thay đổi';
@@ -281,16 +281,36 @@ function openEditModal(userId, username, email, phone, role) {
     document.getElementById('form-user-id').value = userId;
     document.getElementById('form-username').value = username;
     document.getElementById('form-username').disabled = true; // Can't change username
-    document.getElementById('form-fullname').value = ''; // Not in list response
+    document.getElementById('form-fullname').value = 'Đang tải...'; // Not in list response, load from API
+    document.getElementById('form-fullname').disabled = true;
     document.getElementById('form-email').value = email;
     document.getElementById('form-phone').value = phone;
     document.getElementById('form-role').value = role;
     document.getElementById('form-password').value = '';
     document.getElementById('form-password').required = false;
     document.getElementById('pwd-required').style.display = 'none';
-    document.getElementById('pwd-hint').textContent = 'Để trống nếu không đổi mật khẩu';
+    document.getElementById('pwd-hint').textContent = 'Để trống nếu không đổi mật khẩu (tối thiểu 6 ký tự)';
 
     document.getElementById('user-modal-overlay').classList.add('open');
+
+    // Fetch user details to get fullName
+    try {
+        const response = await fetch(`${API_USERS}/${userId}`, {
+            method: 'GET',
+            headers: getAuthHeaders()
+        });
+        if (response.ok) {
+            const user = await response.json();
+            document.getElementById('form-fullname').value = user.full_name || '';
+        } else {
+            document.getElementById('form-fullname').value = '';
+        }
+    } catch (e) {
+        console.error('Lỗi khi tải thông tin chi tiết:', e);
+        document.getElementById('form-fullname').value = '';
+    } finally {
+        document.getElementById('form-fullname').disabled = false;
+    }
 }
 
 function closeModal() {
@@ -320,9 +340,16 @@ async function submitUserForm(event) {
         const body = {};
         if (email) body.email = email;
         if (phone) body.phone_number = phone;
-        if (fullName) body.full_name = fullName;
+        body.full_name = fullName;
         if (role) body.role = role;
-        if (password) body.password = password;
+        
+        if (password) {
+            if (password.length < 6) {
+                showToast('Mật khẩu phải từ 6 ký tự trở lên.', 'error');
+                return;
+            }
+            body.password = password;
+        }
 
         try {
             const response = await fetch(`${API_USERS}/${userId}`, {
@@ -353,7 +380,7 @@ async function submitUserForm(event) {
     } else {
         // POST /api/admin/user
         if (!password || password.length < 6) {
-            showToast('Mật khẩu phải từ 6 ký tự.', 'error');
+            showToast('Mật khẩu phải từ 6 ký tự trở lên.', 'error');
             return;
         }
 

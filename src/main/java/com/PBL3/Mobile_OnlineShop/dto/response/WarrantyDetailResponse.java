@@ -39,4 +39,7 @@ public class WarrantyDetailResponse {
 
     @JsonProperty("device_status")
     String deviceStatus;
+
+    @JsonProperty("request_reason")
+    String requestReason;
 }

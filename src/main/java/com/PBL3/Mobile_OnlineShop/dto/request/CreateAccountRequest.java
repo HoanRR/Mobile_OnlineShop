@@ -14,7 +14,6 @@ public class CreateAccountRequest  {
     @NotNull(message = "Tên đăng nhập không được để trống")
     String username;
 
-    @NotNull(message = "Họ và tên không được để trống")
     String full_name;
 
     @Email(message = "Email không đúng định dạng")

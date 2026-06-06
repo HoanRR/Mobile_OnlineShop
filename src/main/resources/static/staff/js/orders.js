@@ -8,6 +8,14 @@ const ORDER_STATUSES = {
     'CANCELLED': { label: 'Đã hủy', className: 'status-cancelled' }
 };
 
+const VALID_TRANSITIONS = {
+    'WAIT': ['PROCESSING', 'CANCELLED'],
+    'PROCESSING': ['SHIPPING', 'CANCELLED'],
+    'SHIPPING': ['DELIVERED', 'CANCELLED'],
+    'DELIVERED': [],
+    'CANCELLED': []
+};
+
 let danhSachDonHang = [];
 let donHangHienTai = null; // Lưu ID đơn hàng đang thao tác
 
@@ -195,25 +203,40 @@ async function moModalChiTiet(maDonHang) {
             const giaSP = DinhDangTien(sp.price_at_purchase || sp.price);
             
             htmlSanPham += `
-                        ${sp.imei ? `<br><span style="font-size: 12px; color: #555;">IMEI: ${sp.imei}</span>` : ''}
+                <div class="detail-item" style="padding: 14px; margin-bottom: 10px;">
+                    <div>
+                        <strong style="font-size: 15px; color: var(--text);">${tenSP}</strong>
+                        <div style="font-size: 13px; color: var(--muted); margin-top: 6px; display: flex; gap: 12px; flex-wrap: wrap;">
+                            ${sp.storage_capacity ? `<span><i class="fa-solid fa-microchip" style="margin-right: 4px;"></i>${sp.storage_capacity}GB</span>` : ''}
+                            ${sp.color ? `<span><i class="fa-solid fa-palette" style="margin-right: 4px;"></i>Màu ${sp.color}</span>` : ''}
+                            ${sp.imei ? `<span><i class="fa-solid fa-barcode" style="margin-right: 4px;"></i>IMEI: <strong>${sp.imei}</strong></span>` : ''}
+                        </div>
                         ${sp.device_status ? `
-                            <br><span style="font-size: 12px; font-weight:600; color: ${sp.device_status === 'WARRANTY' ? '#ff9800' : sp.device_status === 'RETURNED' ? '#dc3545' : '#28a745'};">
+                            <div style="margin-top: 8px; font-size: 12px; font-weight: 600; color: ${sp.device_status === 'WARRANTY' ? '#ff9800' : sp.device_status === 'RETURNED' ? '#dc3545' : '#22c55e'};">
+                                <i class="fa-solid fa-info-circle" style="margin-right: 4px;"></i>
                                 Trạng thái: ${sp.device_status === 'WARRANTY' ? 'Đang bảo hành' : sp.device_status === 'RETURNED' ? 'Đã yêu cầu đổi/trả' : 'Bình thường'}
-                            </span>
+                            </div>
+                        ` : ''}
+                        ${sp.request_reason ? `
+                            <div style="margin-top: 6px; font-size: 12px; font-style: italic; color: var(--text); background: rgba(255, 152, 0, 0.08); padding: 6px 10px; border-radius: 6px; border-left: 3px solid #ff9800; max-width: 500px;">
+                                <i class="fa-solid fa-comment-dots" style="margin-right: 6px; color: #ff9800;"></i>Lý do khách: "${sp.request_reason}"
+                            </div>
                         ` : ''}
                         ${sp.device_status === 'WARRANTY' ? `
-                            <div style="margin-top: 4px;">
+                            <div style="margin-top: 8px; display:flex; gap: 6px;">
                                 <button class="btn-view-detail" style="font-size:11px; padding:4px 8px; background-color:#28a745; color:white; border:none;" onclick="xuLyBaoHanhDoiTra('${sp.imei}', 'COMPLETE_WARRANTY', '${maDonHang}')">Hoàn thành bảo hành</button>
+                                <button class="btn-view-detail" style="font-size:11px; padding:4px 8px; background-color:#dc3545; color:white; border:none;" onclick="xuLyBaoHanhDoiTra('${sp.imei}', 'REJECT', '${maDonHang}')">Từ chối bảo hành</button>
                             </div>
                         ` : ''}
                         ${sp.device_status === 'RETURNED' ? `
-                            <div style="margin-top: 4px; display:flex; gap: 4px;">
+                            <div style="margin-top: 8px; display:flex; gap: 6px; flex-wrap: wrap;">
                                 <button class="btn-view-detail" style="font-size:11px; padding:4px 8px; background-color:#28a745; color:white; border:none;" onclick="xuLyBaoHanhDoiTra('${sp.imei}', 'CONFIRM_RETURN_GOOD', '${maDonHang}')">Nhận lại kho (Tốt)</button>
-                                <button class="btn-view-detail" style="font-size:11px; padding:4px 8px; background-color:#dc3545; color:white; border:none;" onclick="xuLyBaoHanhDoiTra('${sp.imei}', 'CONFIRM_RETURN_DEFECTIVE', '${maDonHang}')">Báo hỏng (Lỗi)</button>
+                                <button class="btn-view-detail" style="font-size:11px; padding:4px 8px; background-color:#ff9800; color:white; border:none;" onclick="xuLyBaoHanhDoiTra('${sp.imei}', 'CONFIRM_RETURN_DEFECTIVE', '${maDonHang}')">Báo hỏng (Lỗi)</button>
+                                <button class="btn-view-detail" style="font-size:11px; padding:4px 8px; background-color:#dc3545; color:white; border:none;" onclick="xuLyBaoHanhDoiTra('${sp.imei}', 'REJECT', '${maDonHang}')">Từ chối đổi/trả</button>
                             </div>
                         ` : ''}
                     </div>
-                    <strong>${giaSP}</strong>
+                    <strong style="font-size: 15px; color: #ff3d00; align-self: flex-start;">${giaSP}</strong>
                 </div>
             `;
         });
@@ -256,13 +279,57 @@ function moModalTrangThai(maDonHang, trangThaiHienTai, isPaid) {
     const theMaDonHang = document.getElementById('modalOrderId');
     const selectTrangThai = document.getElementById('newStatus');
     const checkboxThanhToan = document.getElementById('isPaid');
+    const btnSave = modal ? modal.querySelector('.btn-save') : null;
 
     if (theMaDonHang) theMaDonHang.innerText = `#${maDonHang}`;
-    if (selectTrangThai) selectTrangThai.value = trangThaiHienTai || 'WAIT';
-    
+
+    if (selectTrangThai) {
+        selectTrangThai.innerHTML = '';
+
+        // Add current status as a disabled option
+        const curLabel = ORDER_STATUSES[trangThaiHienTai] ? ORDER_STATUSES[trangThaiHienTai].label : trangThaiHienTai;
+        const curOption = document.createElement('option');
+        curOption.value = trangThaiHienTai;
+        curOption.disabled = true;
+        curOption.selected = true;
+        curOption.textContent = `${curLabel} (Hiện tại)`;
+        selectTrangThai.appendChild(curOption);
+
+        // Get allowed transitions
+        const nextStates = VALID_TRANSITIONS[trangThaiHienTai] || [];
+        nextStates.forEach(status => {
+            const labelObj = ORDER_STATUSES[status];
+            if (labelObj) {
+                const opt = document.createElement('option');
+                opt.value = status;
+                opt.textContent = labelObj.label;
+                selectTrangThai.appendChild(opt);
+            }
+        });
+
+        // Set up event listener on change to enable/disable Save button
+        if (btnSave) {
+            btnSave.disabled = true;
+        }
+
+        selectTrangThai.onchange = function() {
+            if (btnSave) {
+                btnSave.disabled = (selectTrangThai.value === trangThaiHienTai);
+            }
+        };
+
+        // If there are no next transitions (terminal state), disable select dropdown and checkbox
+        if (nextStates.length === 0) {
+            selectTrangThai.disabled = true;
+            if (checkboxThanhToan) checkboxThanhToan.disabled = true;
+        } else {
+            selectTrangThai.disabled = false;
+            if (checkboxThanhToan) checkboxThanhToan.disabled = false;
+        }
+    }
+
     if (checkboxThanhToan) {
-        // Nếu truyền vào giá trị true/false hoặc nếu trạng thái là Hoàn thành thì check
-        checkboxThanhToan.checked = (isPaid === true  || trangThaiHienTai === 'DELIVERED');
+        checkboxThanhToan.checked = (isPaid === true || trangThaiHienTai === 'DELIVERED');
     }
 
     if (modal) modal.style.display = 'flex';
@@ -451,6 +518,7 @@ async function xuLyBaoHanhDoiTra(imei, action, maDonHang) {
     if (action === 'COMPLETE_WARRANTY') confirmMsg = 'Xác nhận hoàn thành bảo hành cho thiết bị này?';
     if (action === 'CONFIRM_RETURN_GOOD') confirmMsg = 'Xác nhận nhập lại kho thiết bị này?';
     if (action === 'CONFIRM_RETURN_DEFECTIVE') confirmMsg = 'Xác nhận báo hỏng thiết bị này?';
+    if (action === 'REJECT') confirmMsg = 'Xác nhận từ chối yêu cầu cho thiết bị này?';
 
     const ok = await showConfirm(confirmMsg, {
         title: 'Xác nhận xử lý',

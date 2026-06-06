@@ -253,7 +253,8 @@ body {
     margin-top: 10px;
 }
 
-.btn-mua-ngay, .btn-them-gio-hang {
+.btn-mua-ngay,
+.btn-them-gio-hang {
     padding: 14px 20px;
     font-size: 16px;
     font-weight: 700;
@@ -288,7 +289,8 @@ body {
     box-shadow: 0 6px 15px rgba(215, 0, 24, 0.15);
 }
 
-.btn-mua-ngay:disabled, .btn-them-gio-hang:disabled {
+.btn-mua-ngay:disabled,
+.btn-them-gio-hang:disabled {
     opacity: 0.6;
     cursor: not-allowed;
 }

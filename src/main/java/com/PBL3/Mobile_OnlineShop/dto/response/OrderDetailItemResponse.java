@@ -19,4 +19,5 @@ public class OrderDetailItemResponse {
     Long storage_capacity;
     Double price_at_purchase;
     String device_status;
+    String request_reason;
 }

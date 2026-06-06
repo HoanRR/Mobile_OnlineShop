@@ -34,9 +34,11 @@ public class OrderRequest {
 
     @Data
     public static class OrderItemRequest {
-        @NotNull
         private Long cart_detail_id;
 
+        private Long product_variant_id;
+
+        @NotNull(message = "Số lượng không được trống")
         @Min(1)
         private Integer quantity;
     }

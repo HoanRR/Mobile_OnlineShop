@@ -46,6 +46,7 @@ public class WarrantyService {
                 .warrantyMonth(warranty.getWarrantyMonth())
                 .isValid(isValid)
                 .deviceStatus(device.getStatus().name())
+                .requestReason(device.getWarrantyReturnReason())
                 .build();
     }
 
@@ -72,6 +73,7 @@ public class WarrantyService {
                     .warrantyMonth(warranty != null ? warranty.getWarrantyMonth() : null)
                     .isValid(warranty != null ? !warranty.getEndDate().isBefore(LocalDateTime.now()) : false)
                     .deviceStatus(device.getStatus().name())
+                    .requestReason(device.getWarrantyReturnReason())
                     .build();
         }).collect(java.util.stream.Collectors.toList());
     }
